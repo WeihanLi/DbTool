@@ -58,7 +58,6 @@
             this.txtConnString.Name = "txtConnString";
             this.txtConnString.Size = new System.Drawing.Size(396, 26);
             this.txtConnString.TabIndex = 1;
-            this.txtConnString.Text = "server=.;database=Reservation;Integrated Security=True;";
             // 
             // btnConnect
             // 

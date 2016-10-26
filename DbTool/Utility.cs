@@ -30,7 +30,7 @@ namespace DbTool
             sbText.AppendLine("using System;");
             sbText.AppendLine("namespace " + modelNamespace);
             sbText.AppendLine("{");
-            sbText.AppendLine("\tpublic class " + cols.FirstOrDefault().TableName + suffix);
+            sbText.AppendLine("\tpublic class "+ prefix + cols.FirstOrDefault().TableName + suffix);
             sbText.AppendLine("\t{");
             foreach (var item in cols)
             {
@@ -42,10 +42,10 @@ namespace DbTool
         }
 
         /// <summary>
-        /// 利用反射和泛型
+        /// 利用反射和泛型将 DataTable 转换为 List
         /// </summary>
         /// <param name="dt">DataTable 对象</param>
-        /// <returns></returns>
+        /// <returns>List对象</returns>
         public static List<T> DataTableToList<T>(this DataTable dt) where T : class, new()
         {
             // 定义集合

@@ -44,6 +44,11 @@ namespace DbTool
                 MessageBox.Show("请先连接数据库");
                 return;
             }
+            if (cbTables.CheckedItems.Count <= 0)
+            {
+                MessageBox.Show("请先选择要生成model的表");
+                return;
+            }
             string prefix = txtPrefix.Text, suffix = txtSuffix.Text;
             string ns = txtNamespace.Text;
             FolderBrowserDialog dialog = new FolderBrowserDialog();
