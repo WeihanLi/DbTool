@@ -34,7 +34,13 @@ namespace DbTool
             sbText.AppendLine("\t{");
             foreach (var item in cols)
             {
-                sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumeName + " { get;set; }");
+                string tmpColName = "_"+item.ColumeName;
+                sbText.AppendLine("\t\tprivate " + item.DataType + " " + tmpColName+";");
+                sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumeName);
+                sbText.AppendLine("\t\t{");
+                sbText.AppendLine("\t\t\tget { return " + tmpColName + "; }");
+                sbText.AppendLine("\t\t\tset { "+tmpColName+"= value; }");
+                sbText.AppendLine("\t\t}");
             }
             sbText.AppendLine("\t}");
             sbText.AppendLine("}");

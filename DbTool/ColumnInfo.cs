@@ -19,7 +19,7 @@
                 {
                     tableName = value.Substring(3);
                 }
-                else if (value.StartsWith("tbl_"))
+                else if (value.StartsWith("tab_") || value.StartsWith("tbl_"))
                 {
                     tableName = value.Substring(4);
                 }
