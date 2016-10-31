@@ -22,15 +22,15 @@ namespace DbTool
         /// <returns></returns>
         public static string GenerateModelText(this IEnumerable<ColumnInfo> cols , string modelNamespace , string prefix , string suffix)
         {
-            if (cols.Count() < 1)
+            if (cols== null)
             {
-                return "";
+                throw new ArgumentNullException("cols","model信息不能为空");
             }
             StringBuilder sbText = new StringBuilder();
             sbText.AppendLine("using System;");
             sbText.AppendLine("namespace " + modelNamespace);
             sbText.AppendLine("{");
-            sbText.AppendLine("\tpublic class "+ prefix + cols.FirstOrDefault().TableName + suffix);
+            sbText.AppendLine("\tpublic class "+ prefix + cols.FirstOrDefault().ModelName + suffix);
             sbText.AppendLine("\t{");
             foreach (var item in cols)
             {
@@ -175,10 +175,11 @@ namespace DbTool
             {
                 return tableName.Substring(3);
             }
-            else
+            else if (tableName.StartsWith("tab_") || tableName.StartsWith("tbl_"))
             {
-                return tableName;
+                tableName = tableName.Substring(4);
             }
+            return tableName;
         }
     }
 }

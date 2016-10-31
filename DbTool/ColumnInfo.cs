@@ -17,15 +17,30 @@
             {
                 if (value.StartsWith("tab") || value.StartsWith("tab"))
                 {
-                    tableName = value.Substring(3);
+                    modelName = value.Substring(3);
                 }
                 else if (value.StartsWith("tab_") || value.StartsWith("tbl_"))
                 {
-                    tableName = value.Substring(4);
+                    modelName = value.Substring(4);
                 }
+                else
                 {
-                    tableName = value;
+                    modelName = value;
                 }
+                tableName = value;
+            }
+        }
+
+        private string modelName;
+
+        /// <summary>
+        /// Model名称
+        /// </summary>
+        public string ModelName
+        {
+            get
+            {
+                return modelName;
             }
         }
 
@@ -65,7 +80,7 @@
             set
             {
                 System.Data.SqlDbType dbType = (System.Data.SqlDbType) System.Enum.Parse(typeof(System.Data.SqlDbType) , value , true);
-                dataType = dbType.SqlDbType2FclType(isNullable.ToUpper().Equals("YES"));
+                dataType = dbType.SqlDbType2FclType(isNullable.ToUpperInvariant().Equals("YES"));
             }
         }
     }
