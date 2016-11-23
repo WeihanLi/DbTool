@@ -1,4 +1,6 @@
-﻿namespace DbTool
+﻿using System;
+
+namespace DbTool
 {
     /// <summary>
     /// 列信息
@@ -49,18 +51,42 @@
         /// <summary>
         /// 列名称
         /// </summary>
-        public string ColumeName
+        public string ColumnName
         {
             get { return columnName; }
             set { columnName = value; }
         }
 
-        private string isNullable;
+        private string columnDesc;
+
+        /// <summary>
+        /// 列描述
+        /// </summary>
+        public string ColumnDesc
+        {
+            get
+            {
+                return columnDesc;
+            }
+            set
+            {
+                if (!String.IsNullOrEmpty(value))
+                {
+                    columnDesc = value;
+                }
+                else
+                {
+                    columnDesc = "";
+                }
+            }
+        }
+
+        private bool isNullable;
 
         /// <summary>
         /// 是否可以为空
         /// </summary>
-        public string IsNullable
+        public bool IsNullable
         {
             get { return isNullable; }
             set { isNullable = value; }
@@ -80,7 +106,7 @@
             set
             {
                 System.Data.SqlDbType dbType = (System.Data.SqlDbType) System.Enum.Parse(typeof(System.Data.SqlDbType) , value , true);
-                dataType = dbType.SqlDbType2FclType(isNullable.ToUpperInvariant().Equals("YES"));
+                dataType = dbType.SqlDbType2FclType(isNullable);
             }
         }
     }

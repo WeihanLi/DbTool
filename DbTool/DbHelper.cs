@@ -18,7 +18,19 @@ namespace DbTool
         /// <summary>
         /// 查询数据库表字段信息SQL
         /// </summary>
-        private const string QueryColumnsSql = @"SELECT  TABLE_NAME AS TableName,COLUMN_NAME AS ColumeName,IS_NULLABLE AS IsNullable,DATA_TYPE AS DataType  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @tableName";
+        private const string QueryColumnsSql = @"SELECT  t.[name] AS TableName ,
+                                                                                        c.[name] AS ColumnName ,
+                                                                                        p.[value] AS ColumnDesc ,
+                                                                                        c.[is_nullable] AS IsNullable ,
+                                                                                        ty.[name] AS DataType
+                                                                                FROM    sys.columns c
+                                                                                        JOIN sys.tables t ON c.object_id = t.object_id
+                                                                                        JOIN sys.[types] ty ON ty.[system_type_id] = c.[system_type_id]
+                                                                                                               AND ty.[name] != 'sysname'
+                                                                                        LEFT JOIN sys.extended_properties p ON p.minor_id = c.column_id
+                                                                                                                               AND p.major_id = c.object_id
+                                                                                WHERE   t.name = @tableName
+                                                                                ORDER BY c.[column_id];";
 
         /// <summary>
         /// 连接字符串

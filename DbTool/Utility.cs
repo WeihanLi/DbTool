@@ -34,13 +34,18 @@ namespace DbTool
             sbText.AppendLine("\t{");
             foreach (var item in cols)
             {
-                string tmpColName = "_"+item.ColumeName;
+                string tmpColName = item.ColumnName.ToPrivateFieldName();
                 sbText.AppendLine("\t\tprivate " + item.DataType + " " + tmpColName+";");
-                sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumeName);
+                if (!String.IsNullOrEmpty(item.ColumnDesc))
+                {
+                    sbText.AppendLine("\t\t/// <summary>" + System.Environment.NewLine + "\t\t/// " + item.ColumnDesc + System.Environment.NewLine + "\t\t/// </summary>");
+                }
+                sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumnName);
                 sbText.AppendLine("\t\t{");
                 sbText.AppendLine("\t\t\tget { return " + tmpColName + "; }");
                 sbText.AppendLine("\t\t\tset { "+tmpColName+"= value; }");
                 sbText.AppendLine("\t\t}");
+                sbText.AppendLine();
             }
             sbText.AppendLine("\t}");
             sbText.AppendLine("}");
@@ -90,6 +95,7 @@ namespace DbTool
         /// 数据库数据类型转换为FCL类型
         /// </summary>
         /// <param name="dbType">数据库数据类型</param>
+        /// <param name="isNullable">该数据列是否可以为空</param>
         /// <returns></returns>
         public static string SqlDbType2FclType(this SqlDbType dbType , bool isNullable = true)
         {
@@ -170,6 +176,10 @@ namespace DbTool
         /// <returns></returns>
         public static string TrimTableName(this string tableName)
         {
+            if (String.IsNullOrEmpty(tableName))
+            {
+                return "";
+            }
             tableName = tableName.Trim();
             if (tableName.StartsWith("tab") || tableName.StartsWith("tbl"))
             {
@@ -180,6 +190,27 @@ namespace DbTool
                 tableName = tableName.Substring(4);
             }
             return tableName;
+        }
+
+        /// <summary>
+        /// 将属性名称转换为私有字段名称
+        /// </summary>
+        /// <param name="propertyName">属性名称</param>
+        /// <returns>私有字段名称</returns>
+        public static string ToPrivateFieldName(this string propertyName)
+        {
+            if (String.IsNullOrEmpty(propertyName))
+            {
+                return "";
+            }
+            if (char.IsUpper(propertyName[0]))//首字母大写，首字母转换为小写
+            {
+                return char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1);
+            }
+            else
+            {
+                return "_" + propertyName;
+            }
         }
     }
 }
