@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Windows.Forms;
 
 namespace DbTool
@@ -69,7 +70,7 @@ namespace DbTool
                         var cols = dbHelper.GetColumnsInfo(tableName);
                         string content = cols.GenerateModelText(ns , prefix , suffix);
                         string path = dir + "\\" + tableName.TrimTableName() + ".cs";
-                        System.IO.File.WriteAllText(path , content);
+                        System.IO.File.WriteAllText(path , content,Encoding.UTF8);
                     }
                     MessageBox.Show("保存成功");
                 }
