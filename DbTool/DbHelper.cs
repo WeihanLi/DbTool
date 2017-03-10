@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 
 namespace DbTool
 {
@@ -115,5 +116,25 @@ namespace DbTool
                 return dt.DataTableToList<ColumnInfo>();
             }
         }
+
+        /// <summary>
+        /// 执行sql语句并返回受影响的行数
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <returns></returns>
+        public int ExecuteNonQuery(string sql)
+        {
+            if (String.IsNullOrEmpty(sql))
+            {
+                return -1;
+            }
+            using (var connection = GetSqlConnection())
+            {
+                SqlCommand cmd = GetSqlCommand(sql);
+                return cmd.ExecuteNonQuery();
+            }
+        }
+
+
     }
 }

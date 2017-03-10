@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColumnInfo.cs" />
+    <Compile Include="DbEntity.cs" />
     <Compile Include="DbHelper.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

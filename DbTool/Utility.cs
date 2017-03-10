@@ -171,6 +171,74 @@ namespace DbTool
         }
 
         /// <summary>
+        /// 根据表信息生成sql语句
+        /// </summary>
+        /// <param name="tableEntity">表信息</param>
+        /// <returns></returns>
+        public static string GenerateSqlStatement(this TableEntity tableEntity)
+        {
+            if (String.IsNullOrEmpty(tableEntity.TableName))
+            {
+                return "";
+            }
+            StringBuilder sbSqlText = new StringBuilder(), sbSqlDescText = new StringBuilder();
+            //create table
+            sbSqlText.AppendFormat("CREATE TABLE {0}(", tableEntity.TableName);
+            //create description
+            sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';", tableEntity.TableName, tableEntity.TableDesc);
+            if (tableEntity.Columns.Count > 0)
+            {
+                foreach (var col in tableEntity.Columns)
+                {
+                    sbSqlText.AppendLine();
+                    sbSqlText.AppendFormat("{0} {1}", col.ColumnName, col.DataType);
+                    if (col.DataType.ToUpperInvariant().Contains("CHAR"))
+                    {
+                        sbSqlText.AppendFormat("({0})", col.Size.ToString());
+                    }
+                    if (col.IsPrimaryKey)
+                    {
+                        sbSqlText.Append(" PRIMARY KEY ");
+                    }
+                    //Nullable
+                    if (!col.IsNullable)
+                    {
+                        sbSqlText.Append(" NOT NULL ");
+                    }
+                    //Default Value
+                    if (col.DefaultValue != null)
+                    {
+                        if (col.DefaultValue.ToString().Contains("IDENTITY"))
+                        {
+                            sbSqlText.Append(" IDENTITY(1,1) ");
+                        }
+                        else
+                        {
+                            if (col.DataType.ToUpperInvariant().Contains("CHAR"))
+                            {
+                                sbSqlText.AppendFormat(" DEFAULT(N'{0}')", col.DefaultValue);
+                            }
+                            else
+                            {
+                                sbSqlText.AppendFormat(" DEFAULT({0}) ", col.DefaultValue);
+                            }
+                        }
+                    }
+                    //
+                    sbSqlText.Append(",");
+                    //
+                    sbSqlDescText.AppendLine();
+                    sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; ", tableEntity.TableName, col.ColumnName, col.ColumnDesc);
+                }
+                sbSqlText.Remove(sbSqlText.Length - 1, 1);
+                sbSqlText.AppendLine();
+            }
+            sbSqlText.AppendLine(");");
+            sbSqlText.Append(sbSqlDescText.ToString());
+            return sbSqlText.ToString();
+        }
+
+        /// <summary>
         /// TrimTableName
         /// </summary>
         /// <returns></returns>
@@ -202,6 +270,10 @@ namespace DbTool
             if (String.IsNullOrEmpty(propertyName))
             {
                 return "";
+            }
+            if (propertyName.Equals(propertyName.ToUpperInvariant()))
+            {
+                return propertyName.ToLowerInvariant();
             }
             if (char.IsUpper(propertyName[0]))//首字母大写，首字母转换为小写
             {

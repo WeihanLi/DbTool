@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -23,13 +25,14 @@ namespace DbTool
             {
                 dbHelper = new DbHelper(txtConnString.Text);
                 var tables = dbHelper.GetTablesInfo();
+                var tableList = (from table in tables orderby table.TableName select table).ToList();
                 //
-                cbTables.DataSource = tables;
+                cbTables.DataSource = tableList;
                 cbTables.DisplayMember = "TableName";
                 cbTables.ValueMember = "TableName";
                 //
                 lblConnStatus.Text = "数据库连接成功！";
-                btnGenerate.Enabled = true;
+                btnGenerateModel0.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -84,6 +87,67 @@ namespace DbTool
                 }
                 System.Diagnostics.Process.Start("Explorer.exe" , dir);
             }
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            this.tabControl1.Width = this.Size.Width;
+        }
+
+        /// <summary>
+        /// 根据表信息生成创建SQL表信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGenerateSQL_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(txtTableName.Text) || String.IsNullOrEmpty(txtTableDesc.Text))
+            {
+                return;
+            }
+            if (dataGridView.Rows.Count > 1)
+            {
+                var tableInfo = new TableEntity()
+                {
+                    TableName = txtTableName.Text.Trim(),
+                    TableDesc = txtTableDesc.Text.Trim(),
+                    Columns = new List<ColumnEntity>()
+                };
+                ColumnEntity column;
+                for (int k = 0; k < dataGridView.Rows.Count-1; k++)
+                {
+                    column = new ColumnEntity();
+                    column.ColumnName = dataGridView.Rows[k].Cells[0].Value.ToString();
+                    column.ColumnDesc = dataGridView.Rows[k].Cells[1].Value.ToString();
+                    column.IsPrimaryKey = dataGridView.Rows[k].Cells[2].Value != null && (bool) dataGridView.Rows[k].Cells[2].Value;
+                    column.IsNullable = dataGridView.Rows[k].Cells[3].Value != null && (bool) dataGridView.Rows[k].Cells[3].Value;
+                    column.DataType = dataGridView.Rows[k].Cells[4].Value.ToString();
+                    column.Size = dataGridView.Rows[k].Cells[5].Value == null? 0 :Convert.ToInt32(dataGridView.Rows[k].Cells[5].Value.ToString());
+                    column.DefaultValue = dataGridView.Rows[k].Cells[6].Value;
+                    //
+                    tableInfo.Columns.Add(column);
+                }
+                //sql
+                string sql = tableInfo.GenerateSqlStatement();
+                ////数据库连接字符串不为空则创建表
+                //if (!String.IsNullOrEmpty(txtConnString.Text))
+                //{
+                //    new DbHelper(txtConnString.Text).ExecuteNonQuery(sql);
+                //}
+                Clipboard.SetText(sql);
+                MessageBox.Show("生成成功,sql语句已赋值至粘贴板");
+            }
+            
+        }
+
+        /// <summary>
+        /// 导入Excel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
