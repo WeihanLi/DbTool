@@ -76,6 +76,7 @@ namespace DbTool
                         System.IO.File.WriteAllText(path , content,Encoding.UTF8);
                     }
                     MessageBox.Show("保存成功");
+                    System.Diagnostics.Process.Start("Explorer.exe", dir);
                 }
                 catch (System.IO.IOException ex)
                 {
@@ -83,9 +84,8 @@ namespace DbTool
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.ToString());
                 }
-                System.Diagnostics.Process.Start("Explorer.exe" , dir);
             }
         }
 
