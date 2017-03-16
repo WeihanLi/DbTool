@@ -44,6 +44,7 @@
             this.DataType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.FieldSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DefaultValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnImport = new System.Windows.Forms.Button();
             this.btnGenerateModel = new System.Windows.Forms.Button();
             this.btnGenerateSQL = new System.Windows.Forms.Button();
             this.txtTableName = new System.Windows.Forms.TextBox();
@@ -58,7 +59,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.btnImport = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabDbPage.SuspendLayout();
             this.tabModelPage.SuspendLayout();
@@ -224,6 +224,16 @@
             this.DefaultValue.HeaderText = "默认值";
             this.DefaultValue.Name = "DefaultValue";
             // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(608, 10);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(109, 30);
+            this.btnImport.TabIndex = 0;
+            this.btnImport.Text = "导入Excel";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
             // btnGenerateModel
             // 
             this.btnGenerateModel.Location = new System.Drawing.Point(493, 11);
@@ -270,7 +280,7 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(539, 11);
+            this.btnConnect.Location = new System.Drawing.Point(630, 8);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(81, 30);
             this.btnConnect.TabIndex = 18;
@@ -282,7 +292,7 @@
             // 
             this.txtConnString.Location = new System.Drawing.Point(137, 12);
             this.txtConnString.Name = "txtConnString";
-            this.txtConnString.Size = new System.Drawing.Size(396, 26);
+            this.txtConnString.Size = new System.Drawing.Size(487, 26);
             this.txtConnString.TabIndex = 17;
             // 
             // label1
@@ -343,16 +353,6 @@
             this.label3.Size = new System.Drawing.Size(150, 20);
             this.label3.TabIndex = 21;
             this.label3.Text = "model的命名空间名称";
-            // 
-            // btnImport
-            // 
-            this.btnImport.Location = new System.Drawing.Point(608, 10);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(109, 30);
-            this.btnImport.TabIndex = 0;
-            this.btnImport.Text = "导入Excel";
-            this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // MainForm
             // 

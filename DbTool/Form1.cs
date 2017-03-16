@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace DbTool
 {
@@ -147,7 +150,54 @@ namespace DbTool
         /// <param name="e"></param>
         private void btnImport_Click(object sender, EventArgs e)
         {
-
+            OpenFileDialog ofg = new OpenFileDialog();
+            ofg.Multiselect = false;
+            if (ofg.ShowDialog() == DialogResult.OK)
+            {
+                string path = ofg.FileName;
+                TableEntity table = new TableEntity();
+                using (Stream stream = File.OpenRead(path))
+                {
+                    HSSFWorkbook workbook = new HSSFWorkbook(stream);
+                    ISheet sheet = workbook.GetSheetAt(0);                    
+                    table.TableName = sheet.SheetName;
+                    var rows = sheet.GetRowEnumerator();
+                    while (rows.MoveNext())
+                    {
+                        var row = (IRow) rows.Current;
+                        if (row.RowNum == 0)
+                        {
+                            table.TableDesc = row.Cells[0].StringCellValue;
+                            continue;
+                        }
+                        if (row.RowNum > 1)
+                        {
+                            var column = new ColumnEntity();
+                            column.ColumnName = row.Cells[0].StringCellValue;
+                            if (String.IsNullOrWhiteSpace(column.ColumnName))
+                            {
+                                continue;
+                            }
+                            column.ColumnDesc = row.Cells[1].StringCellValue;
+                            column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
+                            column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
+                            column.DataType = row.Cells[4].StringCellValue;
+                            column.Size = (int) row.Cells[5].NumericCellValue;
+                            column.DefaultValue = row.Cells[6].StringCellValue;
+                            table.Columns.Add(column);
+                        }
+                    }
+                }
+                //sql
+                string sql = table.GenerateSqlStatement();
+                ////数据库连接字符串不为空则创建表
+                //if (!String.IsNullOrEmpty(txtConnString.Text))
+                //{
+                //    new DbHelper(txtConnString.Text).ExecuteNonQuery(sql);
+                //}
+                Clipboard.SetText(sql);
+                MessageBox.Show("生成成功,sql语句已赋值至粘贴板");
+            }
         }
     }
 }

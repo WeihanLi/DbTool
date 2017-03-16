@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38A50AF5-39DF-4B53-B6B9-F2CF05185D25}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		DbTool\导入数据表模板.xls = DbTool\导入数据表模板.xls
 	EndProjectSection
 EndProject
 Global

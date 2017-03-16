@@ -48,6 +48,11 @@ namespace DbTool
         /// 表信息 
         /// </summary>
         public List<TableEntity> Tables { get; set; }
+
+        public DbEntity()
+        {
+            Tables = new List<TableEntity>();
+        }
     }
 
     /// <summary>
@@ -99,6 +104,11 @@ namespace DbTool
         /// 列信息 
         /// </summary>
         public List<ColumnEntity> Columns { get; set; }
+
+        public TableEntity()
+        {
+            Columns = new List<ColumnEntity>();
+        }
     }
 
     /// <summary>

@@ -206,7 +206,7 @@ namespace DbTool
                         sbSqlText.Append(" NOT NULL ");
                     }
                     //Default Value
-                    if (col.DefaultValue != null)
+                    if (col.DefaultValue != null && !String.IsNullOrEmpty(col.DefaultValue.ToString()))
                     {
                         if (col.DefaultValue.ToString().Contains("IDENTITY"))
                         {
