@@ -7,8 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTool", "DbTool\DbTool.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38A50AF5-39DF-4B53-B6B9-F2CF05185D25}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		README.md = README.md
-		DbTool\导入数据表模板.xls = DbTool\导入数据表模板.xls
+		DbTool\template.xls = DbTool\template.xls
 	EndProjectSection
 EndProject
 Global
