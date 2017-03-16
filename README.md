@@ -50,6 +50,6 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 5. 导入Excel
     
-    将数据表信息填到数据模板中，选择 ModelFirst Tab 页，点击 “导入Excel” 按钮，选择
+    将数据表信息填到数据模板（[下载模板](https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xls)）中，选择 ModelFirst Tab 页，点击 “导入Excel” 按钮，选择
     要导入的已填充数据的Excel文件（**不支持 \*.xlsx 文件**），生成成功后会将自动将 sql 语句拷贝到粘贴板中
 
