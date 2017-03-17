@@ -30,6 +30,10 @@ namespace DbTool
             sbText.AppendLine("using System;");
             sbText.AppendLine("namespace " + modelNamespace);
             sbText.AppendLine("{");
+            if (!String.IsNullOrEmpty(tableEntity.TableDesc))
+            {
+                sbText.AppendLine("\t/// <summary>" + System.Environment.NewLine + "\t/// " + tableEntity.TableDesc + System.Environment.NewLine + "\t/// </summary>");
+            }
             sbText.AppendLine("\tpublic class "+ prefix + tableEntity.TableName + suffix);
             sbText.AppendLine("\t{");
             foreach (var item in tableEntity.Columns)
@@ -44,7 +48,7 @@ namespace DbTool
                 sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumnName);
                 sbText.AppendLine("\t\t{");
                 sbText.AppendLine("\t\t\tget { return " + tmpColName + "; }");
-                sbText.AppendLine("\t\t\tset { "+tmpColName+"= value; }");
+                sbText.AppendLine("\t\t\tset { "+tmpColName+" = value; }");
                 sbText.AppendLine("\t\t}");
                 sbText.AppendLine();
             }
@@ -187,7 +191,10 @@ namespace DbTool
             //create table
             sbSqlText.AppendFormat("CREATE TABLE {0}(", tableEntity.TableName);
             //create description
-            sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';", tableEntity.TableName, tableEntity.TableDesc);
+            if (!String.IsNullOrEmpty(tableEntity.TableDesc))
+            {
+                sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';", tableEntity.TableName, tableEntity.TableDesc);
+            }
             if (tableEntity.Columns.Count > 0)
             {
                 foreach (var col in tableEntity.Columns)
@@ -210,7 +217,7 @@ namespace DbTool
                     //Default Value
                     if (col.DefaultValue != null && !String.IsNullOrEmpty(col.DefaultValue.ToString()))
                     {
-                        if (col.DefaultValue.ToString().Contains("IDENTITY"))
+                        if (col.IsPrimaryKey && col.DataType.ToUpper().Equals("INT"))
                         {
                             sbSqlText.Append(" IDENTITY(1,1) ");
                         }
@@ -229,8 +236,11 @@ namespace DbTool
                     //
                     sbSqlText.Append(",");
                     //
-                    sbSqlDescText.AppendLine();
-                    sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; ", tableEntity.TableName, col.ColumnName, col.ColumnDesc);
+                    if (!String.IsNullOrEmpty(col.ColumnDesc))
+                    {
+                        sbSqlDescText.AppendLine();
+                        sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; ", tableEntity.TableName, col.ColumnName, col.ColumnDesc);
+                    }
                 }
                 sbSqlText.Remove(sbSqlText.Length - 1, 1);
                 sbSqlText.AppendLine();
