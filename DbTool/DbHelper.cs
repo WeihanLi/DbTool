@@ -14,7 +14,14 @@ namespace DbTool
         /// <summary>
         /// 查询数据库表SQL
         /// </summary>
-        private const string QueryDbTablesSql = @"SELECT TABLE_NAME AS TableName,TABLE_CATALOG AS DatabaseName,TABLE_TYPE AS TableType,TABLE_SCHEMA AS TableScheme FROM INFORMATION_SCHEMA.TABLES;";
+        private const string QueryDbTablesSql = @"SELECT  IT.TABLE_NAME AS TableName ,
+                                                IT.TABLE_CATALOG AS DatabaseName ,
+                                                IT.TABLE_TYPE AS TableType ,
+                                                IT.TABLE_SCHEMA AS TableScheme ,
+                                                [EP].[value] AS TableDesc
+                                        FROM    INFORMATION_SCHEMA.TABLES AS IT
+                                                LEFT JOIN sys.extended_properties AS EP ON EP.major_id = OBJECT_ID([IT].[TABLE_NAME])
+                                                                                           AND [EP].[minor_id] = 0;";
 
         /// <summary>
         /// 查询数据库表字段信息SQL
@@ -82,7 +89,7 @@ namespace DbTool
         /// 获取数据库表信息
         /// </summary>
         /// <returns></returns>
-        public List<TableInfo> GetTablesInfo()
+        public List<TableEntity> GetTablesInfo()
         {
             using (var connection = GetSqlConnection())
             {
@@ -91,7 +98,7 @@ namespace DbTool
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
-                return dt.DataTableToList<TableInfo>();
+                return dt.DataTableToList<TableEntity>();
             }
         }
 
@@ -100,7 +107,7 @@ namespace DbTool
         /// </summary>
         /// <param name="tableName">表名称</param>
         /// <returns></returns>
-        public List<ColumnInfo> GetColumnsInfo(string tableName)
+        public List<ColumnEntity> GetColumnsInfo(string tableName)
         {
             if (String.IsNullOrEmpty(tableName))
             {
@@ -113,7 +120,7 @@ namespace DbTool
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
-                return dt.DataTableToList<ColumnInfo>();
+                return dt.DataTableToList<ColumnEntity>();
             }
         }
 

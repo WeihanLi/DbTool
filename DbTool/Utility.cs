@@ -15,25 +15,26 @@ namespace DbTool
         /// <summary>
         /// 根据数据库表列信息，生成model
         /// </summary>
-        /// <param name="cols">列信息</param>
+        /// <param name="tableEntity">表信息</param>
         /// <param name="modelNamespace">model class 命名空间</param>
         /// <param name="prefix">model class前缀</param>
         /// <param name="suffix">model class后缀</param>
         /// <returns></returns>
-        public static string GenerateModelText(this IEnumerable<ColumnInfo> cols , string modelNamespace , string prefix , string suffix)
+        public static string GenerateModelText(this TableEntity tableEntity, string modelNamespace , string prefix , string suffix)
         {
-            if (cols== null)
+            if (tableEntity == null)
             {
-                throw new ArgumentNullException("cols","model信息不能为空");
+                throw new ArgumentNullException("tableEntity", "表信息不能为空");
             }
             StringBuilder sbText = new StringBuilder();
             sbText.AppendLine("using System;");
             sbText.AppendLine("namespace " + modelNamespace);
             sbText.AppendLine("{");
-            sbText.AppendLine("\tpublic class "+ prefix + cols.FirstOrDefault().ModelName + suffix);
+            sbText.AppendLine("\tpublic class "+ prefix + tableEntity.TableName + suffix);
             sbText.AppendLine("\t{");
-            foreach (var item in cols)
+            foreach (var item in tableEntity.Columns)
             {
+                item.DataType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
                 string tmpColName = item.ColumnName.ToPrivateFieldName();
                 sbText.AppendLine("\t\tprivate " + item.DataType + " " + tmpColName+";");
                 if (!String.IsNullOrEmpty(item.ColumnDesc))
@@ -97,10 +98,11 @@ namespace DbTool
         /// <param name="dbType">数据库数据类型</param>
         /// <param name="isNullable">该数据列是否可以为空</param>
         /// <returns></returns>
-        public static string SqlDbType2FclType(this SqlDbType dbType , bool isNullable = true)
+        public static string SqlDbType2FclType(string dbType , bool isNullable = true)
         {
+            SqlDbType sqlDbType = (SqlDbType) System.Enum.Parse(typeof(System.Data.SqlDbType), dbType, true);
             string type = null;
-            switch (dbType)
+            switch (sqlDbType)
             {
                 case SqlDbType.BigInt:
                     type = isNullable ? "long?" : "long";

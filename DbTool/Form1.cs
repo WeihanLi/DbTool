@@ -32,7 +32,7 @@ namespace DbTool
                 //
                 cbTables.DataSource = tableList;
                 cbTables.DisplayMember = "TableName";
-                cbTables.ValueMember = "TableName";
+                cbTables.ValueMember = "TableDesc";
                 //
                 lblConnStatus.Text = "数据库连接成功！";
                 btnGenerateModel0.Enabled = true;
@@ -70,12 +70,19 @@ namespace DbTool
                 }
                 try
                 {
+                    TableEntity tableEntity = new TableEntity();
                     foreach (var item in cbTables.CheckedItems)
                     {
-                        var tableName = (item as TableInfo).TableName;
-                        var cols = dbHelper.GetColumnsInfo(tableName);
-                        string content = cols.GenerateModelText(ns , prefix , suffix);
-                        string path = dir + "\\" + tableName.TrimTableName() + ".cs";
+                        var currentTable = item as TableEntity;
+                        if (currentTable == null)
+                        {
+                            continue;;
+                        }
+                        tableEntity.TableName = currentTable.TableName;
+                        tableEntity.TableDesc = currentTable.TableDesc;
+                        tableEntity.Columns = dbHelper.GetColumnsInfo(tableEntity.TableName);
+                        string content = tableEntity.GenerateModelText(ns , prefix , suffix);
+                        string path = dir + "\\" + tableEntity.TableName.TrimTableName() + ".cs";
                         System.IO.File.WriteAllText(path , content,Encoding.UTF8);
                     }
                     MessageBox.Show("保存成功");

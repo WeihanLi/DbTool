@@ -45,7 +45,6 @@
             this.FieldSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DefaultValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnImport = new System.Windows.Forms.Button();
-            this.btnGenerateModel = new System.Windows.Forms.Button();
             this.btnGenerateSQL = new System.Windows.Forms.Button();
             this.txtTableName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -131,7 +130,6 @@
             this.tabModelPage.Controls.Add(this.txtTableDesc);
             this.tabModelPage.Controls.Add(this.dataGridView);
             this.tabModelPage.Controls.Add(this.btnImport);
-            this.tabModelPage.Controls.Add(this.btnGenerateModel);
             this.tabModelPage.Controls.Add(this.btnGenerateSQL);
             this.tabModelPage.Controls.Add(this.txtTableName);
             this.tabModelPage.Controls.Add(this.label6);
@@ -226,22 +224,13 @@
             // 
             // btnImport
             // 
-            this.btnImport.Location = new System.Drawing.Point(608, 10);
+            this.btnImport.Location = new System.Drawing.Point(495, 10);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(109, 30);
             this.btnImport.TabIndex = 0;
             this.btnImport.Text = "导入Excel";
             this.btnImport.UseVisualStyleBackColor = true;
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
-            // 
-            // btnGenerateModel
-            // 
-            this.btnGenerateModel.Location = new System.Drawing.Point(493, 11);
-            this.btnGenerateModel.Name = "btnGenerateModel";
-            this.btnGenerateModel.Size = new System.Drawing.Size(109, 30);
-            this.btnGenerateModel.TabIndex = 0;
-            this.btnGenerateModel.Text = "生成Model";
-            this.btnGenerateModel.UseVisualStyleBackColor = true;
             // 
             // btnGenerateSQL
             // 
@@ -405,7 +394,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn DataType;
         private System.Windows.Forms.DataGridViewTextBoxColumn FieldSize;
         private System.Windows.Forms.DataGridViewTextBoxColumn DefaultValue;
-        private System.Windows.Forms.Button btnGenerateModel;
         private System.Windows.Forms.Button btnGenerateSQL;
         private System.Windows.Forms.TextBox txtSuffix;
         private System.Windows.Forms.TextBox txtPrefix;
