@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
 namespace DbTool
 {
     /// <summary>
-    /// 工具类
+    /// 工具类 
     /// </summary>
     public static class Utility
     {
         /// <summary>
-        /// 根据数据库表列信息，生成model
+        /// 根据数据库表列信息，生成model 
         /// </summary>
-        /// <param name="tableEntity">表信息</param>
-        /// <param name="modelNamespace">model class 命名空间</param>
-        /// <param name="prefix">model class前缀</param>
-        /// <param name="suffix">model class后缀</param>
+        /// <param name="tableEntity"> 表信息 </param>
+        /// <param name="modelNamespace"> model class 命名空间 </param>
+        /// <param name="prefix"> model class前缀 </param>
+        /// <param name="suffix"> model class后缀 </param>
         /// <returns></returns>
-        public static string GenerateModelText(this TableEntity tableEntity, string modelNamespace , string prefix , string suffix)
+        public static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix)
         {
             if (tableEntity == null)
             {
@@ -34,13 +33,13 @@ namespace DbTool
             {
                 sbText.AppendLine("\t/// <summary>" + System.Environment.NewLine + "\t/// " + tableEntity.TableDesc + System.Environment.NewLine + "\t/// </summary>");
             }
-            sbText.AppendLine("\tpublic class "+ prefix + tableEntity.TableName + suffix);
+            sbText.AppendLine("\tpublic class " + prefix + tableEntity.TableName + suffix);
             sbText.AppendLine("\t{");
             foreach (var item in tableEntity.Columns)
             {
                 item.DataType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
                 string tmpColName = item.ColumnName.ToPrivateFieldName();
-                sbText.AppendLine("\t\tprivate " + item.DataType + " " + tmpColName+";");
+                sbText.AppendLine("\t\tprivate " + item.DataType + " " + tmpColName + ";");
                 if (!String.IsNullOrEmpty(item.ColumnDesc))
                 {
                     sbText.AppendLine("\t\t/// <summary>" + System.Environment.NewLine + "\t\t/// " + item.ColumnDesc + System.Environment.NewLine + "\t\t/// </summary>");
@@ -48,7 +47,7 @@ namespace DbTool
                 sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumnName);
                 sbText.AppendLine("\t\t{");
                 sbText.AppendLine("\t\t\tget { return " + tmpColName + "; }");
-                sbText.AppendLine("\t\t\tset { "+tmpColName+" = value; }");
+                sbText.AppendLine("\t\t\tset { " + tmpColName + " = value; }");
                 sbText.AppendLine("\t\t}");
                 sbText.AppendLine();
             }
@@ -58,10 +57,10 @@ namespace DbTool
         }
 
         /// <summary>
-        /// 利用反射和泛型将 DataTable 转换为 List
+        /// 利用反射和泛型将 DataTable 转换为 List 
         /// </summary>
-        /// <param name="dt">DataTable 对象</param>
-        /// <returns>List对象</returns>
+        /// <param name="dt"> DataTable 对象 </param>
+        /// <returns> List对象 </returns>
         public static List<T> DataTableToList<T>(this DataTable dt) where T : class, new()
         {
             // 定义集合
@@ -87,7 +86,7 @@ namespace DbTool
                         object value = dr[tempName];
                         //如果非空，则赋给对象的属性
                         if (value != DBNull.Value)
-                            pi.SetValue(t , value , null);
+                            pi.SetValue(t, value, null);
                     }
                 }
                 //对象添加到泛型集合中
@@ -97,78 +96,82 @@ namespace DbTool
         }
 
         /// <summary>
-        /// 数据库数据类型转换为FCL类型
+        /// 数据库数据类型转换为FCL类型 
         /// </summary>
-        /// <param name="dbType">数据库数据类型</param>
-        /// <param name="isNullable">该数据列是否可以为空</param>
+        /// <param name="dbType"> 数据库数据类型 </param>
+        /// <param name="isNullable"> 该数据列是否可以为空 </param>
         /// <returns></returns>
-        public static string SqlDbType2FclType(string dbType , bool isNullable = true)
+        public static string SqlDbType2FclType(string dbType, bool isNullable = true)
         {
-            SqlDbType sqlDbType = (SqlDbType) System.Enum.Parse(typeof(System.Data.SqlDbType), dbType, true);
+            DbType sqlDbType = (DbType)Enum.Parse(typeof(DbType), dbType, true);
             string type = null;
             switch (sqlDbType)
             {
-                case SqlDbType.BigInt:
-                    type = isNullable ? "long?" : "long";
-                    break;
-
-                case SqlDbType.Bit:
+                case DbType.Bit:
                     type = isNullable ? "bool?" : "bool";
                     break;
 
-                case SqlDbType.Float:
-                case SqlDbType.Real:
+                case DbType.Float:
+                case DbType.Real:
                     type = isNullable ? "double?" : "double";
                     break;
 
-                case SqlDbType.Binary:
-                case SqlDbType.VarBinary:
-                case SqlDbType.Image:
+                case DbType.Binary:
+                case DbType.VarBinary:
+                case DbType.Image:
+                case DbType.Timestamp:
+                case DbType.RowVersion:
                     type = "byte[]";
                     break;
 
-                case SqlDbType.TinyInt:
-                case SqlDbType.SmallInt:
-                case SqlDbType.Int:
+                case DbType.TinyInt:
+                    type = isNullable ? "byte?" : "byte";
+                    break;
+
+                case DbType.SmallInt:
+                case DbType.Int:
                     type = isNullable ? "int?" : "int";
                     break;
 
-                case SqlDbType.Char:
-                case SqlDbType.NChar:
-                case SqlDbType.NText:
-                case SqlDbType.NVarChar:
-                case SqlDbType.VarChar:
-                case SqlDbType.Text:
+                case DbType.BigInt:
+                    type = isNullable ? "long?" : "long";
+                    break;
+
+                case DbType.Char:
+                case DbType.NChar:
+                case DbType.NText:
+                case DbType.NVarChar:
+                case DbType.VarChar:
+                case DbType.Text:
                     type = "string";
                     break;
 
-                case SqlDbType.Money:
-                case SqlDbType.Decimal:
-                case SqlDbType.SmallMoney:
+                case DbType.Numeric:
+                case DbType.Money:
+                case DbType.Decimal:
+                case DbType.SmallMoney:
                     type = isNullable ? "decimal?" : "decimal";
                     break;
 
-                case SqlDbType.UniqueIdentifier:
+                case DbType.UniqueIdentifier:
                     type = isNullable ? "Guid?" : "Guid";
                     break;
 
-                case SqlDbType.Date:
-                case SqlDbType.Time:
-                case SqlDbType.Timestamp:
-                case SqlDbType.SmallDateTime:
-                case SqlDbType.DateTime:
-                case SqlDbType.DateTime2:
+                case DbType.Date:
+                case DbType.SmallDateTime:
+                case DbType.DateTime:
+                case DbType.DateTime2:
                     type = isNullable ? "DateTime?" : "DateTime";
                     break;
 
-                case SqlDbType.DateTimeOffset:
+                case DbType.Time:
                     type = isNullable ? "TimeSpan?" : "TimeSpan";
                     break;
 
-                case SqlDbType.Variant:
-                case SqlDbType.Xml:
-                case SqlDbType.Udt:
-                case SqlDbType.Structured:
+                case DbType.DateTimeOffset:
+                    type = isNullable ? "DateTimeOffset?" : "DateTimeOffset";
+                    break;
+
                 default:
                     type = "object";
                     break;
@@ -177,9 +180,9 @@ namespace DbTool
         }
 
         /// <summary>
-        /// 根据表信息生成sql语句
+        /// 根据表信息生成sql语句 
         /// </summary>
-        /// <param name="tableEntity">表信息</param>
+        /// <param name="tableEntity"> 表信息 </param>
         /// <returns></returns>
         public static string GenerateSqlStatement(this TableEntity tableEntity)
         {
@@ -251,7 +254,7 @@ namespace DbTool
         }
 
         /// <summary>
-        /// TrimTableName
+        /// TrimTableName 
         /// </summary>
         /// <returns></returns>
         public static string TrimTableName(this string tableName)
@@ -273,10 +276,10 @@ namespace DbTool
         }
 
         /// <summary>
-        /// 将属性名称转换为私有字段名称
+        /// 将属性名称转换为私有字段名称 
         /// </summary>
-        /// <param name="propertyName">属性名称</param>
-        /// <returns>私有字段名称</returns>
+        /// <param name="propertyName"> 属性名称 </param>
+        /// <returns> 私有字段名称 </returns>
         public static string ToPrivateFieldName(this string propertyName)
         {
             if (String.IsNullOrEmpty(propertyName))
