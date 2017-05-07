@@ -13,11 +13,19 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 3. 支持一次导出多张数据表
 4. 根据表字段信息创建表及Model
 5. 导入Excel文件生成创建表的SQL
+6. 根据数据库表信息生成数据库表 Excel 文档
 
 ### 后续功能
 
 1. 根据 Model 生成 sql 语句，根据 Model 注释生成列描述
 2. 通过导入Excel文件导入表信息生成Model
+3. 插件式自定义扩展Model信息
+
+### 功能一览
+
+![DbFirst](resources/desc0.png)
+
+![ModelFirst](resources/desc1.png)
 
 ### 使用说明
 
@@ -51,5 +59,8 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 5. 导入Excel
     
     将数据表信息填到数据模板（[下载模板](https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xls)）中，选择 ModelFirst Tab 页，点击 “导入Excel” 按钮，选择
-    要导入的已填充数据的Excel文件（**不支持 \*.xlsx 文件**），生成成功后会将自动将 sql 语句拷贝到粘贴板中
+    要导入的已填充数据的Excel文件（**不支持 \**.xlsx* 文件**），生成成功后会将自动将 sql 语句拷贝到粘贴板中
 
+6. 导出 Excel
+    
+    选择要导出的数据库表之后可以导出对应表的 Excel 文档

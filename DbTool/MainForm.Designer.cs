@@ -162,6 +162,7 @@
             this.txtGeneratedSqlText.Location = new System.Drawing.Point(3, 252);
             this.txtGeneratedSqlText.Multiline = true;
             this.txtGeneratedSqlText.Name = "txtGeneratedSqlText";
+            this.txtGeneratedSqlText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtGeneratedSqlText.Size = new System.Drawing.Size(828, 101);
             this.txtGeneratedSqlText.TabIndex = 24;
             // 

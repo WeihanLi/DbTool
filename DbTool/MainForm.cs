@@ -217,7 +217,7 @@ namespace DbTool
                             column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
                             column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
                             column.DataType = row.Cells[4].StringCellValue;
-                            column.Size = (int) row.Cells[5].NumericCellValue;
+                            column.Size = Convert.ToInt32(row.Cells[5].StringCellValue);
                             column.DefaultValue = row.Cells[6].StringCellValue;
                             table.Columns.Add(column);
                         }

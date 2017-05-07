@@ -226,7 +226,7 @@ namespace DbTool
                         }
                         else
                         {
-                            if (col.DataType.ToUpperInvariant().Contains("CHAR"))
+                            if (col.DataType.ToUpperInvariant().Contains("CHAR") && !col.DefaultValue.ToString().StartsWith("N'"))
                             {
                                 sbSqlText.AppendFormat(" DEFAULT(N'{0}')", col.DefaultValue);
                             }
