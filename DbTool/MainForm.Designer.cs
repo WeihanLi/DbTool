@@ -32,9 +32,11 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabDbPage = new System.Windows.Forms.TabPage();
             this.cbTables = new System.Windows.Forms.CheckedListBox();
+            this.btnExportExcel = new System.Windows.Forms.Button();
             this.btnGenerateModel0 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.tabModelPage = new System.Windows.Forms.TabPage();
+            this.txtGeneratedSqlText = new System.Windows.Forms.TextBox();
             this.txtTableDesc = new System.Windows.Forms.TextBox();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.FieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -87,6 +89,7 @@
             // tabDbPage
             // 
             this.tabDbPage.Controls.Add(this.cbTables);
+            this.tabDbPage.Controls.Add(this.btnExportExcel);
             this.tabDbPage.Controls.Add(this.btnGenerateModel0);
             this.tabDbPage.Controls.Add(this.label2);
             this.tabDbPage.Location = new System.Drawing.Point(4, 29);
@@ -102,13 +105,24 @@
             this.cbTables.FormattingEnabled = true;
             this.cbTables.Location = new System.Drawing.Point(13, 46);
             this.cbTables.Name = "cbTables";
-            this.cbTables.Size = new System.Drawing.Size(289, 235);
+            this.cbTables.Size = new System.Drawing.Size(314, 235);
             this.cbTables.TabIndex = 17;
+            // 
+            // btnExportExcel
+            // 
+            this.btnExportExcel.Enabled = false;
+            this.btnExportExcel.Location = new System.Drawing.Point(233, 11);
+            this.btnExportExcel.Name = "btnExportExcel";
+            this.btnExportExcel.Size = new System.Drawing.Size(94, 32);
+            this.btnExportExcel.TabIndex = 16;
+            this.btnExportExcel.Text = "导出Excel";
+            this.btnExportExcel.UseVisualStyleBackColor = true;
+            this.btnExportExcel.Click += new System.EventHandler(this.btnExportExcel_Click);
             // 
             // btnGenerateModel0
             // 
             this.btnGenerateModel0.Enabled = false;
-            this.btnGenerateModel0.Location = new System.Drawing.Point(208, 11);
+            this.btnGenerateModel0.Location = new System.Drawing.Point(133, 11);
             this.btnGenerateModel0.Name = "btnGenerateModel0";
             this.btnGenerateModel0.Size = new System.Drawing.Size(94, 32);
             this.btnGenerateModel0.TabIndex = 16;
@@ -127,6 +141,7 @@
             // 
             // tabModelPage
             // 
+            this.tabModelPage.Controls.Add(this.txtGeneratedSqlText);
             this.tabModelPage.Controls.Add(this.txtTableDesc);
             this.tabModelPage.Controls.Add(this.dataGridView);
             this.tabModelPage.Controls.Add(this.btnImport);
@@ -141,6 +156,14 @@
             this.tabModelPage.TabIndex = 1;
             this.tabModelPage.Text = "ModelFirst";
             this.tabModelPage.UseVisualStyleBackColor = true;
+            // 
+            // txtGeneratedSqlText
+            // 
+            this.txtGeneratedSqlText.Location = new System.Drawing.Point(3, 252);
+            this.txtGeneratedSqlText.Multiline = true;
+            this.txtGeneratedSqlText.Name = "txtGeneratedSqlText";
+            this.txtGeneratedSqlText.Size = new System.Drawing.Size(828, 101);
+            this.txtGeneratedSqlText.TabIndex = 24;
             // 
             // txtTableDesc
             // 
@@ -162,11 +185,11 @@
             this.DataType,
             this.FieldSize,
             this.DefaultValue});
-            this.dataGridView.Location = new System.Drawing.Point(6, 48);
+            this.dataGridView.Location = new System.Drawing.Point(0, 48);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowTemplate.Height = 23;
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView.Size = new System.Drawing.Size(825, 338);
+            this.dataGridView.Size = new System.Drawing.Size(831, 207);
             this.dataGridView.TabIndex = 0;
             // 
             // FieldName
@@ -406,6 +429,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnImport;
+        private System.Windows.Forms.Button btnExportExcel;
+        private System.Windows.Forms.TextBox txtGeneratedSqlText;
     }
 }
 

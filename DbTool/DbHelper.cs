@@ -30,13 +30,19 @@ namespace DbTool
                                                                                         c.[name] AS ColumnName ,
                                                                                         p.[value] AS ColumnDesc ,
                                                                                         c.[is_nullable] AS IsNullable ,
-                                                                                        ty.[name] AS DataType
+                                                                                        ty.[name] AS DataType ,
+                                                                                        c.[max_length] AS Size ,
+                                                                                        c.[is_identity] AS IsPrimaryKey ,
+                                                                                        SUBSTRING(dc.[definition], 2, LEN([dc].[definition]) - 2) AS DefaultValue
                                                                                 FROM    sys.columns c
                                                                                         JOIN sys.tables t ON c.object_id = t.object_id
                                                                                         JOIN sys.[types] ty ON ty.[system_type_id] = c.[system_type_id]
                                                                                                                AND ty.[name] != 'sysname'
                                                                                         LEFT JOIN sys.extended_properties p ON p.minor_id = c.column_id
                                                                                                                                AND p.major_id = c.object_id
+                                                                                        LEFT JOIN [sys].[default_constraints] dc ON dc.[parent_object_id] = c.[object_id]
+                                                                                                                                    AND dc.[parent_column_id] = c.[column_id]
+                                                                                                                                    AND dc.[type] = 'D'
                                                                                 WHERE   t.name = @tableName
                                                                                 ORDER BY c.[column_id];";
 
@@ -47,9 +53,15 @@ namespace DbTool
 
         private SqlConnection conn = null;
 
+        /// <summary>
+        /// 数据库名称
+        /// </summary>
+        public string DatabaseName { get { return conn.Database; } }
+
         public DbHelper(string connString)
         {
             ConnString = connString;
+            conn = new SqlConnection(ConnString);
         }
 
         /// <summary>
@@ -91,15 +103,13 @@ namespace DbTool
         /// <returns></returns>
         public List<TableEntity> GetTablesInfo()
         {
-            using (var connection = GetSqlConnection())
-            {
-                SqlCommand cmd = GetSqlCommand(QueryDbTablesSql);
-                cmd.Connection = connection;
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                return dt.DataTableToList<TableEntity>();
-            }
+            SqlCommand cmd = GetSqlCommand(QueryDbTablesSql);
+            cmd.Connection = GetSqlConnection();
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            cmd.Connection.Close();
+            return dt.DataTableToList<TableEntity>();
         }
 
         /// <summary>
@@ -113,15 +123,13 @@ namespace DbTool
             {
                 throw new ArgumentNullException("tableName");
             }
-            using (var connection = GetSqlConnection())
-            {
-                SqlCommand cmd = GetSqlCommand(QueryColumnsSql , new SqlParameter("@tableName" , tableName));
-                cmd.Connection = connection;
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                return dt.DataTableToList<ColumnEntity>();
-            }
+            SqlCommand cmd = GetSqlCommand(QueryColumnsSql , new SqlParameter("@tableName" , tableName));
+            cmd.Connection = GetSqlConnection();
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            cmd.Connection.Close();
+            return dt.DataTableToList<ColumnEntity>();
         }
 
         /// <summary>
@@ -141,7 +149,5 @@ namespace DbTool
                 return cmd.ExecuteNonQuery();
             }
         }
-
-
     }
 }
