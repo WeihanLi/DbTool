@@ -197,12 +197,15 @@ namespace DbTool
                     ISheet sheet = workbook.GetSheetAt(0);                    
                     table.TableName = sheet.SheetName;
                     var rows = sheet.GetRowEnumerator();
+                    dataGridView.Rows.Clear();
                     while (rows.MoveNext())
                     {
                         var row = (IRow) rows.Current;
                         if (row.RowNum == 0)
                         {
                             table.TableDesc = row.Cells[0].StringCellValue;
+                            txtTableName.Text = table.TableName;
+                            txtTableDesc.Text = table.TableDesc;
                             continue;
                         }
                         if (row.RowNum > 1)
@@ -220,6 +223,19 @@ namespace DbTool
                             column.Size = Convert.ToInt32(row.Cells[5].StringCellValue);
                             column.DefaultValue = row.Cells[6].StringCellValue;
                             table.Columns.Add(column);
+
+                            DataGridViewRow rowView = new DataGridViewRow();
+                            rowView.CreateCells(
+                                dataGridView,
+                                column.ColumnName,
+                                column.ColumnDesc , 
+                                column.IsPrimaryKey,
+                                column.IsNullable,
+                                column.DataType,
+                                column.Size,
+                                column.DefaultValue
+                            );
+                            dataGridView.Rows.Add(rowView);
                         }
                     }
                 }
