@@ -128,6 +128,12 @@ namespace DbTool
         private void MainForm_Resize(object sender, EventArgs e)
         {
             this.tabControl1.Width = this.Size.Width;
+            this.tabControl1.Height = this.Size.Height - 160;
+            this.dataGridView.Width = this.Size.Width-20;
+            this.dataGridView.Height = this.tabControl1.Height*2/5;
+            this.txtGeneratedSqlText.Width = this.Size.Width-20;
+            this.txtGeneratedSqlText.Height = this.tabControl1.Height*2/5;
+            this.cbTables.Height = this.tabControl1.Height - 100;
         }
 
         /// <summary>

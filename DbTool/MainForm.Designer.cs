@@ -141,6 +141,7 @@
             // 
             // tabModelPage
             // 
+            this.tabModelPage.AutoScroll = true;
             this.tabModelPage.Controls.Add(this.txtGeneratedSqlText);
             this.tabModelPage.Controls.Add(this.txtTableDesc);
             this.tabModelPage.Controls.Add(this.dataGridView);
@@ -159,11 +160,11 @@
             // 
             // txtGeneratedSqlText
             // 
-            this.txtGeneratedSqlText.Location = new System.Drawing.Point(3, 252);
+            this.txtGeneratedSqlText.Location = new System.Drawing.Point(0, 243);
             this.txtGeneratedSqlText.Multiline = true;
             this.txtGeneratedSqlText.Name = "txtGeneratedSqlText";
             this.txtGeneratedSqlText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtGeneratedSqlText.Size = new System.Drawing.Size(828, 101);
+            this.txtGeneratedSqlText.Size = new System.Drawing.Size(831, 110);
             this.txtGeneratedSqlText.TabIndex = 24;
             // 
             // txtTableDesc
@@ -190,7 +191,7 @@
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowTemplate.Height = 23;
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView.Size = new System.Drawing.Size(831, 207);
+            this.dataGridView.Size = new System.Drawing.Size(831, 198);
             this.dataGridView.TabIndex = 0;
             // 
             // FieldName
