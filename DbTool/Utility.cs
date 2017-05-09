@@ -64,7 +64,7 @@ namespace DbTool
         public static List<T> DataTableToList<T>(this DataTable dt) where T : class, new()
         {
             // 定义集合
-            List<T> ts = new List<T>();
+            List<T> ts = new List<T>(dt.Rows.Count);
             // 获得此模型的类型
             Type type = typeof(T);
             //定义一个临时变量
@@ -79,7 +79,7 @@ namespace DbTool
                 foreach (PropertyInfo pi in propertys)
                 {
                     tempName = pi.Name;//将属性名称赋值给临时变量
-                                       //检查DataTable是否包含此列（列名==对象的属性名）
+                    //检查DataTable是否包含此列（列名==对象的属性名）
                     if (dt.Columns.Contains(tempName))
                     {
                         //取值
