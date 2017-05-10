@@ -86,7 +86,16 @@ namespace DbTool
                         object value = dr[tempName];
                         //如果非空，则赋给对象的属性
                         if (value != DBNull.Value)
-                            pi.SetValue(t, value, null);
+                        {
+                            if (pi.PropertyType == typeof (string) && value.GetType() != typeof(string))
+                            {
+                                pi.SetValue(t, value.ToString(), null);
+                            }
+                            else
+                            {
+                                pi.SetValue(t, value, null);
+                            }
+                        }
                     }
                 }
                 //对象添加到泛型集合中
