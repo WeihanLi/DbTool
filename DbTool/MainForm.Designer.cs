@@ -60,6 +60,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.lnkExcelTemplate = new System.Windows.Forms.LinkLabel();
             this.tabControl1.SuspendLayout();
             this.tabDbPage.SuspendLayout();
             this.tabModelPage.SuspendLayout();
@@ -142,6 +143,7 @@
             // tabModelPage
             // 
             this.tabModelPage.AutoScroll = true;
+            this.tabModelPage.Controls.Add(this.lnkExcelTemplate);
             this.tabModelPage.Controls.Add(this.txtGeneratedSqlText);
             this.tabModelPage.Controls.Add(this.txtTableDesc);
             this.tabModelPage.Controls.Add(this.dataGridView);
@@ -368,6 +370,17 @@
             this.label3.TabIndex = 21;
             this.label3.Text = "model的命名空间名称";
             // 
+            // lnkExcelTemplate
+            // 
+            this.lnkExcelTemplate.AutoSize = true;
+            this.lnkExcelTemplate.Location = new System.Drawing.Point(614, 16);
+            this.lnkExcelTemplate.Name = "lnkExcelTemplate";
+            this.lnkExcelTemplate.Size = new System.Drawing.Size(99, 20);
+            this.lnkExcelTemplate.TabIndex = 25;
+            this.lnkExcelTemplate.TabStop = true;
+            this.lnkExcelTemplate.Text = "下载Excel模板";
+            this.lnkExcelTemplate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkExcelTemplate_LinkClicked);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -433,6 +446,7 @@
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnExportExcel;
         private System.Windows.Forms.TextBox txtGeneratedSqlText;
+        private System.Windows.Forms.LinkLabel lnkExcelTemplate;
     }
 }
 

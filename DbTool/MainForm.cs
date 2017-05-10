@@ -20,6 +20,7 @@ namespace DbTool
         public MainForm()
         {
             InitializeComponent();
+            lnkExcelTemplate.Links.Add(0,2, "https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xls");
         }
 
         /// <summary>
@@ -410,6 +411,11 @@ namespace DbTool
                     MessageBox.Show(ex.ToString());
                 }
             }
+        }
+
+        private void lnkExcelTemplate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Link.LinkData.ToString());
         }
     }
 }
