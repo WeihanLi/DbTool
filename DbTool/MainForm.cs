@@ -288,7 +288,6 @@ namespace DbTool
                     TableEntity tableEntity = new TableEntity();
                     if (cbTables.CheckedItems.Count > 0)
                     {
-                        //TODO:@liweihan 创建 Excel 文件
                         HSSFWorkbook workbook = new HSSFWorkbook();
                         string tempFileName = (cbTables.CheckedItems.Count>1? dbHelper.DatabaseName : (cbTables.CheckedItems[0] as TableEntity)?.TableName);
 
@@ -388,6 +387,13 @@ namespace DbTool
                                     }
                                 }
                             }
+                            tempSheet.AutoSizeColumn(0);
+                            tempSheet.AutoSizeColumn(1);
+                            tempSheet.AutoSizeColumn(2);
+                            tempSheet.AutoSizeColumn(3);
+                            tempSheet.AutoSizeColumn(4);
+                            tempSheet.AutoSizeColumn(5);
+                            tempSheet.AutoSizeColumn(6);
                         }
                         string path = dir +"\\"+ tempFileName + ".xls";
                         using (FileStream file = new FileStream(path, FileMode.Create))
