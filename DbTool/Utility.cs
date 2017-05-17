@@ -201,7 +201,7 @@ namespace DbTool
             }
             StringBuilder sbSqlText = new StringBuilder(), sbSqlDescText = new StringBuilder();
             //create table
-            sbSqlText.AppendFormat("CREATE TABLE {0}(", tableEntity.TableName);
+            sbSqlText.AppendFormat("CREATE TABLE [{0}].[{1}](", tableEntity.TableSchema,tableEntity.TableName);
             //create description
             if (!String.IsNullOrEmpty(tableEntity.TableDesc))
             {
@@ -212,7 +212,7 @@ namespace DbTool
                 foreach (var col in tableEntity.Columns)
                 {
                     sbSqlText.AppendLine();
-                    sbSqlText.AppendFormat("{0} {1}", col.ColumnName, col.DataType);
+                    sbSqlText.AppendFormat("[{0}] {1}", col.ColumnName, col.DataType);
                     if (col.DataType.ToUpperInvariant().Contains("CHAR"))
                     {
                         sbSqlText.AppendFormat("({0})", col.Size.ToString());
