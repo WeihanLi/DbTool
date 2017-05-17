@@ -6,6 +6,8 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 **注：不支持外键等需要关联另外一张表的数据关系**
 
+[下载DbTool](https://github.com/WeihanLi/DbTool/releases)
+
 ### 为什么使用它
 
 1. 支持数据列可空导出为可空数据类型
@@ -18,8 +20,7 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 ### 后续功能
 
 1. 根据 Model 生成 sql 语句，根据 Model 注释生成列描述
-2. 通过导入Excel文件导入表信息生成Model
-3. 插件式自定义扩展Model信息
+1. 插件式自定义扩展Model信息
 
 ### 功能一览
 
