@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbDescriptionAttribute.cs" />
     <Compile Include="DbEntity.cs" />
     <Compile Include="DbHelper.cs" />
     <Compile Include="DbType.cs" />

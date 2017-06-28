@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
 
 namespace DbTool
@@ -197,10 +198,19 @@ namespace DbTool
             if (ofg.ShowDialog() == DialogResult.OK)
             {
                 string path = ofg.FileName;
+                bool isNewFileVersion = path.EndsWith(".xlsx");
                 TableEntity table = new TableEntity();
                 using (Stream stream = File.OpenRead(path))
                 {
-                    HSSFWorkbook workbook = new HSSFWorkbook(stream);
+                    IWorkbook workbook;
+                    if (isNewFileVersion)
+                    {
+                        workbook = new XSSFWorkbook(stream);
+                    }
+                    else
+                    {
+                        workbook = new HSSFWorkbook(stream);
+                    }
                     ISheet sheet = workbook.GetSheetAt(0);                    
                     table.TableName = sheet.SheetName;
                     var rows = sheet.GetRowEnumerator();
