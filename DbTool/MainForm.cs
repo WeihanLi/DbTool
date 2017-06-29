@@ -248,9 +248,12 @@ namespace DbTool
                                 }
                                 else
                                 {
-                                    column.Size = Convert.ToInt32(row.Cells[5].NumericCellValue);
+                                    column.Size = Convert.ToInt32(row.Cells[5].ToString());
                                 }
-                                column.DefaultValue = row.Cells[6].ToString();
+                                if (row.Cells.Count > 6)
+                                {
+                                    column.DefaultValue = row.Cells[6].ToString();
+                                }
                                 table.Columns.Add(column);
 
                                 DataGridViewRow rowView = new DataGridViewRow();
@@ -315,9 +318,12 @@ namespace DbTool
                                     }
                                     else
                                     {
-                                        column.Size = Convert.ToInt32(row.Cells[5].NumericCellValue);
+                                        column.Size = Convert.ToInt32(row.Cells[5].ToString());
                                     }
-                                    column.DefaultValue = row.Cells[6].ToString();
+                                    if (row.Cells.Count>6)
+                                    {
+                                        column.DefaultValue = row.Cells[6].ToString();
+                                    }
                                     table.Columns.Add(column);
                                 }
                             }
@@ -348,7 +354,7 @@ namespace DbTool
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    MessageBox.Show(ex.ToString());
                 }
                 finally
                 {
@@ -480,13 +486,15 @@ namespace DbTool
                                     }
                                     else
                                     {
-                                        if (tableEntity.Columns[i - 1].IsPrimaryKey)
+                                        if (tableEntity.Columns[i - 1].DataType.ToUpper().Contains("INT") && tableEntity.Columns[i - 1].IsPrimaryKey)
                                         {
                                             tempCell.SetCellValue("IDENTITY");
                                         }
                                     }
                                 }
                             }
+
+                            // 自动调整单元格的宽度
                             tempSheet.AutoSizeColumn(0);
                             tempSheet.AutoSizeColumn(1);
                             tempSheet.AutoSizeColumn(2);
