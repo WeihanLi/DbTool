@@ -1,4 +1,9 @@
 # DbTool
+
+### BuildStatus
+
+[![Build status](https://ci.appveyor.com/api/projects/status/vo1kipiyqlo8r2kg/branch/master?svg=true)](https://ci.appveyor.com/project/WeihanLi/dbtool/branch/master)
+
 ### 简介
 
 这是一个将数据库表生成对应Model的小工具，可以利用这个小工具生成数据库表对应的Model，并且会判断数据表列是否可以为空，可以为空的情况下会使用可空的数据类型，如

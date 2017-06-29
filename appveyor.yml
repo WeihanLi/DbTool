@@ -1,0 +1,93 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+# version: 1.0.{build}
+
+# you can use {branch} name in version format too
+version: 1.0.{build}-{branch}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+    - production
+
+configuration: Release
+
+branches:
+  only:
+    - /dev*/
+
+configuration: Release
+
+branches:
+  # blacklist
+  except:
+    - gh-pages
+
+# Do not build on tags (GitHub and BitBucket)
+skip_tags: true
+
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: false
+
+# Skipping commits with particular message or from specific user
+skip_commits:
+  message: /Created.*\.(png|jpg|jpeg|bmp|gif)/      # Regex for matching commit message
+  # author: weihanli                                # Commit author's username, name, email or regexp maching one of these.
+  # Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+  files:
+    - docs/*
+    - '**/*.html'
+    - '**/*.md'
+
+# Including commits with particular message or from specific user
+only_commits:
+  message: /build/                # Start a new build if message contains 'build'
+  author: weihanli@outlook.com        # Start a new build for commit of user with email jack@company.com
+
+# Including commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+#  files:
+#    - Project-A/
+#    - Project-B/
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
+# Maximum number of concurrent jobs for the project
+max_jobs: 1
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+# this is how to allow failing jobs in the matrix
+matrix:
+  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+
+# scripts to run before build
+before_build:
+  - nuget restore DbTool.sln
+# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+before_package:
+  
+# scripts to run after build
+after_build:
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+  - msbuild /p:Configuration=Release DbTool.sln
+# to disable automatic builds
+#build: off
