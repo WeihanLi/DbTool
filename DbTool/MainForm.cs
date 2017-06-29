@@ -287,6 +287,7 @@ namespace DbTool
                         StringBuilder sbSqlText = new StringBuilder();
                         for (int i = 0; i < tableCount; i++)
                         {
+                            table = new TableEntity();
                             ISheet sheet = workbook.GetSheetAt(i);
                             table.TableName = sheet.SheetName;
                             sbSqlText.AppendFormat("---------- Create Table 【{0}】 Sql -----------", table.TableName);
@@ -327,9 +328,7 @@ namespace DbTool
                                     table.Columns.Add(column);
                                 }
                             }
-                            //sql
-                            string sql = table.GenerateSqlStatement();
-                            sbSqlText.AppendLine(sql);
+                            sbSqlText.AppendLine(table.GenerateSqlStatement());
                         }
                         FolderBrowserDialog dialog = new FolderBrowserDialog();
                         dialog.Description = "请选择要保存sql文件的文件夹";
