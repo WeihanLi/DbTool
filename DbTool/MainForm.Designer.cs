@@ -36,6 +36,7 @@
             this.btnGenerateModel0 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.tabModelPage = new System.Windows.Forms.TabPage();
+            this.lnkExcelTemplate = new System.Windows.Forms.LinkLabel();
             this.txtGeneratedSqlText = new System.Windows.Forms.TextBox();
             this.txtTableDesc = new System.Windows.Forms.TextBox();
             this.dataGridView = new System.Windows.Forms.DataGridView();
@@ -60,7 +61,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.lnkExcelTemplate = new System.Windows.Forms.LinkLabel();
+            this.cbGenDbDescription = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabDbPage.SuspendLayout();
             this.tabModelPage.SuspendLayout();
@@ -84,7 +85,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 81);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(839, 386);
+            this.tabControl1.Size = new System.Drawing.Size(906, 386);
             this.tabControl1.TabIndex = 7;
             // 
             // tabDbPage
@@ -96,7 +97,7 @@
             this.tabDbPage.Location = new System.Drawing.Point(4, 29);
             this.tabDbPage.Name = "tabDbPage";
             this.tabDbPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDbPage.Size = new System.Drawing.Size(831, 353);
+            this.tabDbPage.Size = new System.Drawing.Size(898, 353);
             this.tabDbPage.TabIndex = 0;
             this.tabDbPage.Text = "DbFirst";
             this.tabDbPage.UseVisualStyleBackColor = true;
@@ -106,7 +107,7 @@
             this.cbTables.FormattingEnabled = true;
             this.cbTables.Location = new System.Drawing.Point(13, 46);
             this.cbTables.Name = "cbTables";
-            this.cbTables.Size = new System.Drawing.Size(314, 235);
+            this.cbTables.Size = new System.Drawing.Size(314, 277);
             this.cbTables.TabIndex = 17;
             // 
             // btnExportExcel
@@ -143,6 +144,7 @@
             // tabModelPage
             // 
             this.tabModelPage.AutoScroll = true;
+            this.tabModelPage.Controls.Add(this.cbGenDbDescription);
             this.tabModelPage.Controls.Add(this.lnkExcelTemplate);
             this.tabModelPage.Controls.Add(this.txtGeneratedSqlText);
             this.tabModelPage.Controls.Add(this.txtTableDesc);
@@ -155,10 +157,21 @@
             this.tabModelPage.Location = new System.Drawing.Point(4, 29);
             this.tabModelPage.Name = "tabModelPage";
             this.tabModelPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabModelPage.Size = new System.Drawing.Size(831, 353);
+            this.tabModelPage.Size = new System.Drawing.Size(898, 353);
             this.tabModelPage.TabIndex = 1;
             this.tabModelPage.Text = "ModelFirst";
             this.tabModelPage.UseVisualStyleBackColor = true;
+            // 
+            // lnkExcelTemplate
+            // 
+            this.lnkExcelTemplate.AutoSize = true;
+            this.lnkExcelTemplate.Location = new System.Drawing.Point(747, 14);
+            this.lnkExcelTemplate.Name = "lnkExcelTemplate";
+            this.lnkExcelTemplate.Size = new System.Drawing.Size(99, 20);
+            this.lnkExcelTemplate.TabIndex = 25;
+            this.lnkExcelTemplate.TabStop = true;
+            this.lnkExcelTemplate.Text = "下载Excel模板";
+            this.lnkExcelTemplate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkExcelTemplate_LinkClicked);
             // 
             // txtGeneratedSqlText
             // 
@@ -166,7 +179,7 @@
             this.txtGeneratedSqlText.Multiline = true;
             this.txtGeneratedSqlText.Name = "txtGeneratedSqlText";
             this.txtGeneratedSqlText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtGeneratedSqlText.Size = new System.Drawing.Size(831, 110);
+            this.txtGeneratedSqlText.Size = new System.Drawing.Size(898, 110);
             this.txtGeneratedSqlText.TabIndex = 24;
             // 
             // txtTableDesc
@@ -193,7 +206,7 @@
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowTemplate.Height = 23;
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView.Size = new System.Drawing.Size(831, 198);
+            this.dataGridView.Size = new System.Drawing.Size(898, 198);
             this.dataGridView.TabIndex = 0;
             // 
             // FieldName
@@ -251,7 +264,7 @@
             // 
             // btnImport
             // 
-            this.btnImport.Location = new System.Drawing.Point(495, 10);
+            this.btnImport.Location = new System.Drawing.Point(628, 8);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(109, 30);
             this.btnImport.TabIndex = 0;
@@ -261,7 +274,7 @@
             // 
             // btnGenerateSQL
             // 
-            this.btnGenerateSQL.Location = new System.Drawing.Point(403, 11);
+            this.btnGenerateSQL.Location = new System.Drawing.Point(536, 9);
             this.btnGenerateSQL.Name = "btnGenerateSQL";
             this.btnGenerateSQL.Size = new System.Drawing.Size(84, 30);
             this.btnGenerateSQL.TabIndex = 0;
@@ -370,22 +383,23 @@
             this.label3.TabIndex = 21;
             this.label3.Text = "model的命名空间名称";
             // 
-            // lnkExcelTemplate
+            // cbGenDbDescription
             // 
-            this.lnkExcelTemplate.AutoSize = true;
-            this.lnkExcelTemplate.Location = new System.Drawing.Point(614, 16);
-            this.lnkExcelTemplate.Name = "lnkExcelTemplate";
-            this.lnkExcelTemplate.Size = new System.Drawing.Size(99, 20);
-            this.lnkExcelTemplate.TabIndex = 25;
-            this.lnkExcelTemplate.TabStop = true;
-            this.lnkExcelTemplate.Text = "下载Excel模板";
-            this.lnkExcelTemplate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkExcelTemplate_LinkClicked);
+            this.cbGenDbDescription.AutoSize = true;
+            this.cbGenDbDescription.Checked = true;
+            this.cbGenDbDescription.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbGenDbDescription.Location = new System.Drawing.Point(410, 13);
+            this.cbGenDbDescription.Name = "cbGenDbDescription";
+            this.cbGenDbDescription.Size = new System.Drawing.Size(112, 24);
+            this.cbGenDbDescription.TabIndex = 26;
+            this.cbGenDbDescription.Text = "生成描述信息";
+            this.cbGenDbDescription.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(833, 490);
+            this.ClientSize = new System.Drawing.Size(912, 490);
             this.Controls.Add(this.txtSuffix);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.txtConnString);
@@ -447,6 +461,7 @@
         private System.Windows.Forms.Button btnExportExcel;
         private System.Windows.Forms.TextBox txtGeneratedSqlText;
         private System.Windows.Forms.LinkLabel lnkExcelTemplate;
+        private System.Windows.Forms.CheckBox cbGenDbDescription;
     }
 }
 

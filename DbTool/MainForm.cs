@@ -172,7 +172,7 @@ namespace DbTool
                     tableInfo.Columns.Add(column);
                 }
                 //sql
-                string sql = tableInfo.GenerateSqlStatement();
+                string sql = tableInfo.GenerateSqlStatement(cbGenDbDescription.Checked);
                 //注：创建数据表个人觉得属于危险操作，暂时先不考虑直接在数据库中生成表，可以将创建表的sql粘贴到所需执行的地方二次确认后再创建数据库表，如果确实要在数据库中直接生成表可以取消注释以下代码
                 ////数据库连接字符串不为空则创建表
                 //if (!String.IsNullOrEmpty(txtConnString.Text))
@@ -271,7 +271,7 @@ namespace DbTool
                             }
                         }
                         //sql
-                        string sql = table.GenerateSqlStatement();
+                        string sql = table.GenerateSqlStatement(cbGenDbDescription.Checked);
                         //注：创建数据表个人觉得属于危险操作，暂时先不考虑直接在数据库中生成表，可以将创建表的sql粘贴到所需执行的地方二次确认后再创建数据库表，如果确实要在数据库中直接生成表可以取消注释以下代码
                         ////数据库连接字符串不为空则创建表
                         //if (!String.IsNullOrEmpty(txtConnString.Text))
@@ -328,7 +328,7 @@ namespace DbTool
                                     table.Columns.Add(column);
                                 }
                             }
-                            sbSqlText.AppendLine(table.GenerateSqlStatement());
+                            sbSqlText.AppendLine(table.GenerateSqlStatement(cbGenDbDescription.Checked));
                         }
                         FolderBrowserDialog dialog = new FolderBrowserDialog();
                         dialog.Description = "请选择要保存sql文件的文件夹";

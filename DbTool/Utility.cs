@@ -289,7 +289,7 @@ namespace DbTool
         /// </summary>
         /// <param name="tableEntity"> 表信息 </param>
         /// <returns></returns>
-        public static string GenerateSqlStatement(this TableEntity tableEntity)
+        public static string GenerateSqlStatement(this TableEntity tableEntity,bool genDescriotion = true)
         {
             if (String.IsNullOrEmpty(tableEntity.TableName))
             {
@@ -299,7 +299,7 @@ namespace DbTool
             //create table
             sbSqlText.AppendFormat("CREATE TABLE [{0}].[{1}](", tableEntity.TableSchema,tableEntity.TableName);
             //create description
-            if (!String.IsNullOrEmpty(tableEntity.TableDesc))
+            if (genDescriotion && !String.IsNullOrEmpty(tableEntity.TableDesc))
             {
                 sbSqlDescText.AppendFormat(DbHelper.AddTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDesc);
             }
@@ -344,7 +344,7 @@ namespace DbTool
                     //
                     sbSqlText.Append(",");
                     //
-                    if (!String.IsNullOrEmpty(col.ColumnDesc))
+                    if (genDescriotion && !String.IsNullOrEmpty(col.ColumnDesc))
                     {
                         sbSqlDescText.AppendLine();
                         sbSqlDescText.AppendFormat(DbHelper.AddColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDesc);
