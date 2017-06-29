@@ -20,19 +20,14 @@ branches:
   only:
     - master
     - production
-
-configuration: Release
-
-branches:
-  only:
     - /dev*/
 
-configuration: Release
-
-branches:
   # blacklist
   except:
     - gh-pages
+
+
+configuration: Release
 
 # Do not build on tags (GitHub and BitBucket)
 skip_tags: true
