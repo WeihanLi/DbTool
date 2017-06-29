@@ -205,7 +205,7 @@ namespace DbTool
             //create description
             if (!String.IsNullOrEmpty(tableEntity.TableDesc))
             {
-                sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';", tableEntity.TableName, tableEntity.TableDesc);
+                sbSqlDescText.AppendFormat(DbHelper.AddTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDesc);
             }
             if (tableEntity.Columns.Count > 0)
             {
@@ -251,7 +251,7 @@ namespace DbTool
                     if (!String.IsNullOrEmpty(col.ColumnDesc))
                     {
                         sbSqlDescText.AppendLine();
-                        sbSqlDescText.AppendFormat("EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; ", tableEntity.TableName, col.ColumnName, col.ColumnDesc);
+                        sbSqlDescText.AppendFormat(DbHelper.AddColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDesc);
                     }
                 }
                 sbSqlText.Remove(sbSqlText.Length - 1, 1);

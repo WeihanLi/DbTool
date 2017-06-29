@@ -47,6 +47,58 @@ namespace DbTool
                                                                                 ORDER BY c.[column_id];";
 
         /// <summary>
+        /// 表描述
+        /// 0：表名称
+        /// 1：表描述
+        /// </summary>
+        public static string AddTableDescSqlFormat => @"
+BEGIN
+IF EXISTS (
+       SELECT 1
+    FROM sys.extended_properties p,
+         sys.tables t,
+         sys.schemas s
+    WHERE t.schema_id = s.schema_id
+          AND p.major_id = t.object_id
+          AND p.minor_id = 0
+          AND p.name = N'MS_Description'
+          AND s.name = N'dbo'
+          AND t.name = N'{0}'
+    )
+        EXECUTE sp_updateextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';
+ELSE
+        EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}'; 
+END";
+
+        /// <summary>
+        /// 列描述信息
+        /// 0：表名称，1：列名称，2：列描述信息
+        /// </summary>
+        public static string AddColumnDescSqlFormat => @"
+BEGIN
+IF EXISTS (
+        select 1
+        from
+            sys.extended_properties p, 
+            sys.columns c, 
+            sys.tables t, 
+            sys.schemas s
+        where
+            t.schema_id = s.schema_id and
+            c.object_id = t.object_id and
+            p.major_id = t.object_id and
+            p.minor_id = c.column_id and
+            p.name = N'MS_Description' and 
+            s.name = N'dbo' and
+            t.name = N'{0}' and
+            c.name = N'{1}'
+    )
+        EXECUTE sp_updateextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; 
+ELSE
+        EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; 
+END";
+
+        /// <summary>
         /// 连接字符串
         /// </summary>
         private static string ConnString;
