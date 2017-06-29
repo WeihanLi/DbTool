@@ -189,6 +189,102 @@ namespace DbTool
         }
 
         /// <summary>
+        /// 获取数据库类型对应的默认长度
+        /// </summary>
+        /// <param name="dbType">数据类型</param>
+        /// <param name="defaultLength">自定义默认长度</param>
+        /// <returns></returns>
+        public static int GetDefaultSizeForDbType(string dbType,int defaultLength = 50)
+        {
+            DbType sqlDbType = (DbType)Enum.Parse(typeof(DbType), dbType, true);
+            int len = defaultLength;
+            switch (sqlDbType)
+            {
+                case DbType.BigInt:
+                    len = 8;
+                    break;
+                case DbType.Binary:
+                    len = 8;
+                    break;
+                case DbType.Bit:
+                    len = 1;
+                    break;
+                case DbType.Char:
+                    break;
+                case DbType.Date:
+                case DbType.DateTime:
+                case DbType.DateTime2:
+                case DbType.DateTimeOffset:
+                    len = 8;
+                    break;
+                case DbType.Decimal:
+                    len = 20;
+                    break;
+                case DbType.Float:
+                    len = 20;
+                    break;
+                case DbType.Image:
+                    break;
+                case DbType.Int:
+                    len = 4;
+                    break;
+                case DbType.Money:
+                    len = 20;
+                    break;
+                case DbType.NChar:
+                    break;
+                case DbType.NText:
+                    len = 200;
+                    break;
+                case DbType.Numeric:
+                    len = 20;
+                    break;
+                case DbType.NVarChar:
+                    break;
+                case DbType.Real:
+                    len = 10;
+                    break;
+                case DbType.RowVersion:
+                    break;
+                case DbType.SmallDateTime:
+                    len = 4;
+                    break;
+                case DbType.SmallInt:
+                    len = 2;
+                    break;
+                case DbType.SmallMoney:
+                    break;
+                case DbType.Text:
+                    len = 500;
+                    break;
+                case DbType.Time:
+                    len = 8;
+                    break;
+                case DbType.Timestamp:
+                    break;
+                case DbType.TinyInt:
+                    len = 1;
+                    break;
+                case DbType.UniqueIdentifier:
+                    len = 16;
+                    break;
+                case DbType.VarBinary:
+                    break;
+                case DbType.VarChar:
+                    break;
+                case DbType.Variant:
+                    break;
+                case DbType.Xml:
+                    break;
+                case DbType.Structured:
+                    break;
+                default:
+                    break;
+            }
+            return len;
+        }
+
+        /// <summary>
         /// 根据表信息生成sql语句 
         /// </summary>
         /// <param name="tableEntity"> 表信息 </param>

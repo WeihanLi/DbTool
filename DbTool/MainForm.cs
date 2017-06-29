@@ -200,8 +200,10 @@ namespace DbTool
                 string path = ofg.FileName;
                 bool isNewFileVersion = path.EndsWith(".xlsx");
                 TableEntity table = new TableEntity();
-                using (Stream stream = File.OpenRead(path))
+                Stream stream = null;
+                try
                 {
+                    stream = File.OpenRead(path);
                     IWorkbook workbook;
                     if (isNewFileVersion)
                     {
@@ -211,62 +213,143 @@ namespace DbTool
                     {
                         workbook = new HSSFWorkbook(stream);
                     }
-                    ISheet sheet = workbook.GetSheetAt(0);                    
-                    table.TableName = sheet.SheetName;
-                    var rows = sheet.GetRowEnumerator();
                     dataGridView.Rows.Clear();
-                    while (rows.MoveNext())
+                    int tableCount = workbook.NumberOfSheets;
+                    if (tableCount == 1)
                     {
-                        var row = (IRow) rows.Current;
-                        if (row.RowNum == 0)
+                        ISheet sheet = workbook.GetSheetAt(0);
+                        table.TableName = sheet.SheetName;
+                        var rows = sheet.GetRowEnumerator();
+                        while (rows.MoveNext())
                         {
-                            table.TableDesc = row.Cells[0].StringCellValue;
-                            txtTableName.Text = table.TableName;
-                            txtTableDesc.Text = table.TableDesc;
-                            continue;
-                        }
-                        if (row.RowNum > 1)
-                        {
-                            var column = new ColumnEntity();
-                            column.ColumnName = row.Cells[0].StringCellValue;
-                            if (String.IsNullOrWhiteSpace(column.ColumnName))
+                            var row = (IRow)rows.Current;
+                            if (row.RowNum == 0)
                             {
+                                table.TableDesc = row.Cells[0].StringCellValue;
+                                txtTableName.Text = table.TableName;
+                                txtTableDesc.Text = table.TableDesc;
                                 continue;
                             }
-                            column.ColumnDesc = row.Cells[1].StringCellValue;
-                            column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
-                            column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
-                            column.DataType = row.Cells[4].StringCellValue;
-                            column.Size = Convert.ToInt32(row.Cells[5].NumericCellValue);
-                            column.DefaultValue = row.Cells[6];
-                            table.Columns.Add(column);
+                            if (row.RowNum > 1)
+                            {
+                                var column = new ColumnEntity();
+                                column.ColumnName = row.Cells[0].StringCellValue;
+                                if (String.IsNullOrWhiteSpace(column.ColumnName))
+                                {
+                                    continue;
+                                }
+                                column.ColumnDesc = row.Cells[1].StringCellValue;
+                                column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
+                                column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
+                                column.DataType = row.Cells[4].StringCellValue;
+                                column.Size = Convert.ToInt32(row.Cells[5].NumericCellValue);
+                                column.DefaultValue = row.Cells[6];
+                                table.Columns.Add(column);
 
-                            DataGridViewRow rowView = new DataGridViewRow();
-                            rowView.CreateCells(
-                                dataGridView,
-                                column.ColumnName,
-                                column.ColumnDesc , 
-                                column.IsPrimaryKey,
-                                column.IsNullable,
-                                column.DataType,
-                                column.Size,
-                                column.DefaultValue
-                            );
-                            dataGridView.Rows.Add(rowView);
+                                DataGridViewRow rowView = new DataGridViewRow();
+                                rowView.CreateCells(
+                                    dataGridView,
+                                    column.ColumnName,
+                                    column.ColumnDesc,
+                                    column.IsPrimaryKey,
+                                    column.IsNullable,
+                                    column.DataType,
+                                    column.Size,
+                                    column.DefaultValue
+                                );
+                                dataGridView.Rows.Add(rowView);
+                            }
+                        }
+                        //sql
+                        string sql = table.GenerateSqlStatement();
+                        //注：创建数据表个人觉得属于危险操作，暂时先不考虑直接在数据库中生成表，可以将创建表的sql粘贴到所需执行的地方二次确认后再创建数据库表，如果确实要在数据库中直接生成表可以取消注释以下代码
+                        ////数据库连接字符串不为空则创建表
+                        //if (!String.IsNullOrEmpty(txtConnString.Text))
+                        //{
+                        //    new DbHelper(txtConnString.Text).ExecuteNonQuery(sql);
+                        //}
+                        txtGeneratedSqlText.Text = sql;
+                        Clipboard.SetText(sql);
+                        MessageBox.Show("生成成功，sql语句已赋值至粘贴板");
+                    }
+                    else
+                    {
+                        StringBuilder sbSqlText = new StringBuilder();
+                        for (int i = 0; i < tableCount; i++)
+                        {
+                            ISheet sheet = workbook.GetSheetAt(i);
+                            table.TableName = sheet.SheetName;
+                            sbSqlText.AppendFormat("----------Create Table 【{0}】 Sql-----------", table.TableName);
+                            sbSqlText.AppendLine();
+                            var rows = sheet.GetRowEnumerator();
+                            while (rows.MoveNext())
+                            {
+                                var row = (IRow)rows.Current;
+                                if (row.RowNum == 0)
+                                {
+                                    table.TableDesc = row.Cells[0].StringCellValue;
+                                    continue;
+                                }
+                                if (row.RowNum > 1)
+                                {
+                                    var column = new ColumnEntity();
+                                    column.ColumnName = row.Cells[0].StringCellValue;
+                                    if (String.IsNullOrWhiteSpace(column.ColumnName))
+                                    {
+                                        continue;
+                                    }
+                                    column.ColumnDesc = row.Cells[1].StringCellValue;
+                                    column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
+                                    column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
+                                    column.DataType = row.Cells[4].StringCellValue;
+                                    if (String.IsNullOrEmpty(row.Cells[5].StringCellValue))
+                                    {
+                                        column.Size = Utility.GetDefaultSizeForDbType(column.DataType);
+                                    }
+                                    else
+                                    {
+                                        column.Size = Convert.ToInt32(row.Cells[5].StringCellValue);
+                                    }
+                                    column.DefaultValue = row.Cells[6].StringCellValue;
+                                    table.Columns.Add(column);
+                                }
+                            }
+                            //sql
+                            string sql = table.GenerateSqlStatement();
+                            sbSqlText.AppendLine(sql);
+                        }
+                        FolderBrowserDialog dialog = new FolderBrowserDialog();
+                        dialog.Description = "请选择要保存sql文件的文件夹";
+                        dialog.ShowNewFolderButton = true;
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            string dir = dialog.SelectedPath;
+                            //获取文件名
+                            string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                            //
+                            string sqlFilePath = dir + "\\" + fileName + ".sql";
+                            System.IO.File.WriteAllText(sqlFilePath, sbSqlText.ToString(), Encoding.UTF8);
+                            MessageBox.Show("保存成功");
+                            System.Diagnostics.Process.Start("Explorer.exe", dir);
+                        }
+                        else
+                        {
+                            Clipboard.SetText(sbSqlText.ToString());
+                            MessageBox.Show("取消保存文件，sql语句已赋值至粘贴板");
                         }
                     }
                 }
-                //sql
-                string sql = table.GenerateSqlStatement();
-                //注：创建数据表个人觉得属于危险操作，暂时先不考虑直接在数据库中生成表，可以将创建表的sql粘贴到所需执行的地方二次确认后再创建数据库表，如果确实要在数据库中直接生成表可以取消注释以下代码
-                ////数据库连接字符串不为空则创建表
-                //if (!String.IsNullOrEmpty(txtConnString.Text))
-                //{
-                //    new DbHelper(txtConnString.Text).ExecuteNonQuery(sql);
-                //}
-                txtGeneratedSqlText.Text = sql;
-                Clipboard.SetText(sql);
-                MessageBox.Show("生成成功，sql语句已赋值至粘贴板");
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (stream!=null)
+                    {
+                        stream.Dispose();
+                    }
+                }
             }
         }
 
