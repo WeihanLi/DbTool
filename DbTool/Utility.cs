@@ -325,7 +325,7 @@ namespace DbTool
                     //Default Value
                     if (col.DefaultValue != null && !String.IsNullOrEmpty(col.DefaultValue.ToString()))
                     {
-                        if (col.IsPrimaryKey && col.DataType.ToUpper().Equals("INT"))
+                        if (col.IsPrimaryKey && col.DataType.ToUpper().Contains("INT"))
                         {
                             sbSqlText.Append(" IDENTITY(1,1) ");
                         }

@@ -242,8 +242,15 @@ namespace DbTool
                                 column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
                                 column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
                                 column.DataType = row.Cells[4].StringCellValue;
-                                column.Size = Convert.ToInt32(row.Cells[5].NumericCellValue);
-                                column.DefaultValue = row.Cells[6];
+                                if (String.IsNullOrEmpty(row.Cells[5].ToString()))
+                                {
+                                    column.Size = Utility.GetDefaultSizeForDbType(column.DataType);
+                                }
+                                else
+                                {
+                                    column.Size = Convert.ToInt32(row.Cells[5].NumericCellValue);
+                                }
+                                column.DefaultValue = row.Cells[6].ToString();
                                 table.Columns.Add(column);
 
                                 DataGridViewRow rowView = new DataGridViewRow();
@@ -279,7 +286,7 @@ namespace DbTool
                         {
                             ISheet sheet = workbook.GetSheetAt(i);
                             table.TableName = sheet.SheetName;
-                            sbSqlText.AppendFormat("----------Create Table 【{0}】 Sql-----------", table.TableName);
+                            sbSqlText.AppendFormat("---------- Create Table 【{0}】 Sql -----------", table.TableName);
                             sbSqlText.AppendLine();
                             var rows = sheet.GetRowEnumerator();
                             while (rows.MoveNext())
@@ -302,15 +309,15 @@ namespace DbTool
                                     column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
                                     column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
                                     column.DataType = row.Cells[4].StringCellValue;
-                                    if (String.IsNullOrEmpty(row.Cells[5].StringCellValue))
+                                    if (String.IsNullOrEmpty(row.Cells[5].ToString()))
                                     {
                                         column.Size = Utility.GetDefaultSizeForDbType(column.DataType);
                                     }
                                     else
                                     {
-                                        column.Size = Convert.ToInt32(row.Cells[5].StringCellValue);
+                                        column.Size = Convert.ToInt32(row.Cells[5].NumericCellValue);
                                     }
-                                    column.DefaultValue = row.Cells[6].StringCellValue;
+                                    column.DefaultValue = row.Cells[6].ToString();
                                     table.Columns.Add(column);
                                 }
                             }
@@ -341,7 +348,7 @@ namespace DbTool
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
