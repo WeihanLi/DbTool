@@ -140,7 +140,7 @@ namespace DbTool
             }
             set
             {
-                if (!String.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value))
                 {
                     columnDesc = value;
                 }

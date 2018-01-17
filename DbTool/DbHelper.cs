@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Text;
+using WeihanLi.Extensions;
 
 namespace DbTool
 {
@@ -67,7 +66,7 @@ IF EXISTS (
     )
         EXECUTE sp_updateextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';
 ELSE
-        EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}'; 
+        EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';
 END";
 
         /// <summary>
@@ -79,74 +78,46 @@ BEGIN
 IF EXISTS (
         select 1
         from
-            sys.extended_properties p, 
-            sys.columns c, 
-            sys.tables t, 
+            sys.extended_properties p,
+            sys.columns c,
+            sys.tables t,
             sys.schemas s
         where
             t.schema_id = s.schema_id and
             c.object_id = t.object_id and
             p.major_id = t.object_id and
             p.minor_id = c.column_id and
-            p.name = N'MS_Description' and 
+            p.name = N'MS_Description' and
             s.name = N'dbo' and
             t.name = N'{0}' and
             c.name = N'{1}'
     )
-        EXECUTE sp_updateextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; 
+        EXECUTE sp_updateextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}';
 ELSE
-        EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}'; 
+        EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}';
 END";
 
-        /// <summary>
-        /// 连接字符串
-        /// </summary>
-        private static string ConnString;
+        private readonly string _connString;
 
-        private SqlConnection conn = null;
+        private SqlConnection _conn;
 
         /// <summary>
         /// 数据库名称
         /// </summary>
-        public string DatabaseName { get { return conn.Database; } }
+        public string DatabaseName => _conn.Database;
 
         public DbHelper(string connString)
         {
-            ConnString = connString;
-            conn = new SqlConnection(ConnString);
+            _connString = connString;
+            InitSqlConnection();
         }
 
-        /// <summary>
-        /// 获取一个数据库连接
-        /// </summary>
-        /// <returns></returns>
-        private SqlConnection GetSqlConnection()
+        private void InitSqlConnection()
         {
-            if (conn == null)
+            if (null == _conn || _conn.ConnectionString.IsNullOrEmpty())
             {
-                conn = new SqlConnection(ConnString);
+                _conn = new SqlConnection(_connString);
             }
-            if (conn.State == System.Data.ConnectionState.Closed)
-            {
-                conn.ConnectionString = ConnString;
-                conn.Open();
-            }
-            return conn;
-        }
-
-        /// <summary>
-        /// 获取一个SqlCommand对象
-        /// </summary>
-        /// <param name="cmdText">sql语句</param>
-        /// <param name="parameters">sql参数</param>
-        /// <returns></returns>
-        private SqlCommand GetSqlCommand(string cmdText , params SqlParameter[] parameters)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = cmdText;
-            cmd.Parameters.AddRange(parameters);
-            cmd.CommandType = CommandType.Text;
-            return cmd;
         }
 
         /// <summary>
@@ -155,13 +126,8 @@ END";
         /// <returns></returns>
         public List<TableEntity> GetTablesInfo()
         {
-            SqlCommand cmd = GetSqlCommand(QueryDbTablesSql);
-            cmd.Connection = GetSqlConnection();
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            cmd.Connection.Close();
-            return dt.DataTableToList<TableEntity>();
+            InitSqlConnection();
+            return _conn.Select<TableEntity>(QueryDbTablesSql).Chain(t => _conn.Close());
         }
 
         /// <summary>
@@ -171,35 +137,12 @@ END";
         /// <returns></returns>
         public List<ColumnEntity> GetColumnsInfo(string tableName)
         {
-            if (String.IsNullOrEmpty(tableName))
+            InitSqlConnection();
+            if (string.IsNullOrEmpty(tableName))
             {
-                throw new ArgumentNullException("tableName");
+                throw new ArgumentNullException(nameof(tableName));
             }
-            SqlCommand cmd = GetSqlCommand(QueryColumnsSql , new SqlParameter("@tableName" , tableName));
-            cmd.Connection = GetSqlConnection();
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            cmd.Connection.Close();
-            return dt.DataTableToList<ColumnEntity>();
-        }
-
-        /// <summary>
-        /// 执行sql语句并返回受影响的行数
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <returns></returns>
-        public int ExecuteNonQuery(string sql)
-        {
-            if (String.IsNullOrEmpty(sql))
-            {
-                return -1;
-            }
-            using (var connection = GetSqlConnection())
-            {
-                SqlCommand cmd = GetSqlCommand(sql);
-                return cmd.ExecuteNonQuery();
-            }
+            return _conn.Select<ColumnEntity>(QueryColumnsSql, new { tableName }).Chain(t => _conn.Close());
         }
     }
 }

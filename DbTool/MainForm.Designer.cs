@@ -36,6 +36,7 @@
             this.btnGenerateModel0 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.tabModelPage = new System.Windows.Forms.TabPage();
+            this.cbGenDbDescription = new System.Windows.Forms.CheckBox();
             this.lnkExcelTemplate = new System.Windows.Forms.LinkLabel();
             this.txtGeneratedSqlText = new System.Windows.Forms.TextBox();
             this.txtTableDesc = new System.Windows.Forms.TextBox();
@@ -61,7 +62,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.cbGenDbDescription = new System.Windows.Forms.CheckBox();
+            this.cbGenField = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabDbPage.SuspendLayout();
             this.tabModelPage.SuspendLayout();
@@ -90,6 +91,7 @@
             // 
             // tabDbPage
             // 
+            this.tabDbPage.Controls.Add(this.cbGenField);
             this.tabDbPage.Controls.Add(this.cbTables);
             this.tabDbPage.Controls.Add(this.btnExportExcel);
             this.tabDbPage.Controls.Add(this.btnGenerateModel0);
@@ -107,13 +109,13 @@
             this.cbTables.FormattingEnabled = true;
             this.cbTables.Location = new System.Drawing.Point(13, 46);
             this.cbTables.Name = "cbTables";
-            this.cbTables.Size = new System.Drawing.Size(314, 277);
+            this.cbTables.Size = new System.Drawing.Size(354, 277);
             this.cbTables.TabIndex = 17;
             // 
             // btnExportExcel
             // 
             this.btnExportExcel.Enabled = false;
-            this.btnExportExcel.Location = new System.Drawing.Point(233, 11);
+            this.btnExportExcel.Location = new System.Drawing.Point(222, 8);
             this.btnExportExcel.Name = "btnExportExcel";
             this.btnExportExcel.Size = new System.Drawing.Size(94, 32);
             this.btnExportExcel.TabIndex = 16;
@@ -124,7 +126,7 @@
             // btnGenerateModel0
             // 
             this.btnGenerateModel0.Enabled = false;
-            this.btnGenerateModel0.Location = new System.Drawing.Point(133, 11);
+            this.btnGenerateModel0.Location = new System.Drawing.Point(122, 8);
             this.btnGenerateModel0.Name = "btnGenerateModel0";
             this.btnGenerateModel0.Size = new System.Drawing.Size(94, 32);
             this.btnGenerateModel0.TabIndex = 16;
@@ -161,6 +163,18 @@
             this.tabModelPage.TabIndex = 1;
             this.tabModelPage.Text = "ModelFirst";
             this.tabModelPage.UseVisualStyleBackColor = true;
+            // 
+            // cbGenDbDescription
+            // 
+            this.cbGenDbDescription.AutoSize = true;
+            this.cbGenDbDescription.Checked = true;
+            this.cbGenDbDescription.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbGenDbDescription.Location = new System.Drawing.Point(410, 13);
+            this.cbGenDbDescription.Name = "cbGenDbDescription";
+            this.cbGenDbDescription.Size = new System.Drawing.Size(112, 24);
+            this.cbGenDbDescription.TabIndex = 26;
+            this.cbGenDbDescription.Text = "生成描述信息";
+            this.cbGenDbDescription.UseVisualStyleBackColor = true;
             // 
             // lnkExcelTemplate
             // 
@@ -383,17 +397,15 @@
             this.label3.TabIndex = 21;
             this.label3.Text = "model的命名空间名称";
             // 
-            // cbGenDbDescription
+            // cbGenField
             // 
-            this.cbGenDbDescription.AutoSize = true;
-            this.cbGenDbDescription.Checked = true;
-            this.cbGenDbDescription.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbGenDbDescription.Location = new System.Drawing.Point(410, 13);
-            this.cbGenDbDescription.Name = "cbGenDbDescription";
-            this.cbGenDbDescription.Size = new System.Drawing.Size(112, 24);
-            this.cbGenDbDescription.TabIndex = 26;
-            this.cbGenDbDescription.Text = "生成描述信息";
-            this.cbGenDbDescription.UseVisualStyleBackColor = true;
+            this.cbGenField.AutoSize = true;
+            this.cbGenField.Location = new System.Drawing.Point(337, 13);
+            this.cbGenField.Name = "cbGenField";
+            this.cbGenField.Size = new System.Drawing.Size(112, 24);
+            this.cbGenField.TabIndex = 18;
+            this.cbGenField.Text = "生成私有字段";
+            this.cbGenField.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -462,6 +474,7 @@
         private System.Windows.Forms.TextBox txtGeneratedSqlText;
         private System.Windows.Forms.LinkLabel lnkExcelTemplate;
         private System.Windows.Forms.CheckBox cbGenDbDescription;
+        private System.Windows.Forms.CheckBox cbGenField;
     }
 }
 
