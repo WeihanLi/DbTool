@@ -221,7 +221,7 @@ namespace DbTool
                     if (tableCount == 1)
                     {
                         var sheet = workbook.GetSheetAt(0);
-                        table.TableName = sheet.SheetName;
+                        table.TableName = sheet.SheetName.Trim();
                         var rows = sheet.GetRowEnumerator();
                         while (rows.MoveNext())
                         {
@@ -236,7 +236,7 @@ namespace DbTool
                             if (row.RowNum > 1)
                             {
                                 var column = new ColumnEntity();
-                                column.ColumnName = row.Cells[0].StringCellValue;
+                                column.ColumnName = row.Cells[0].StringCellValue.Trim();
                                 if (string.IsNullOrWhiteSpace(column.ColumnName))
                                 {
                                     continue;
