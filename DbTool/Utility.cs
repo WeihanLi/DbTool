@@ -32,7 +32,7 @@ namespace DbTool
             sbText.AppendLine("using System;");
             sbText.AppendLine("using System.ComponentModel;");
             sbText.AppendLine();
-            sbText.AppendLine("namespace " + modelNamespace);
+            sbText.AppendLine($"namespace {modelNamespace}");
             sbText.AppendLine("{");
             if (!string.IsNullOrEmpty(tableEntity.TableDescription))
             {
@@ -566,15 +566,6 @@ namespace DbTool
             {
                 return "_" + propertyName;
             }
-        }
-
-        internal static object GetDefaultValue(this Type type)
-        {
-            if (type.IsValueType)
-            {
-                return Activator.CreateInstance(type);
-            }
-            return null;
         }
     }
 }

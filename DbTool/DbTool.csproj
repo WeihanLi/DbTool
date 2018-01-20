@@ -84,8 +84,8 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeihanLi.Common, Version=1.0.7.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WeihanLi.Common.1.0.7.2\lib\net45\WeihanLi.Common.dll</HintPath>
+    <Reference Include="WeihanLi.Common, Version=1.0.7.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WeihanLi.Common.1.0.7.3\lib\net45\WeihanLi.Common.dll</HintPath>
     </Reference>
     <Reference Include="WeihanLi.Npoi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WeihanLi.Npoi.1.0.0-beta\lib\net45\WeihanLi.Npoi.dll</HintPath>
