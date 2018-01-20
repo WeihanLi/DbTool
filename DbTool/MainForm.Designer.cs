@@ -42,13 +42,6 @@
             this.txtGeneratedSqlText = new System.Windows.Forms.TextBox();
             this.txtTableDesc = new System.Windows.Forms.TextBox();
             this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.FieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FieldDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IsKey = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.CanBeNull = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.DataType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.FieldSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DefaultValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnGenerateSQL = new System.Windows.Forms.Button();
             this.txtTableName = new System.Windows.Forms.TextBox();
@@ -68,6 +61,13 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.FieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FieldDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IsKey = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.CanBeNull = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.DataType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.FieldSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DefaultValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl1.SuspendLayout();
             this.tabDbPage.SuspendLayout();
             this.tabModelPage.SuspendLayout();
@@ -239,59 +239,7 @@
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView.Size = new System.Drawing.Size(898, 198);
             this.dataGridView.TabIndex = 0;
-            // 
-            // FieldName
-            // 
-            this.FieldName.HeaderText = "列名称";
-            this.FieldName.Name = "FieldName";
-            // 
-            // FieldDesc
-            // 
-            this.FieldDesc.HeaderText = "列描述";
-            this.FieldDesc.Name = "FieldDesc";
-            // 
-            // IsKey
-            // 
-            this.IsKey.HeaderText = "是否是主键列";
-            this.IsKey.Name = "IsKey";
-            this.IsKey.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.IsKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // CanBeNull
-            // 
-            this.CanBeNull.HeaderText = "是否可以为空";
-            this.CanBeNull.Name = "CanBeNull";
-            this.CanBeNull.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CanBeNull.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // DataType
-            // 
-            this.DataType.HeaderText = "数据类型";
-            this.DataType.Items.AddRange(new object[] {
-            "INT",
-            "BIGINT",
-            "FLOAT",
-            "REAL",
-            "DATETIME",
-            "MONEY",
-            "BIT",
-            "VARCHAR",
-            "NVARCHAR",
-            "UNIQUEIDENTIFIER"});
-            this.DataType.MinimumWidth = 20;
-            this.DataType.Name = "DataType";
-            this.DataType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // FieldSize
-            // 
-            this.FieldSize.HeaderText = "列长度";
-            this.FieldSize.Name = "FieldSize";
-            // 
-            // DefaultValue
-            // 
-            this.DefaultValue.HeaderText = "默认值";
-            this.DefaultValue.Name = "DefaultValue";
+            this.dataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
             // 
             // btnImport
             // 
@@ -377,6 +325,7 @@
             this.txtCodeModelSql.Multiline = true;
             this.txtCodeModelSql.Name = "txtCodeModelSql";
             this.txtCodeModelSql.ReadOnly = true;
+            this.txtCodeModelSql.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtCodeModelSql.Size = new System.Drawing.Size(686, 270);
             this.txtCodeModelSql.TabIndex = 2;
             // 
@@ -466,6 +415,61 @@
             this.label3.TabIndex = 21;
             this.label3.Text = "model的命名空间名称";
             // 
+            // FieldName
+            // 
+            this.FieldName.HeaderText = "列名称";
+            this.FieldName.Name = "FieldName";
+            // 
+            // FieldDesc
+            // 
+            this.FieldDesc.HeaderText = "列描述";
+            this.FieldDesc.Name = "FieldDesc";
+            // 
+            // IsKey
+            // 
+            this.IsKey.HeaderText = "是否是主键列";
+            this.IsKey.Name = "IsKey";
+            this.IsKey.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.IsKey.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // CanBeNull
+            // 
+            this.CanBeNull.HeaderText = "是否可以为空";
+            this.CanBeNull.Name = "CanBeNull";
+            this.CanBeNull.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.CanBeNull.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // DataType
+            // 
+            this.DataType.HeaderText = "数据类型";
+            this.DataType.Items.AddRange(new object[] {
+            "INT",
+            "BIGINT",
+            "FLOAT",
+            "REAL",
+            "NUMERIC",
+            "DATETIME",
+            "DATETIME2",
+            "MONEY",
+            "BIT",
+            "VARCHAR",
+            "NVARCHAR",
+            "UNIQUEIDENTIFIER"});
+            this.DataType.MinimumWidth = 20;
+            this.DataType.Name = "DataType";
+            this.DataType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // FieldSize
+            // 
+            this.FieldSize.HeaderText = "列长度";
+            this.FieldSize.Name = "FieldSize";
+            // 
+            // DefaultValue
+            // 
+            this.DefaultValue.HeaderText = "默认值";
+            this.DefaultValue.Name = "DefaultValue";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -512,13 +516,6 @@
         private System.Windows.Forms.TextBox txtConnString;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FieldName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FieldDesc;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn IsKey;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn CanBeNull;
-        private System.Windows.Forms.DataGridViewComboBoxColumn DataType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FieldSize;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DefaultValue;
         private System.Windows.Forms.Button btnGenerateSQL;
         private System.Windows.Forms.TextBox txtSuffix;
         private System.Windows.Forms.TextBox txtPrefix;
@@ -541,6 +538,13 @@
         private System.Windows.Forms.TreeView treeViewTable;
         private System.Windows.Forms.TextBox txtCodeModelSql;
         private System.Windows.Forms.Button btnImportModel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FieldName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FieldDesc;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn IsKey;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn CanBeNull;
+        private System.Windows.Forms.DataGridViewComboBoxColumn DataType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FieldSize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DefaultValue;
     }
 }
 

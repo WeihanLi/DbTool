@@ -434,8 +434,11 @@ namespace DbTool
                 sbSqlText.AppendLine();
             }
             sbSqlText.AppendLine(");");
-            sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Description Sql -----------");
-            sbSqlText.Append(sbSqlDescText);
+            if (genDescriotion && sbSqlDescText.Length > 0)
+            {
+                sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Description Sql -----------");
+                sbSqlText.Append(sbSqlDescText);
+            }
             sbSqlText.AppendLine();
             return sbSqlText.ToString();
         }
@@ -504,7 +507,7 @@ namespace DbTool
                 var error = new StringBuilder(result.Errors.Count * 1024);
                 for (var i = 0; i < result.Errors.Count; i++)
                 {
-                    error.AppendLine($"{result.Errors[i].ErrorText} ({result.Errors[i].Line},{result.Errors[i].Column})");
+                    error.AppendLine($"{result.Errors[i].FileName}({result.Errors[i].Line},{result.Errors[i].Column}):{result.Errors[i].ErrorText}");
                 }
                 throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
             }

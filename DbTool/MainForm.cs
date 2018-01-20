@@ -257,7 +257,7 @@ namespace DbTool
                                 column.ColumnDescription = row.Cells[1].StringCellValue;
                                 column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
                                 column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
-                                column.DataType = row.Cells[4].StringCellValue;
+                                column.DataType = row.Cells[4].StringCellValue.ToUpper();
                                 if (string.IsNullOrEmpty(row.Cells[5].ToString()))
                                 {
                                     column.Size = Utility.GetDefaultSizeForDbType(column.DataType);
@@ -587,6 +587,11 @@ namespace DbTool
                     MessageBox.Show(ex.Message, "Error");
                 }
             }
+        }
+
+        private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            MessageBox.Show(e.Exception.ToString());
         }
     }
 }
