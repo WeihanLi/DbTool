@@ -17,7 +17,7 @@ namespace DbTool
                                                 IT.TABLE_CATALOG AS DatabaseName ,
                                                 IT.TABLE_TYPE AS TableType ,
                                                 IT.TABLE_SCHEMA AS TableScheme ,
-                                                [EP].[value] AS TableDesc
+                                                [EP].[value] AS TableDescription
                                         FROM    INFORMATION_SCHEMA.TABLES AS IT
                                                 LEFT JOIN sys.extended_properties AS EP ON EP.major_id = OBJECT_ID([IT].[TABLE_NAME])
                                                                                            AND [EP].[minor_id] = 0;";
@@ -27,7 +27,7 @@ namespace DbTool
         /// </summary>
         private const string QueryColumnsSql = @"SELECT  t.[name] AS TableName ,
                                                                                         c.[name] AS ColumnName ,
-                                                                                        p.[value] AS ColumnDesc ,
+                                                                                        p.[value] AS ColumnDescription ,
                                                                                         c.[is_nullable] AS IsNullable ,
                                                                                         ty.[name] AS DataType ,
                                                                                         c.[max_length] AS Size ,
@@ -126,7 +126,6 @@ END";
         /// <returns></returns>
         public List<TableEntity> GetTablesInfo()
         {
-            InitSqlConnection();
             return _conn.Select<TableEntity>(QueryDbTablesSql).Chain(t => _conn.Close());
         }
 
@@ -137,7 +136,6 @@ END";
         /// <returns></returns>
         public List<ColumnEntity> GetColumnsInfo(string tableName)
         {
-            InitSqlConnection();
             if (string.IsNullOrEmpty(tableName))
             {
                 throw new ArgumentNullException(nameof(tableName));

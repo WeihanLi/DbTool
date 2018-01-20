@@ -31,6 +31,7 @@
             this.lblConnStatus = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabDbPage = new System.Windows.Forms.TabPage();
+            this.cbGenField = new System.Windows.Forms.CheckBox();
             this.cbTables = new System.Windows.Forms.CheckedListBox();
             this.btnExportExcel = new System.Windows.Forms.Button();
             this.btnGenerateModel0 = new System.Windows.Forms.Button();
@@ -53,6 +54,11 @@
             this.txtTableName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.tabCodePage = new System.Windows.Forms.TabPage();
+            this.cbGenCodeSqlDescription = new System.Windows.Forms.CheckBox();
+            this.treeViewTable = new System.Windows.Forms.TreeView();
+            this.txtCodeModelSql = new System.Windows.Forms.TextBox();
+            this.btnImportModel = new System.Windows.Forms.Button();
             this.btnConnect = new System.Windows.Forms.Button();
             this.txtConnString = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -62,11 +68,11 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.cbGenField = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabDbPage.SuspendLayout();
             this.tabModelPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.tabCodePage.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblConnStatus
@@ -83,10 +89,11 @@
             // 
             this.tabControl1.Controls.Add(this.tabDbPage);
             this.tabControl1.Controls.Add(this.tabModelPage);
+            this.tabControl1.Controls.Add(this.tabCodePage);
             this.tabControl1.Location = new System.Drawing.Point(0, 81);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(906, 386);
+            this.tabControl1.Size = new System.Drawing.Size(938, 386);
             this.tabControl1.TabIndex = 7;
             // 
             // tabDbPage
@@ -99,10 +106,20 @@
             this.tabDbPage.Location = new System.Drawing.Point(4, 29);
             this.tabDbPage.Name = "tabDbPage";
             this.tabDbPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDbPage.Size = new System.Drawing.Size(898, 353);
+            this.tabDbPage.Size = new System.Drawing.Size(930, 353);
             this.tabDbPage.TabIndex = 0;
             this.tabDbPage.Text = "DbFirst";
             this.tabDbPage.UseVisualStyleBackColor = true;
+            // 
+            // cbGenField
+            // 
+            this.cbGenField.AutoSize = true;
+            this.cbGenField.Location = new System.Drawing.Point(337, 13);
+            this.cbGenField.Name = "cbGenField";
+            this.cbGenField.Size = new System.Drawing.Size(112, 24);
+            this.cbGenField.TabIndex = 18;
+            this.cbGenField.Text = "生成私有字段";
+            this.cbGenField.UseVisualStyleBackColor = true;
             // 
             // cbTables
             // 
@@ -132,7 +149,7 @@
             this.btnGenerateModel0.TabIndex = 16;
             this.btnGenerateModel0.Text = "生成Model";
             this.btnGenerateModel0.UseVisualStyleBackColor = true;
-            this.btnGenerateModel0.Click += new System.EventHandler(this.btnGenerate_Click);
+            this.btnGenerateModel0.Click += new System.EventHandler(this.btnGenerateModel_Click);
             // 
             // label2
             // 
@@ -159,7 +176,7 @@
             this.tabModelPage.Location = new System.Drawing.Point(4, 29);
             this.tabModelPage.Name = "tabModelPage";
             this.tabModelPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabModelPage.Size = new System.Drawing.Size(898, 353);
+            this.tabModelPage.Size = new System.Drawing.Size(930, 353);
             this.tabModelPage.TabIndex = 1;
             this.tabModelPage.Text = "ModelFirst";
             this.tabModelPage.UseVisualStyleBackColor = true;
@@ -179,7 +196,7 @@
             // lnkExcelTemplate
             // 
             this.lnkExcelTemplate.AutoSize = true;
-            this.lnkExcelTemplate.Location = new System.Drawing.Point(747, 14);
+            this.lnkExcelTemplate.Location = new System.Drawing.Point(770, 13);
             this.lnkExcelTemplate.Name = "lnkExcelTemplate";
             this.lnkExcelTemplate.Size = new System.Drawing.Size(99, 20);
             this.lnkExcelTemplate.TabIndex = 25;
@@ -278,13 +295,13 @@
             // 
             // btnImport
             // 
-            this.btnImport.Location = new System.Drawing.Point(628, 8);
+            this.btnImport.Location = new System.Drawing.Point(635, 8);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(109, 30);
             this.btnImport.TabIndex = 0;
             this.btnImport.Text = "导入Excel";
             this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            this.btnImport.Click += new System.EventHandler(this.btnImportExcel_Click);
             // 
             // btnGenerateSQL
             // 
@@ -320,6 +337,58 @@
             this.label7.Size = new System.Drawing.Size(79, 20);
             this.label7.TabIndex = 19;
             this.label7.Text = "表描述信息";
+            // 
+            // tabCodePage
+            // 
+            this.tabCodePage.Controls.Add(this.cbGenCodeSqlDescription);
+            this.tabCodePage.Controls.Add(this.treeViewTable);
+            this.tabCodePage.Controls.Add(this.txtCodeModelSql);
+            this.tabCodePage.Controls.Add(this.btnImportModel);
+            this.tabCodePage.Location = new System.Drawing.Point(4, 29);
+            this.tabCodePage.Name = "tabCodePage";
+            this.tabCodePage.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCodePage.Size = new System.Drawing.Size(930, 353);
+            this.tabCodePage.TabIndex = 2;
+            this.tabCodePage.Text = "CodeFirst";
+            this.tabCodePage.UseVisualStyleBackColor = true;
+            // 
+            // cbGenCodeSqlDescription
+            // 
+            this.cbGenCodeSqlDescription.AutoSize = true;
+            this.cbGenCodeSqlDescription.Checked = true;
+            this.cbGenCodeSqlDescription.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbGenCodeSqlDescription.Location = new System.Drawing.Point(213, 21);
+            this.cbGenCodeSqlDescription.Name = "cbGenCodeSqlDescription";
+            this.cbGenCodeSqlDescription.Size = new System.Drawing.Size(126, 24);
+            this.cbGenCodeSqlDescription.TabIndex = 4;
+            this.cbGenCodeSqlDescription.Text = "生成数据库描述";
+            this.cbGenCodeSqlDescription.UseVisualStyleBackColor = true;
+            // 
+            // treeViewTable
+            // 
+            this.treeViewTable.Location = new System.Drawing.Point(22, 65);
+            this.treeViewTable.Name = "treeViewTable";
+            this.treeViewTable.Size = new System.Drawing.Size(206, 270);
+            this.treeViewTable.TabIndex = 3;
+            // 
+            // txtCodeModelSql
+            // 
+            this.txtCodeModelSql.Location = new System.Drawing.Point(234, 65);
+            this.txtCodeModelSql.Multiline = true;
+            this.txtCodeModelSql.Name = "txtCodeModelSql";
+            this.txtCodeModelSql.ReadOnly = true;
+            this.txtCodeModelSql.Size = new System.Drawing.Size(686, 270);
+            this.txtCodeModelSql.TabIndex = 2;
+            // 
+            // btnImportModel
+            // 
+            this.btnImportModel.Location = new System.Drawing.Point(22, 17);
+            this.btnImportModel.Name = "btnImportModel";
+            this.btnImportModel.Size = new System.Drawing.Size(164, 30);
+            this.btnImportModel.TabIndex = 1;
+            this.btnImportModel.Text = "选择Model文件（C#）";
+            this.btnImportModel.UseVisualStyleBackColor = true;
+            this.btnImportModel.Click += new System.EventHandler(this.btnImportModel_Click);
             // 
             // btnConnect
             // 
@@ -397,21 +466,11 @@
             this.label3.TabIndex = 21;
             this.label3.Text = "model的命名空间名称";
             // 
-            // cbGenField
-            // 
-            this.cbGenField.AutoSize = true;
-            this.cbGenField.Location = new System.Drawing.Point(337, 13);
-            this.cbGenField.Name = "cbGenField";
-            this.cbGenField.Size = new System.Drawing.Size(112, 24);
-            this.cbGenField.TabIndex = 18;
-            this.cbGenField.Text = "生成私有字段";
-            this.cbGenField.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(912, 490);
+            this.ClientSize = new System.Drawing.Size(936, 490);
             this.Controls.Add(this.txtSuffix);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.txtConnString);
@@ -434,6 +493,8 @@
             this.tabModelPage.ResumeLayout(false);
             this.tabModelPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.tabCodePage.ResumeLayout(false);
+            this.tabCodePage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -475,6 +536,11 @@
         private System.Windows.Forms.LinkLabel lnkExcelTemplate;
         private System.Windows.Forms.CheckBox cbGenDbDescription;
         private System.Windows.Forms.CheckBox cbGenField;
+        private System.Windows.Forms.TabPage tabCodePage;
+        private System.Windows.Forms.CheckBox cbGenCodeSqlDescription;
+        private System.Windows.Forms.TreeView treeViewTable;
+        private System.Windows.Forms.TextBox txtCodeModelSql;
+        private System.Windows.Forms.Button btnImportModel;
     }
 }
 

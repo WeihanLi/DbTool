@@ -1,51 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DbTool
 {
     /// <summary>
-    /// 数据库信息 
+    /// 数据库信息
     /// </summary>
     public class DbEntity
     {
-        private string databaseName;
-
         /// <summary>
-        /// 数据库名称 
+        /// 数据库名称
         /// </summary>
-        public string DatabaseName
-        {
-            get
-            {
-                return databaseName;
-            }
-
-            set
-            {
-                databaseName = value;
-            }
-        }
-
-        private string databaseDesc;
+        public string DatabaseName { get; set; }
 
         /// <summary>
-        /// 数据库描述 
+        /// 数据库描述
         /// </summary>
-        public string DatabaseDesc
-        {
-            get
-            {
-                return databaseDesc;
-            }
-
-            set
-            {
-                databaseDesc = value;
-            }
-        }
+        public string DatabaseDescription { get; set; }
 
         /// <summary>
-        /// 表信息 
+        /// 表信息
         /// </summary>
         public List<TableEntity> Tables { get; set; }
 
@@ -56,52 +29,27 @@ namespace DbTool
     }
 
     /// <summary>
-    /// 表信息 
+    /// 表信息
     /// </summary>
     public class TableEntity
     {
-        private string tableName;
-
         /// <summary>
-        /// 表名称 
+        /// 表名称
         /// </summary>
-        public string TableName
-        {
-            get { return tableName; }
-            set { tableName = value; }
-        }
-
-        private string tableDesc;
+        public string TableName { get; set; }
 
         /// <summary>
-        /// 表描述 
+        /// 表描述
         /// </summary>
-        public string TableDesc
-        {
-            get
-            {
-                return tableDesc;
-            }
-
-            set
-            {
-                tableDesc = value;
-            }
-        }
-
-        private string tableSchema = "dbo";
+        public string TableDescription { get; set; }
 
         /// <summary>
-        /// 表架构 scheme 
+        /// 表架构 scheme
         /// </summary>
-        public string TableSchema
-        {
-            get { return tableSchema; }
-            set { tableSchema = value; }
-        }
+        public string TableSchema { get; set; } = "dbo";
 
         /// <summary>
-        /// 列信息 
+        /// 列信息
         /// </summary>
         public List<ColumnEntity> Columns { get; set; }
 
@@ -112,125 +60,49 @@ namespace DbTool
     }
 
     /// <summary>
-    /// 列信息 
+    /// 列信息
     /// </summary>
     public class ColumnEntity
     {
-        private string columnName;
+        /// <summary>
+        /// 列名称
+        /// </summary>
+        public string ColumnName { get; set; }
+
+        private string columnDescription;
 
         /// <summary>
-        /// 列名称 
+        /// 列描述
         /// </summary>
-        public string ColumnName
+        public string ColumnDescription
         {
-            get { return columnName; }
-            set { columnName = value; }
+            get => columnDescription;
+            set => columnDescription = !string.IsNullOrEmpty(value) ? value : "";
         }
-
-        private string columnDesc;
 
         /// <summary>
-        /// 列描述 
+        /// 是否可以为空
         /// </summary>
-        public string ColumnDesc
-        {
-            get
-            {
-                return columnDesc;
-            }
-            set
-            {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    columnDesc = value;
-                }
-                else
-                {
-                    columnDesc = "";
-                }
-            }
-        }
-
-        private bool isNullable;
+        public bool IsNullable { get; set; }
 
         /// <summary>
-        /// 是否可以为空 
+        /// 是否是主键列
         /// </summary>
-        public bool IsNullable
-        {
-            get { return isNullable; }
-            set { isNullable = value; }
-        }
-
-        private bool isPrimaryKey;
+        public bool IsPrimaryKey { get; set; }
 
         /// <summary>
-        /// 是否是主键列 
+        /// 字段长度
         /// </summary>
-        public bool IsPrimaryKey
-        {
-            get
-            {
-                return isPrimaryKey;
-            }
-
-            set
-            {
-                isPrimaryKey = value;
-            }
-        }
-
-        private int size;
+        public int Size { get; set; }
 
         /// <summary>
-        /// 字段长度 
+        /// 数据类型
         /// </summary>
-        public int Size
-        {
-            get
-            {
-                return size;
-            }
-
-            set
-            {
-                size = value;
-            }
-        }
-
-        private string dataType;
+        public string DataType { get; set; }
 
         /// <summary>
-        /// 数据类型 
+        /// 默认值
         /// </summary>
-        public string DataType
-        {
-            get
-            {
-                return dataType;
-            }
-            set
-            {
-                dataType =value;
-            }
-        }
-
-        private object defaultValue;
-
-        /// <summary>
-        /// 默认值 
-        /// </summary>
-        public object DefaultValue
-        {
-            get
-            {
-                return defaultValue;
-            }
-
-            set
-            {
-                defaultValue = value;
-            }
-        }
+        public object DefaultValue { get; set; }
     }
 }

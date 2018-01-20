@@ -48,7 +48,6 @@ namespace DbTool
                 //
                 cbTables.DataSource = tableList;
                 cbTables.DisplayMember = "TableName";
-                cbTables.ValueMember = "TableDesc";
                 //
                 lblConnStatus.Text = string.Format(Properties.Resources.ConnectSuccess, dbHelper.DatabaseName);
                 btnGenerateModel0.Enabled = true;
@@ -65,7 +64,7 @@ namespace DbTool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnGenerate_Click(object sender, EventArgs e)
+        private void btnGenerateModel_Click(object sender, EventArgs e)
         {
             if (dbHelper == null)
             {
@@ -99,7 +98,7 @@ namespace DbTool
                             if (item is TableEntity currentTable)
                             {
                                 tableEntity.TableName = currentTable.TableName;
-                                tableEntity.TableDesc = currentTable.TableDesc;
+                                tableEntity.TableDescription = currentTable.TableDescription;
                                 tableEntity.Columns = dbHelper.GetColumnsInfo(tableEntity.TableName);
                                 var content = tableEntity.GenerateModelText(ns, prefix, suffix, cbGenField.Checked);
                                 var path = dir + "\\" + tableEntity.TableName.TrimTableName() + ".cs";
@@ -157,7 +156,7 @@ namespace DbTool
                 var tableInfo = new TableEntity()
                 {
                     TableName = txtTableName.Text.Trim(),
-                    TableDesc = txtTableDesc.Text.Trim(),
+                    TableDescription = txtTableDesc.Text.Trim(),
                     Columns = new List<ColumnEntity>()
                 };
                 ColumnEntity column;
@@ -165,7 +164,7 @@ namespace DbTool
                 {
                     column = new ColumnEntity();
                     column.ColumnName = dataGridView.Rows[k].Cells[0].Value.ToString();
-                    column.ColumnDesc = dataGridView.Rows[k].Cells[1].Value.ToString();
+                    column.ColumnDescription = dataGridView.Rows[k].Cells[1].Value.ToString();
                     column.IsPrimaryKey = dataGridView.Rows[k].Cells[2].Value != null && (bool)dataGridView.Rows[k].Cells[2].Value;
                     column.IsNullable = dataGridView.Rows[k].Cells[3].Value != null && (bool)dataGridView.Rows[k].Cells[3].Value;
                     column.DataType = dataGridView.Rows[k].Cells[4].Value.ToString();
@@ -193,7 +192,7 @@ namespace DbTool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnImport_Click(object sender, EventArgs e)
+        private void btnImportExcel_Click(object sender, EventArgs e)
         {
             var ofg = new OpenFileDialog();
             ofg.Multiselect = false;
@@ -228,9 +227,9 @@ namespace DbTool
                             var row = (IRow)rows.Current;
                             if (row.RowNum == 0)
                             {
-                                table.TableDesc = row.Cells[0].StringCellValue;
+                                table.TableDescription = row.Cells[0].StringCellValue;
                                 txtTableName.Text = table.TableName;
-                                txtTableDesc.Text = table.TableDesc;
+                                txtTableDesc.Text = table.TableDescription;
                                 continue;
                             }
                             if (row.RowNum > 1)
@@ -241,7 +240,7 @@ namespace DbTool
                                 {
                                     continue;
                                 }
-                                column.ColumnDesc = row.Cells[1].StringCellValue;
+                                column.ColumnDescription = row.Cells[1].StringCellValue;
                                 column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
                                 column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
                                 column.DataType = row.Cells[4].StringCellValue;
@@ -263,7 +262,7 @@ namespace DbTool
                                 rowView.CreateCells(
                                     dataGridView,
                                     column.ColumnName,
-                                    column.ColumnDesc,
+                                    column.ColumnDescription,
                                     column.IsPrimaryKey,
                                     column.IsNullable,
                                     column.DataType,
@@ -301,7 +300,7 @@ namespace DbTool
                                 var row = (IRow)rows.Current;
                                 if (row.RowNum == 0)
                                 {
-                                    table.TableDesc = row.Cells[0].StringCellValue;
+                                    table.TableDescription = row.Cells[0].StringCellValue;
                                     continue;
                                 }
                                 if (row.RowNum > 1)
@@ -312,7 +311,7 @@ namespace DbTool
                                     {
                                         continue;
                                     }
-                                    column.ColumnDesc = row.Cells[1].StringCellValue;
+                                    column.ColumnDescription = row.Cells[1].StringCellValue;
                                     column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
                                     column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
                                     column.DataType = row.Cells[4].StringCellValue;
@@ -405,14 +404,14 @@ namespace DbTool
                                 continue;
                             }
                             tableEntity.TableName = currentTable.TableName;
-                            tableEntity.TableDesc = currentTable.TableDesc;
+                            tableEntity.TableDescription = currentTable.TableDescription;
                             tableEntity.Columns = dbHelper.GetColumnsInfo(tableEntity.TableName);
                             //Create Sheet
                             var tempSheet = workbook.CreateSheet(tableEntity.TableName);
                             //create title
                             var titleRow = tempSheet.CreateRow(0);
                             var titleCell = titleRow.CreateCell(0);
-                            titleCell.SetCellValue(tableEntity.TableDesc);
+                            titleCell.SetCellValue(tableEntity.TableDescription);
                             var titleStyle = workbook.CreateCellStyle();
                             titleStyle.Alignment = HorizontalAlignment.Left;
                             var font = workbook.CreateFont();
@@ -470,7 +469,7 @@ namespace DbTool
                                     tempCell = tempRow.CreateCell(0);
                                     tempCell.SetCellValue(tableEntity.Columns[i - 1].ColumnName);
                                     tempCell = tempRow.CreateCell(1);
-                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].ColumnDesc);
+                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].ColumnDescription);
                                     tempCell = tempRow.CreateCell(2);
                                     tempCell.SetCellValue(tableEntity.Columns[i - 1].IsPrimaryKey ? "Y" : "N");
                                     tempCell = tempRow.CreateCell(3);
@@ -526,6 +525,49 @@ namespace DbTool
         private void lnkExcelTemplate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(e.Link.LinkData.ToString());
+        }
+
+        private void btnImportModel_Click(object sender, EventArgs e)
+        {
+            var ofg = new OpenFileDialog
+            {
+                CheckFileExists = true,
+                Multiselect = true,
+                DefaultExt = ".cs",
+                Filter = "C#文件(*.cs)|*.cs"
+            };
+            if (ofg.ShowDialog() == DialogResult.OK)
+            {
+                if (ofg.FileNames.Any(f => !f.EndsWith(".cs")))
+                {
+                    MessageBox.Show("不支持所选文件类型，只可以选择C#文件(*.cs)");
+                    return;
+                }
+
+                try
+                {
+                    var tables = Utility.GeTableEntityFromSourceCode(ofg.FileNames);
+                    if (tables == null)
+                    {
+                        MessageBox.Show("没有找到 Model");
+                    }
+                    else
+                    {
+                        txtCodeModelSql.Clear();
+                        treeViewTable.Nodes.Clear();
+                        foreach (var table in tables)
+                        {
+                            var node = treeViewTable.Nodes.Add(table.TableName);
+                            node.Nodes.AddRange(table.Columns.Select(c => new TreeNode(c.ColumnName)).ToArray());
+                            txtCodeModelSql.AppendText(table.GenerateSqlStatement(cbGenCodeSqlDescription.Checked));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error");
+                }
+            }
         }
     }
 }

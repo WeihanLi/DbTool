@@ -1,12 +1,17 @@
 ﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 using System.Text;
+using WeihanLi.Extensions;
 
 namespace DbTool
 {
     /// <summary>
     /// 工具类
     /// </summary>
-    public static class Utility
+    internal static class Utility
     {
         /// <summary>
         /// 根据数据库表列信息，生成model
@@ -17,7 +22,7 @@ namespace DbTool
         /// <param name="suffix"> model class后缀 </param>
         /// <param name="genPrivateField">生成private的字段</param>
         /// <returns></returns>
-        public static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix, bool genPrivateField = false)
+        internal static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix, bool genPrivateField = false)
         {
             if (tableEntity == null)
             {
@@ -25,12 +30,14 @@ namespace DbTool
             }
             var sbText = new StringBuilder();
             sbText.AppendLine("using System;");
+            sbText.AppendLine("using System.ComponentModel;");
             sbText.AppendLine();
             sbText.AppendLine("namespace " + modelNamespace);
             sbText.AppendLine("{");
-            if (!string.IsNullOrEmpty(tableEntity.TableDesc))
+            if (!string.IsNullOrEmpty(tableEntity.TableDescription))
             {
-                sbText.AppendLine("\t/// <summary>" + Environment.NewLine + "\t/// " + tableEntity.TableDesc + Environment.NewLine + "\t/// </summary>");
+                sbText.AppendLine("\t/// <summary>" + Environment.NewLine + "\t/// " + tableEntity.TableDescription + Environment.NewLine + "\t/// </summary>");
+                sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription}\")]");
             }
             sbText.AppendLine("\tpublic class " + prefix + tableEntity.TableName + suffix);
             sbText.AppendLine("\t{");
@@ -51,9 +58,17 @@ namespace DbTool
 
                     var tmpColName = item.ColumnName.ToPrivateFieldName();
                     sbText.AppendLine("\t\tprivate " + item.DataType + " " + tmpColName + ";");
-                    if (!string.IsNullOrEmpty(item.ColumnDesc))
+                    if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
-                        sbText.AppendLine("\t\t/// <summary>" + Environment.NewLine + "\t\t/// " + item.ColumnDesc + Environment.NewLine + "\t\t/// </summary>");
+                        sbText.AppendLine("\t\t/// <summary>" + Environment.NewLine + "\t\t/// " + item.ColumnDescription + Environment.NewLine + "\t\t/// </summary>");
+                        sbText.AppendLine($"\t\t[Description(\"{(item.IsPrimaryKey && !item.ColumnDescription.Contains("主键") ? item.ColumnDescription + "(主键)" : item.ColumnDescription)}\")]");
+                    }
+                    else
+                    {
+                        if (item.IsPrimaryKey)
+                        {
+                            sbText.AppendLine($"\t\t[Description(\"主键\")]");
+                        }
                     }
                     sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumnName);
                     sbText.AppendLine("\t\t{");
@@ -77,9 +92,10 @@ namespace DbTool
                     }
                     item.DataType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
 
-                    if (!string.IsNullOrEmpty(item.ColumnDesc))
+                    if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
-                        sbText.AppendLine("\t\t/// <summary>" + Environment.NewLine + "\t\t/// " + item.ColumnDesc + Environment.NewLine + "\t\t/// </summary>");
+                        sbText.AppendLine("\t\t/// <summary>" + Environment.NewLine + "\t\t/// " + item.ColumnDescription + Environment.NewLine + "\t\t/// </summary>");
+                        sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription}\")]");
                     }
                     sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumnName + " { get; set; }");
                 }
@@ -90,12 +106,64 @@ namespace DbTool
         }
 
         /// <summary>
+        /// FCL类型转换为DbType
+        /// </summary>
+        /// <param name="type">Fcl 类型</param>
+        /// <returns></returns>
+        internal static DbType FclType2DbType(Type type)
+        {
+            var typeFullName = type.Unwrap().FullName;
+
+            switch (typeFullName)
+            {
+                case "System.Boolean":
+                    return DbType.Bit;
+
+                case "System.Byte":
+                    return DbType.TinyInt;
+
+                case "System.Int16":
+                    return DbType.SmallInt;
+
+                case "System.Int32":
+                    return DbType.Int;
+
+                case "System.Int64":
+                    return DbType.BigInt;
+
+                case "System.Single":
+                    return DbType.Numeric;
+
+                case "System.Double":
+                    return DbType.Float;
+
+                case "System.Decimal":
+                    return DbType.Money;
+
+                case "System.DateTime":
+                    return DbType.DateTime;
+
+                case "System.DateTimeOffset":
+                    return DbType.DateTimeOffset;
+
+                case "System.Guid":
+                    return DbType.UniqueIdentifier;
+
+                case "System.Object":
+                    return DbType.Variant;
+
+                default:
+                    return DbType.NVarChar;
+            }
+        }
+
+        /// <summary>
         /// 数据库数据类型转换为FCL类型
         /// </summary>
         /// <param name="dbType"> 数据库数据类型 </param>
         /// <param name="isNullable"> 该数据列是否可以为空 </param>
         /// <returns></returns>
-        public static string SqlDbType2FclType(string dbType, bool isNullable = true)
+        internal static string SqlDbType2FclType(string dbType, bool isNullable = true)
         {
             var sqlDbType = (DbType)Enum.Parse(typeof(DbType), dbType, true);
             string type;
@@ -179,7 +247,7 @@ namespace DbTool
         /// <param name="dbType">数据类型</param>
         /// <param name="defaultLength">自定义默认长度</param>
         /// <returns></returns>
-        public static int GetDefaultSizeForDbType(string dbType, int defaultLength = 64)
+        internal static int GetDefaultSizeForDbType(string dbType, int defaultLength = 64)
         {
             var sqlDbType = (DbType)Enum.Parse(typeof(DbType), dbType, true);
             var len = defaultLength;
@@ -198,6 +266,7 @@ namespace DbTool
                     break;
 
                 case DbType.Char:
+                    len = 200;
                     break;
 
                 case DbType.Date:
@@ -227,6 +296,7 @@ namespace DbTool
                     break;
 
                 case DbType.NChar:
+                    len = 500;
                     break;
 
                 case DbType.NText:
@@ -238,6 +308,7 @@ namespace DbTool
                     break;
 
                 case DbType.NVarChar:
+                    len = 2000;
                     break;
 
                 case DbType.Real:
@@ -259,7 +330,7 @@ namespace DbTool
                     break;
 
                 case DbType.Text:
-                    len = 500;
+                    len = 5000;
                     break;
 
                 case DbType.Time:
@@ -267,6 +338,7 @@ namespace DbTool
                     break;
 
                 case DbType.Timestamp:
+                    len = 8;
                     break;
 
                 case DbType.TinyInt:
@@ -294,7 +366,7 @@ namespace DbTool
         /// <param name="tableEntity"> 表信息 </param>
         /// <param name="genDescriotion">生成描述信息</param>
         /// <returns></returns>
-        public static string GenerateSqlStatement(this TableEntity tableEntity, bool genDescriotion = true)
+        internal static string GenerateSqlStatement(this TableEntity tableEntity, bool genDescriotion = true)
         {
             if (string.IsNullOrEmpty(tableEntity.TableName))
             {
@@ -304,16 +376,16 @@ namespace DbTool
             //create table
             sbSqlText.AppendFormat("CREATE TABLE [{0}].[{1}](", tableEntity.TableSchema, tableEntity.TableName);
             //create description
-            if (genDescriotion && !string.IsNullOrEmpty(tableEntity.TableDesc))
+            if (genDescriotion && !string.IsNullOrEmpty(tableEntity.TableDescription))
             {
-                sbSqlDescText.AppendFormat(DbHelper.AddTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDesc);
+                sbSqlDescText.AppendFormat(DbHelper.AddTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
             }
             if (tableEntity.Columns.Count > 0)
             {
                 foreach (var col in tableEntity.Columns)
                 {
                     sbSqlText.AppendLine();
-                    sbSqlText.AppendFormat("[{0}] {1}", col.ColumnName, col.DataType);
+                    sbSqlText.AppendFormat("\t[{0}] {1}", col.ColumnName, col.DataType);
                     if (col.DataType.ToUpperInvariant().Contains("CHAR"))
                     {
                         sbSqlText.AppendFormat("({0})", col.Size.ToString());
@@ -349,10 +421,10 @@ namespace DbTool
                     //
                     sbSqlText.Append(",");
                     //
-                    if (genDescriotion && !string.IsNullOrEmpty(col.ColumnDesc))
+                    if (genDescriotion && !string.IsNullOrEmpty(col.ColumnDescription))
                     {
                         sbSqlDescText.AppendLine();
-                        sbSqlDescText.AppendFormat(DbHelper.AddColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDesc);
+                        sbSqlDescText.AppendFormat(DbHelper.AddColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
                     }
                 }
                 sbSqlText.Remove(sbSqlText.Length - 1, 1);
@@ -367,7 +439,7 @@ namespace DbTool
         /// TrimTableName
         /// </summary>
         /// <returns></returns>
-        public static string TrimTableName(this string tableName)
+        internal static string TrimTableName(this string tableName)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -386,11 +458,87 @@ namespace DbTool
         }
 
         /// <summary>
+        /// TrimModelName
+        /// </summary>
+        /// <param name="modelName">modelName</param>
+        /// <returns></returns>
+        internal static string TrimModelName(this string modelName)
+        {
+            if (string.IsNullOrEmpty(modelName))
+            {
+                return "";
+            }
+            modelName = modelName.Trim();
+            if (modelName.EndsWith("Model"))
+            {
+                return modelName.Substring(0, modelName.Length - 5);
+            }
+            if (modelName.EndsWith("Entity"))
+            {
+                return modelName.Substring(0, modelName.Length - 6);
+            }
+            return modelName;
+        }
+
+        /// <summary>
+        /// 从 源代码 中获取表信息
+        /// </summary>
+        /// <param name="sourceFilePaths">sourceCodeFiles</param>
+        /// <returns></returns>
+        internal static List<TableEntity> GeTableEntityFromSourceCode(params string[] sourceFilePaths)
+        {
+            if (sourceFilePaths == null || sourceFilePaths.Length <= 0)
+            {
+                return null;
+            }
+            //
+            var provider = CodeDomProvider.CreateProvider("CSharp");
+            var result = provider.CompileAssemblyFromFile(new CompilerParameters(new[] { "System.dll" }), sourceFilePaths);
+            if (result.Errors.HasErrors)
+            {
+                throw new ArgumentException($"所选文件编译有错误，{string.Join(Environment.NewLine, result.Errors)}");
+            }
+            var tables = new List<TableEntity>(2);
+            foreach (var type in result.CompiledAssembly.GetTypes())
+            {
+                if (type.IsClass && type.IsPublic && !type.IsAbstract)
+                {
+                    var table = new TableEntity
+                    {
+                        TableName = type.Name.TrimModelName(),
+                        TableDescription = type.GetCustomAttribute<DescriptionAttribute>()?.Description
+                    };
+                    var defaultVal = Activator.CreateInstance(type);
+                    foreach (var property in type.GetProperties(BindingFlags.GetField | BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        var columnInfo = new ColumnEntity
+                        {
+                            ColumnName = property.Name,
+                            ColumnDescription = property.GetCustomAttribute<DescriptionAttribute>()?.Description,
+                            IsNullable = property.PropertyType.Unwrap() != property.PropertyType
+                        };
+                        var val = property.GetValue(defaultVal);
+                        columnInfo.DefaultValue =
+                            null == val || property.PropertyType.GetDefaultValue().Equals(val) || columnInfo.IsNullable
+                            ? null : val;
+                        columnInfo.IsPrimaryKey = columnInfo.ColumnDescription?.Contains("主键") ?? false;
+                        columnInfo.DataType = FclType2DbType(property.PropertyType).ToString().ToUpper();
+                        columnInfo.Size = GetDefaultSizeForDbType(columnInfo.DataType);
+                        table.Columns.Add(columnInfo);
+                    }
+                    tables.Add(table);
+                }
+            }
+
+            return tables;
+        }
+
+        /// <summary>
         /// 将属性名称转换为私有字段名称
         /// </summary>
         /// <param name="propertyName"> 属性名称 </param>
         /// <returns> 私有字段名称 </returns>
-        public static string ToPrivateFieldName(this string propertyName)
+        internal static string ToPrivateFieldName(this string propertyName)
         {
             if (string.IsNullOrEmpty(propertyName))
             {
@@ -408,6 +556,15 @@ namespace DbTool
             {
                 return "_" + propertyName;
             }
+        }
+
+        internal static object GetDefaultValue(this Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
         }
     }
 }
