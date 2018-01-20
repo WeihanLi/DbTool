@@ -36,10 +36,11 @@ namespace DbTool
             sbText.AppendLine("{");
             if (!string.IsNullOrEmpty(tableEntity.TableDescription))
             {
-                sbText.AppendLine("\t/// <summary>" + Environment.NewLine + "\t/// " + tableEntity.TableDescription + Environment.NewLine + "\t/// </summary>");
+                sbText.AppendLine(
+                    $"\t/// <summary>{Environment.NewLine}\t/// {tableEntity.TableDescription}{Environment.NewLine}\t/// </summary>");
                 sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription}\")]");
             }
-            sbText.AppendLine("\tpublic class " + prefix + tableEntity.TableName + suffix);
+            sbText.AppendLine($"\tpublic class {prefix}{tableEntity.TableName}{suffix}");
             sbText.AppendLine("\t{");
             var index = 0;
             if (genPrivateField)
@@ -57,7 +58,7 @@ namespace DbTool
                     item.DataType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
 
                     var tmpColName = item.ColumnName.ToPrivateFieldName();
-                    sbText.AppendLine("\t\tprivate " + item.DataType + " " + tmpColName + ";");
+                    sbText.AppendLine($"\t\tprivate {item.DataType} {tmpColName};");
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
                         sbText.AppendLine("\t\t/// <summary>" + Environment.NewLine + "\t\t/// " + item.ColumnDescription + Environment.NewLine + "\t\t/// </summary>");
@@ -70,10 +71,10 @@ namespace DbTool
                             sbText.AppendLine($"\t\t[Description(\"主键\")]");
                         }
                     }
-                    sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumnName);
+                    sbText.AppendLine($"\t\tpublic {item.DataType} {item.ColumnName}");
                     sbText.AppendLine("\t\t{");
-                    sbText.AppendLine("\t\t\tget { return " + tmpColName + "; }");
-                    sbText.AppendLine("\t\t\tset { " + tmpColName + " = value; }");
+                    sbText.AppendLine($"\t\t\tget {{ return {tmpColName}; }}");
+                    sbText.AppendLine($"\t\t\tset {{ {tmpColName} = value; }}");
                     sbText.AppendLine("\t\t}");
                     sbText.AppendLine();
                 }
@@ -94,10 +95,11 @@ namespace DbTool
 
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
-                        sbText.AppendLine("\t\t/// <summary>" + Environment.NewLine + "\t\t/// " + item.ColumnDescription + Environment.NewLine + "\t\t/// </summary>");
+                        sbText.AppendLine(
+                            $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription}{Environment.NewLine}\t\t/// </summary>");
                         sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription}\")]");
                     }
-                    sbText.AppendLine("\t\tpublic " + item.DataType + " " + item.ColumnName + " { get; set; }");
+                    sbText.AppendLine($"\t\tpublic {item.DataType} {item.ColumnName} {{ get; set; }}");
                 }
             }
             sbText.AppendLine("\t}");
@@ -374,6 +376,7 @@ namespace DbTool
             }
             StringBuilder sbSqlText = new StringBuilder(), sbSqlDescText = new StringBuilder();
             //create table
+            sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Sql -----------");
             sbSqlText.AppendFormat("CREATE TABLE [{0}].[{1}](", tableEntity.TableSchema, tableEntity.TableName);
             //create description
             if (genDescriotion && !string.IsNullOrEmpty(tableEntity.TableDescription))
@@ -431,7 +434,9 @@ namespace DbTool
                 sbSqlText.AppendLine();
             }
             sbSqlText.AppendLine(");");
+            sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Description Sql -----------");
             sbSqlText.Append(sbSqlDescText);
+            sbSqlText.AppendLine();
             return sbSqlText.ToString();
         }
 
@@ -496,7 +501,12 @@ namespace DbTool
             var result = provider.CompileAssemblyFromFile(new CompilerParameters(new[] { "System.dll" }), sourceFilePaths);
             if (result.Errors.HasErrors)
             {
-                throw new ArgumentException($"所选文件编译有错误，{string.Join(Environment.NewLine, result.Errors)}");
+                var error = new StringBuilder(result.Errors.Count * 1024);
+                for (var i = 0; i < result.Errors.Count; i++)
+                {
+                    error.AppendLine($"{result.Errors[i].ErrorText} ({result.Errors[i].Line},{result.Errors[i].Column})");
+                }
+                throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
             }
             var tables = new List<TableEntity>(2);
             foreach (var type in result.CompiledAssembly.GetTypes())

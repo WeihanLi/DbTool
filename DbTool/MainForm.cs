@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
 
@@ -78,9 +77,11 @@ namespace DbTool
             }
             string prefix = txtPrefix.Text, suffix = txtSuffix.Text;
             var ns = txtNamespace.Text;
-            var dialog = new FolderBrowserDialog();
-            dialog.Description = "请选择要保存model的文件夹";
-            dialog.ShowNewFolderButton = true;
+            var dialog = new FolderBrowserDialog
+            {
+                Description = "请选择要保存model的文件夹",
+                ShowNewFolderButton = true
+            };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var dir = dialog.SelectedPath;
@@ -137,7 +138,13 @@ namespace DbTool
             dataGridView.Height = tabControl1.Height * 2 / 5;
             txtGeneratedSqlText.Width = Size.Width - 20;
             txtGeneratedSqlText.Height = tabControl1.Height * 2 / 5;
+            txtGeneratedSqlText.Top = dataGridView.Height + dataGridView.Top + 10;
             cbTables.Height = tabControl1.Height - 100;
+            treeViewTable.Width = Size.Width / 5;
+            treeViewTable.Height = tabControl1.Height * 4 / 5;
+            txtCodeModelSql.Left = treeViewTable.Width + treeViewTable.Left + 10;
+            txtCodeModelSql.Width = Size.Width * 4 / 5;
+            txtCodeModelSql.Height = tabControl1.Height * 4 / 5;
         }
 
         /// <summary>
@@ -162,14 +169,16 @@ namespace DbTool
                 ColumnEntity column;
                 for (var k = 0; k < dataGridView.Rows.Count - 1; k++)
                 {
-                    column = new ColumnEntity();
-                    column.ColumnName = dataGridView.Rows[k].Cells[0].Value.ToString();
-                    column.ColumnDescription = dataGridView.Rows[k].Cells[1].Value.ToString();
-                    column.IsPrimaryKey = dataGridView.Rows[k].Cells[2].Value != null && (bool)dataGridView.Rows[k].Cells[2].Value;
-                    column.IsNullable = dataGridView.Rows[k].Cells[3].Value != null && (bool)dataGridView.Rows[k].Cells[3].Value;
-                    column.DataType = dataGridView.Rows[k].Cells[4].Value.ToString();
-                    column.Size = dataGridView.Rows[k].Cells[5].Value == null ? 0 : Convert.ToInt32(dataGridView.Rows[k].Cells[5].Value.ToString());
-                    column.DefaultValue = dataGridView.Rows[k].Cells[6].Value;
+                    column = new ColumnEntity
+                    {
+                        ColumnName = dataGridView.Rows[k].Cells[0].Value.ToString(),
+                        ColumnDescription = dataGridView.Rows[k].Cells[1].Value.ToString(),
+                        IsPrimaryKey = dataGridView.Rows[k].Cells[2].Value != null && (bool)dataGridView.Rows[k].Cells[2].Value,
+                        IsNullable = dataGridView.Rows[k].Cells[3].Value != null && (bool)dataGridView.Rows[k].Cells[3].Value,
+                        DataType = dataGridView.Rows[k].Cells[4].Value.ToString(),
+                        Size = dataGridView.Rows[k].Cells[5].Value == null ? 0 : Convert.ToInt32(dataGridView.Rows[k].Cells[5].Value.ToString()),
+                        DefaultValue = dataGridView.Rows[k].Cells[6].Value
+                    };
                     //
                     tableInfo.Columns.Add(column);
                 }
@@ -194,12 +203,15 @@ namespace DbTool
         /// <param name="e"></param>
         private void btnImportExcel_Click(object sender, EventArgs e)
         {
-            var ofg = new OpenFileDialog();
-            ofg.Multiselect = false;
+            var ofg = new OpenFileDialog
+            {
+                Multiselect = false,
+                CheckFileExists = true,
+                Filter = "Excel文件(*.xlsx)|*.xlsx|Excel97-2003(*.xls)|*.xls"
+            };
             if (ofg.ShowDialog() == DialogResult.OK)
             {
                 var path = ofg.FileName;
-
                 var isNewFileVersion = path.EndsWith(".xlsx");
                 var table = new TableEntity();
                 Stream stream = null;
@@ -234,8 +246,10 @@ namespace DbTool
                             }
                             if (row.RowNum > 1)
                             {
-                                var column = new ColumnEntity();
-                                column.ColumnName = row.Cells[0].StringCellValue.Trim();
+                                var column = new ColumnEntity
+                                {
+                                    ColumnName = row.Cells[0].StringCellValue.Trim()
+                                };
                                 if (string.IsNullOrWhiteSpace(column.ColumnName))
                                 {
                                     continue;
@@ -250,7 +264,7 @@ namespace DbTool
                                 }
                                 else
                                 {
-                                    column.Size = Convert.ToInt32(row.Cells[5].ToString());
+                                    column.Size = row.Cells[5].GetCellValue<int>();
                                 }
                                 if (row.Cells.Count > 6)
                                 {
@@ -292,7 +306,7 @@ namespace DbTool
                             table = new TableEntity();
                             var sheet = workbook.GetSheetAt(i);
                             table.TableName = sheet.SheetName;
-                            sbSqlText.AppendFormat("---------- Create Table 【{0}】 Sql -----------", table.TableName);
+
                             sbSqlText.AppendLine();
                             var rows = sheet.GetRowEnumerator();
                             while (rows.MoveNext())
@@ -305,8 +319,10 @@ namespace DbTool
                                 }
                                 if (row.RowNum > 1)
                                 {
-                                    var column = new ColumnEntity();
-                                    column.ColumnName = row.Cells[0].StringCellValue;
+                                    var column = new ColumnEntity
+                                    {
+                                        ColumnName = row.Cells[0].StringCellValue
+                                    };
                                     if (string.IsNullOrWhiteSpace(column.ColumnName))
                                     {
                                         continue;
@@ -332,9 +348,11 @@ namespace DbTool
                             }
                             sbSqlText.AppendLine(table.GenerateSqlStatement(cbGenDbDescription.Checked));
                         }
-                        var dialog = new FolderBrowserDialog();
-                        dialog.Description = "请选择要保存sql文件的文件夹";
-                        dialog.ShowNewFolderButton = true;
+                        var dialog = new FolderBrowserDialog
+                        {
+                            Description = "请选择要保存sql文件的文件夹",
+                            ShowNewFolderButton = true
+                        };
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
                             var dir = dialog.SelectedPath;
@@ -381,9 +399,11 @@ namespace DbTool
                 MessageBox.Show("请先选择要生成model的表");
                 return;
             }
-            var dialog = new FolderBrowserDialog();
-            dialog.Description = "请选择要保存excel文件的文件夹";
-            dialog.ShowNewFolderButton = true;
+            var dialog = new FolderBrowserDialog
+            {
+                Description = "请选择要保存excel文件的文件夹",
+                ShowNewFolderButton = true
+            };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var dir = dialog.SelectedPath;
@@ -393,9 +413,8 @@ namespace DbTool
                     if (cbTables.CheckedItems.Count > 0)
                     {
                         var tempFileName = cbTables.CheckedItems.Count > 1 ? dbHelper.DatabaseName : (cbTables.CheckedItems[0] as TableEntity)?.TableName;
-                        var path = dir + "\\" + tempFileName + ".xls";
+                        var path = dir + "\\" + tempFileName + ".xlsx";
                         var workbook = ExcelHelper.PrepareWorkbook(path);
-
                         foreach (var item in cbTables.CheckedItems)
                         {
                             var currentTable = item as TableEntity;
@@ -533,7 +552,6 @@ namespace DbTool
             {
                 CheckFileExists = true,
                 Multiselect = true,
-                DefaultExt = ".cs",
                 Filter = "C#文件(*.cs)|*.cs"
             };
             if (ofg.ShowDialog() == DialogResult.OK)
@@ -558,7 +576,8 @@ namespace DbTool
                         foreach (var table in tables)
                         {
                             var node = treeViewTable.Nodes.Add(table.TableName);
-                            node.Nodes.AddRange(table.Columns.Select(c => new TreeNode(c.ColumnName)).ToArray());
+                            node.ToolTipText = table.TableDescription ?? table.TableName;
+                            node.Nodes.AddRange(table.Columns.Select(c => new TreeNode(c.ColumnName) { ToolTipText = c.ColumnDescription ?? c.ColumnName }).ToArray());
                             txtCodeModelSql.AppendText(table.GenerateSqlStatement(cbGenCodeSqlDescription.Checked));
                         }
                     }
