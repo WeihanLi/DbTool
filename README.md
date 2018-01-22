@@ -15,16 +15,15 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 ### 为什么使用它
 
-1. [x] 支持数据列可空导出为可空数据类型
-2. [x] 支持导出列描述信息
-3. [x] 支持一次导出多张数据表
-4. [x] 根据表字段信息创建表及Model
-5. [x] 导入Excel文件生成创建表的SQL
-6. [x] 根据数据库表信息生成数据库表 Excel 文档
+1. [x] 根据表字段信息生成创建表 Sql（Model First）
+1. [x] 导入 Excel 文件生成创建表的 Sql（Model First）
+1. [x] 根据数据库表信息生成数据库表 Excel 文档（Db First）
+1. [x] 根据数据库表信息生成 Model 文件，支持数据列可空导出为可空数据类型/支持导出列描述信息（Db First）
+1. [x] 根据 Model 生成 sql 语句（Code First）
+1. [x] 支持一次导出多张数据表/支持一次选择多个 Model 文件
 
 ### 后续功能
 
-1. [ ] 根据 Model 生成 sql 语句，根据 Model 注释生成列描述
 1. [ ] 插件式自定义扩展Model信息
 
 ### 功能一览
@@ -33,40 +32,12 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 ![ModelFirst](resources/desc1.png)
 
+![CodeFirst](resources/desc2.png)
+
 ### 使用说明
 
-1. 设置自己的连接字符串
+1. DbFirst
 
-    ![设置连接字符串](resources/connect.png)
+1. ModelFirst
 
-2. 连接数据库
-    
-    数据库连接成功之后会在窗体左下角，显示 “数据库连接成功”
-    
-    ![设置连接字符串](resources/connect1.png)
-
-3. 选择要导出 Model 的数据库表，并设置要导出的 Model 的命名空间和前缀与后缀
-
-    Model 和 文件的默认名称是表名称，以“tab”或“tbl”或“tbl_”为前缀的表会先去掉表前缀再取表名称
-    默认命名空间是Models（不可为空），默认后缀是 Model （可以为空）
-    
-    ![设置 Model信息](resources/generateModel.png)
-
-4. 生成Model
-
-    选择要导出的表并设置Model相关信息后，点击 "生成Model" 按钮，点击按钮之后会弹出一个窗口让你选择保存 Model 文件的目录
-    
-    ![设置 Model信息](resources/chooseDir.png)
-
-    选择之后会将生成的文件保存到选择的文件夹，并自动打开资源管理器到所选目录
-    
-    ![查看生成 model](resources/generateModel1.png)
-
-5. 导入Excel
-    
-    将数据表信息填到数据模板（[下载模板](https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xls)）中，选择 ModelFirst Tab 页，点击 “导入Excel” 按钮，选择
-    要导入的已填充数据的Excel文件，生成成功后会将自动将 sql 语句拷贝到粘贴板中
-
-6. 导出 Excel
-    
-    选择要导出的数据库表之后可以导出对应表的 Excel 文档
+1. CodeFirst
