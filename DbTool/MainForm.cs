@@ -137,19 +137,23 @@ namespace DbTool
             tabControl1.Height = Size.Height;
             tabControl1.Left = 0;
             tabControl1.Top = 0;
-            dataGridView.Left = 5;
-            dataGridView.Width = Size.Width * 9 / 10;
-            dataGridView.Height = tabControl1.Height * 2 / 5;
-            txtGeneratedSqlText.Left = 5;
-            txtGeneratedSqlText.Width = Size.Width * 9 / 10;
-            txtGeneratedSqlText.Height = tabControl1.Height * 2 / 5;
-            txtGeneratedSqlText.Top = dataGridView.Height + dataGridView.Top + 5;
-            cbTables.Height = tabControl1.Height - 100;
-            treeViewTable.Width = Size.Width / 5;
-            treeViewTable.Height = tabControl1.Height * 4 / 5;
+            //DbFirst
+            cbTables.Height = Size.Height - 260;
+            lblConnStatus.Top = cbTables.Height + cbTables.Top + 10;
+            //ModelFirst
+            dataGridView.Left = 10;
+            dataGridView.Width = Size.Width - 40;
+            dataGridView.Height = (Size.Height - 120) / 2;
+            txtGeneratedSqlText.Left = 10;
+            txtGeneratedSqlText.Width = Size.Width - 40;
+            txtGeneratedSqlText.Height = (Size.Height - 120) / 2;
+            txtGeneratedSqlText.Top = dataGridView.Height + dataGridView.Top + 2;
+
+            // CodeFirst
+            treeViewTable.Height = Size.Height - 140;
             txtCodeModelSql.Left = treeViewTable.Width + treeViewTable.Left + 5;
-            txtCodeModelSql.Width = Size.Width * 7 / 10;
-            txtCodeModelSql.Height = tabControl1.Height * 4 / 5;
+            txtCodeModelSql.Width = Size.Width - treeViewTable.Width - 60;
+            txtCodeModelSql.Height = Size.Height - 140;
         }
 
         /// <summary>

@@ -78,8 +78,7 @@
             // lblConnStatus
             // 
             this.lblConnStatus.AutoSize = true;
-            this.lblConnStatus.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblConnStatus.Location = new System.Drawing.Point(0, 486);
+            this.lblConnStatus.Location = new System.Drawing.Point(3, 427);
             this.lblConnStatus.Name = "lblConnStatus";
             this.lblConnStatus.Size = new System.Drawing.Size(107, 20);
             this.lblConnStatus.TabIndex = 6;
@@ -93,7 +92,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(938, 483);
+            this.tabControl1.Size = new System.Drawing.Size(938, 509);
             this.tabControl1.TabIndex = 7;
             // 
             // tabDbPage
@@ -112,10 +111,11 @@
             this.tabDbPage.Controls.Add(this.txtNamespace);
             this.tabDbPage.Controls.Add(this.label4);
             this.tabDbPage.Controls.Add(this.label5);
+            this.tabDbPage.Controls.Add(this.lblConnStatus);
             this.tabDbPage.Location = new System.Drawing.Point(4, 29);
             this.tabDbPage.Name = "tabDbPage";
             this.tabDbPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDbPage.Size = new System.Drawing.Size(930, 450);
+            this.tabDbPage.Size = new System.Drawing.Size(930, 476);
             this.tabDbPage.TabIndex = 0;
             this.tabDbPage.Text = "DbFirst";
             this.tabDbPage.UseVisualStyleBackColor = true;
@@ -169,7 +169,7 @@
             this.cbTables.FormattingEnabled = true;
             this.cbTables.Location = new System.Drawing.Point(10, 139);
             this.cbTables.Name = "cbTables";
-            this.cbTables.Size = new System.Drawing.Size(354, 298);
+            this.cbTables.Size = new System.Drawing.Size(327, 277);
             this.cbTables.TabIndex = 17;
             // 
             // btnExportExcel
@@ -261,7 +261,7 @@
             this.tabModelPage.Location = new System.Drawing.Point(4, 29);
             this.tabModelPage.Name = "tabModelPage";
             this.tabModelPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabModelPage.Size = new System.Drawing.Size(930, 450);
+            this.tabModelPage.Size = new System.Drawing.Size(930, 476);
             this.tabModelPage.TabIndex = 1;
             this.tabModelPage.Text = "ModelFirst";
             this.tabModelPage.UseVisualStyleBackColor = true;
@@ -435,7 +435,7 @@
             this.tabCodePage.Location = new System.Drawing.Point(4, 29);
             this.tabCodePage.Name = "tabCodePage";
             this.tabCodePage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCodePage.Size = new System.Drawing.Size(930, 450);
+            this.tabCodePage.Size = new System.Drawing.Size(930, 476);
             this.tabCodePage.TabIndex = 2;
             this.tabCodePage.Text = "CodeFirst";
             this.tabCodePage.UseVisualStyleBackColor = true;
@@ -464,7 +464,6 @@
             this.txtCodeModelSql.Location = new System.Drawing.Point(234, 65);
             this.txtCodeModelSql.Multiline = true;
             this.txtCodeModelSql.Name = "txtCodeModelSql";
-            this.txtCodeModelSql.ReadOnly = true;
             this.txtCodeModelSql.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtCodeModelSql.Size = new System.Drawing.Size(686, 379);
             this.txtCodeModelSql.TabIndex = 2;
@@ -485,9 +484,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 506);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.lblConnStatus);
             this.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "MainForm";
             this.Text = "DbTool";
             this.Resize += new System.EventHandler(this.MainForm_Resize);
@@ -500,7 +498,6 @@
             this.tabCodePage.ResumeLayout(false);
             this.tabCodePage.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
