@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
 
@@ -133,17 +134,21 @@ namespace DbTool
         private void MainForm_Resize(object sender, EventArgs e)
         {
             tabControl1.Width = Size.Width;
-            tabControl1.Height = Size.Height - 160;
-            dataGridView.Width = Size.Width - 20;
+            tabControl1.Height = Size.Height;
+            tabControl1.Left = 0;
+            tabControl1.Top = 0;
+            dataGridView.Left = 5;
+            dataGridView.Width = Size.Width * 9 / 10;
             dataGridView.Height = tabControl1.Height * 2 / 5;
-            txtGeneratedSqlText.Width = Size.Width - 20;
+            txtGeneratedSqlText.Left = 5;
+            txtGeneratedSqlText.Width = Size.Width * 9 / 10;
             txtGeneratedSqlText.Height = tabControl1.Height * 2 / 5;
-            txtGeneratedSqlText.Top = dataGridView.Height + dataGridView.Top + 10;
+            txtGeneratedSqlText.Top = dataGridView.Height + dataGridView.Top + 5;
             cbTables.Height = tabControl1.Height - 100;
             treeViewTable.Width = Size.Width / 5;
             treeViewTable.Height = tabControl1.Height * 4 / 5;
-            txtCodeModelSql.Left = treeViewTable.Width + treeViewTable.Left + 10;
-            txtCodeModelSql.Width = Size.Width * 4 / 5;
+            txtCodeModelSql.Left = treeViewTable.Width + treeViewTable.Left + 5;
+            txtCodeModelSql.Width = Size.Width * 7 / 10;
             txtCodeModelSql.Height = tabControl1.Height * 4 / 5;
         }
 
