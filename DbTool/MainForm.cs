@@ -102,7 +102,7 @@ namespace DbTool
                                 tableEntity.TableName = currentTable.TableName;
                                 tableEntity.TableDescription = currentTable.TableDescription;
                                 tableEntity.Columns = dbHelper.GetColumnsInfo(tableEntity.TableName);
-                                var content = tableEntity.GenerateModelText(ns, prefix, suffix, cbGenField.Checked);
+                                var content = tableEntity.GenerateModelText(ns, prefix, suffix, cbGenField.Checked, cbGenDescriptionAttr.Checked);
                                 var path = dir + "\\" + tableEntity.TableName.TrimTableName() + ".cs";
                                 File.WriteAllText(path, content, Encoding.UTF8);
                             }

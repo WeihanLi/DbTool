@@ -21,8 +21,9 @@ namespace DbTool
         /// <param name="prefix"> model class前缀 </param>
         /// <param name="suffix"> model class后缀 </param>
         /// <param name="genPrivateField">生成private的字段</param>
+        /// <param name="genDescriptionAttr">生成 Description Attribute</param>
         /// <returns></returns>
-        internal static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix, bool genPrivateField = false)
+        internal static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix, bool genPrivateField = false, bool genDescriptionAttr = true)
         {
             if (tableEntity == null)
             {
@@ -38,7 +39,10 @@ namespace DbTool
             {
                 sbText.AppendLine(
                     $"\t/// <summary>{Environment.NewLine}\t/// {tableEntity.TableDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t/// </summary>");
-                sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
+                if (genDescriptionAttr)
+                {
+                    sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
+                }
             }
             sbText.AppendLine($"\tpublic class {prefix}{tableEntity.TableName.Trim()}{suffix}");
             sbText.AppendLine("\t{");
@@ -63,11 +67,14 @@ namespace DbTool
                     {
                         sbText.AppendLine(
                             $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        sbText.AppendLine($"\t\t[Description(\"{(item.IsPrimaryKey && !item.ColumnDescription.Contains("主键") ? item.ColumnDescription.Replace(Environment.NewLine, " ") + "(主键)" : item.ColumnDescription.Replace(Environment.NewLine, " "))}\")]");
+                        if (genDescriptionAttr)
+                        {
+                            sbText.AppendLine($"\t\t[Description(\"{(item.IsPrimaryKey && !item.ColumnDescription.Contains("主键") ? item.ColumnDescription.Replace(Environment.NewLine, " ") + "(主键)" : item.ColumnDescription.Replace(Environment.NewLine, " "))}\")]");
+                        }
                     }
                     else
                     {
-                        if (item.IsPrimaryKey)
+                        if (item.IsPrimaryKey && genDescriptionAttr)
                         {
                             sbText.AppendLine($"\t\t[Description(\"主键\")]");
                         }
@@ -98,7 +105,10 @@ namespace DbTool
                     {
                         sbText.AppendLine(
                             $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
+                        if (genDescriptionAttr)
+                        {
+                            sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
+                        }
                     }
                     sbText.AppendLine($"\t\tpublic {item.DataType} {item.ColumnName} {{ get; set; }}");
                 }

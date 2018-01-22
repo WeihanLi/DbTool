@@ -34,6 +34,7 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.txtSuffix = new System.Windows.Forms.TextBox();
             this.txtConnString = new System.Windows.Forms.TextBox();
+            this.cbGenDescriptionAttr = new System.Windows.Forms.CheckBox();
             this.cbGenField = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cbTables = new System.Windows.Forms.CheckedListBox();
@@ -78,7 +79,7 @@
             // lblConnStatus
             // 
             this.lblConnStatus.AutoSize = true;
-            this.lblConnStatus.Location = new System.Drawing.Point(3, 427);
+            this.lblConnStatus.Location = new System.Drawing.Point(3, 446);
             this.lblConnStatus.Name = "lblConnStatus";
             this.lblConnStatus.Size = new System.Drawing.Size(107, 20);
             this.lblConnStatus.TabIndex = 6;
@@ -100,6 +101,7 @@
             this.tabDbPage.Controls.Add(this.btnConnect);
             this.tabDbPage.Controls.Add(this.txtSuffix);
             this.tabDbPage.Controls.Add(this.txtConnString);
+            this.tabDbPage.Controls.Add(this.cbGenDescriptionAttr);
             this.tabDbPage.Controls.Add(this.cbGenField);
             this.tabDbPage.Controls.Add(this.label1);
             this.tabDbPage.Controls.Add(this.cbTables);
@@ -145,10 +147,22 @@
             this.txtConnString.Size = new System.Drawing.Size(487, 26);
             this.txtConnString.TabIndex = 17;
             // 
+            // cbGenDescriptionAttr
+            // 
+            this.cbGenDescriptionAttr.AutoSize = true;
+            this.cbGenDescriptionAttr.Checked = true;
+            this.cbGenDescriptionAttr.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbGenDescriptionAttr.Location = new System.Drawing.Point(119, 83);
+            this.cbGenDescriptionAttr.Name = "cbGenDescriptionAttr";
+            this.cbGenDescriptionAttr.Size = new System.Drawing.Size(201, 24);
+            this.cbGenDescriptionAttr.TabIndex = 18;
+            this.cbGenDescriptionAttr.Text = "生成 Description Atrribute";
+            this.cbGenDescriptionAttr.UseVisualStyleBackColor = true;
+            // 
             // cbGenField
             // 
             this.cbGenField.AutoSize = true;
-            this.cbGenField.Location = new System.Drawing.Point(729, 56);
+            this.cbGenField.Location = new System.Drawing.Point(10, 83);
             this.cbGenField.Name = "cbGenField";
             this.cbGenField.Size = new System.Drawing.Size(112, 24);
             this.cbGenField.TabIndex = 18;
@@ -167,7 +181,7 @@
             // cbTables
             // 
             this.cbTables.FormattingEnabled = true;
-            this.cbTables.Location = new System.Drawing.Point(10, 139);
+            this.cbTables.Location = new System.Drawing.Point(10, 158);
             this.cbTables.Name = "cbTables";
             this.cbTables.Size = new System.Drawing.Size(327, 277);
             this.cbTables.TabIndex = 17;
@@ -175,7 +189,7 @@
             // btnExportExcel
             // 
             this.btnExportExcel.Enabled = false;
-            this.btnExportExcel.Location = new System.Drawing.Point(219, 89);
+            this.btnExportExcel.Location = new System.Drawing.Point(219, 112);
             this.btnExportExcel.Name = "btnExportExcel";
             this.btnExportExcel.Size = new System.Drawing.Size(118, 38);
             this.btnExportExcel.TabIndex = 16;
@@ -193,7 +207,7 @@
             // btnGenerateModel0
             // 
             this.btnGenerateModel0.Enabled = false;
-            this.btnGenerateModel0.Location = new System.Drawing.Point(119, 89);
+            this.btnGenerateModel0.Location = new System.Drawing.Point(119, 112);
             this.btnGenerateModel0.Name = "btnGenerateModel0";
             this.btnGenerateModel0.Size = new System.Drawing.Size(94, 38);
             this.btnGenerateModel0.TabIndex = 16;
@@ -204,7 +218,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 98);
+            this.label2.Location = new System.Drawing.Point(8, 121);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(107, 20);
             this.label2.TabIndex = 6;
@@ -542,6 +556,7 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn DataType;
         private System.Windows.Forms.DataGridViewTextBoxColumn FieldSize;
         private System.Windows.Forms.DataGridViewTextBoxColumn DefaultValue;
+        private System.Windows.Forms.CheckBox cbGenDescriptionAttr;
     }
 }
 

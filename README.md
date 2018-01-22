@@ -9,7 +9,7 @@
 这是一个将数据库表生成对应Model的小工具，可以利用这个小工具生成数据库表对应的Model，并且会判断数据表列是否可以为空，可以为空的情况下会使用可空的数据类型，如
 int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性名称上添加列描述的注释，支持导出多个表。
 
-**注：不支持外键等需要关联另外一张表的数据关系**
+**注：暂时不支持外键等需要关联另外一张表的数据关系**
 
 [下载DbTool](https://github.com/WeihanLi/DbTool/releases)
 
@@ -38,6 +38,48 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 1. DbFirst
 
+    1. 导出数据库表到Model
+
+        1. 设置数据库连接字符串，并连接数据库
+        1. 设置导出 Model 选项
+        1. 选择要导出 Model 的数据库表
+        1. 导出 Model
+
+    > Model 设置选项说明：
+    > - model的命名空间：生成的 model 所在的命名空间，默认为 Models，不可为空，为空则使用默认值Models
+    > - model前缀：表名的基础上加的前缀，默认为空
+    > - model后缀：表名的基础上加的后缀，默认为Model，可以为空
+    > - 生成私有字段，默认为 `false`，如果为`false`则使用自动属性的代码风格，反之，使用传统 `get;set;` 风格代码，如：
+    >     ``` csharp
+    >     public int Id { get; set; } //自动属性风格代码
+    >
+    >     private int id1;
+    >     public int Id1 { get{ return id1; } set { id1 = value; } } //传统get;set风格代码
+    >     ```
+    > - 生成 Description Attribute，默认值为 `true`，如果为`true`则会在属性字段上生成一个`[Description]`的Attribute，如果为false则不生成，效果如下：
+    >   ``` csharp
+    >   /// <summary>用户名</summary>
+    >   [Description("用户名")]
+    >   public string UserName { get;set; }
+    >   ```
+    > - 生成 Model 名称的规则说明：生成的Model的名称由前缀和表名称及后缀拼接而成，如果表名以 `tab`或`tab_`或`tbl`或`tbl_`这些开头，则会先把这些移除掉再拼接
+
+    1. 导出数据库表到Excel
+
+        1. 设置数据库连接字符串，并连接数据库
+        1. 选择要导出到 Excel 的数据库表
+        1. 导出到 Excel
+
 1. ModelFirst
 
+    1. 手动填写信息或者先填写 Excel 再进行导入操作
+
 1. CodeFirst
+
+    1. 根据已有的 Model 生成创建表的 sql ，字段注释会从属性的 `Description` Attribute 中获取
+    1. 左侧生成表字段信息，右侧生成创建表的sql，生成的 Sql 仅供参考，请自行根据需要调整数据类型以及字段长度
+
+
+### Contact Me
+
+email me at <weihanli@outlook.com>
