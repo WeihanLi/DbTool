@@ -1,8 +1,8 @@
 # DbTool
 
-### BuildStatus
-
 [![Build status](https://ci.appveyor.com/api/projects/status/vo1kipiyqlo8r2kg/branch/master?svg=true)](https://ci.appveyor.com/project/WeihanLi/dbtool/branch/master)
+
+[![GitHub release](https://img.shields.io/github/release/WeihanLi/DbTool.svg?style=plastic)](https://github.com/WeihanLi/DbTool/releases/latest)
 
 ### 简介
 
