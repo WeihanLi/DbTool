@@ -472,6 +472,7 @@
             this.treeViewTable.Name = "treeViewTable";
             this.treeViewTable.Size = new System.Drawing.Size(206, 382);
             this.treeViewTable.TabIndex = 3;
+            this.treeViewTable.ShowNodeToolTips = true;
             // 
             // txtCodeModelSql
             // 
