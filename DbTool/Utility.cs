@@ -31,7 +31,10 @@ namespace DbTool
             }
             var sbText = new StringBuilder();
             sbText.AppendLine("using System;");
-            sbText.AppendLine("using System.ComponentModel;");
+            if (genDescriptionAttr)
+            {
+                sbText.AppendLine("using System.ComponentModel;");
+            }
             sbText.AppendLine();
             sbText.AppendLine($"namespace {modelNamespace}");
             sbText.AppendLine("{");
