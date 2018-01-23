@@ -74,7 +74,7 @@ matrix:
 
 # scripts to run before build
 before_build:
-  - nuget restore DbTool.sln
+  - dotnet restore DbTool.sln
 # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
 before_package:
   
@@ -83,6 +83,6 @@ after_build:
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - msbuild /p:Configuration=Release DbTool.sln
+  - dotnet build -c Release DbTool.sln
 # to disable automatic builds
 #build: off
