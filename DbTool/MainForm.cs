@@ -421,7 +421,7 @@ namespace DbTool
                     var tableEntity = new TableEntity();
                     if (cbTables.CheckedItems.Count > 0)
                     {
-                        var tempFileName = cbTables.CheckedItems.Count > 1 ? dbHelper.DatabaseName : (cbTables.CheckedItems[0] as TableEntity)?.TableName;
+                        var tempFileName = cbTables.CheckedItems.Count > 1 ? dbHelper.DatabaseName : ((cbTables.CheckedItems[0] as TableEntity)?.TableName ?? dbHelper.DatabaseName);
                         var path = dir + "\\" + tempFileName + ".xlsx";
                         var workbook = ExcelHelper.PrepareWorkbook(path);
                         foreach (var item in cbTables.CheckedItems)
