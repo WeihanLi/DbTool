@@ -468,13 +468,13 @@ namespace DbTool
                 return "";
             }
             tableName = tableName.Trim();
-            if (tableName.StartsWith("tab") || tableName.StartsWith("tbl"))
-            {
-                return tableName.Substring(3);
-            }
-            else if (tableName.StartsWith("tab_") || tableName.StartsWith("tbl_"))
+            if (tableName.StartsWith("tab_") || tableName.StartsWith("tbl_"))
             {
                 tableName = tableName.Substring(4);
+            }
+            else if (tableName.StartsWith("tab") || tableName.StartsWith("tbl"))
+            {
+                return tableName.Substring(3);
             }
             return tableName;
         }
