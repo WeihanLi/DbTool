@@ -18,7 +18,7 @@ namespace DbTool
         /// <summary>
         /// 数据库助手
         /// </summary>
-        private DbHelper dbHelper;
+        private DbHelper _dbHelper;
 
         public MainForm()
         {
@@ -42,14 +42,14 @@ namespace DbTool
             }
             try
             {
-                dbHelper = new DbHelper(txtConnString.Text);
-                var tables = dbHelper.GetTablesInfo();
+                _dbHelper = new DbHelper(txtConnString.Text);
+                var tables = _dbHelper.GetTablesInfo();
                 var tableList = (from table in tables orderby table.TableName select table).ToList();
                 //
                 cbTables.DataSource = tableList;
                 cbTables.DisplayMember = "TableName";
                 //
-                lblConnStatus.Text = string.Format(Properties.Resources.ConnectSuccess, dbHelper.DatabaseName);
+                lblConnStatus.Text = string.Format(Properties.Resources.ConnectSuccess, _dbHelper.DatabaseName);
                 btnGenerateModel0.Enabled = true;
                 btnExportExcel.Enabled = true;
             }
@@ -66,7 +66,7 @@ namespace DbTool
         /// <param name="e"></param>
         private void btnGenerateModel_Click(object sender, EventArgs e)
         {
-            if (dbHelper == null)
+            if (_dbHelper == null)
             {
                 MessageBox.Show("请先连接数据库");
                 return;
@@ -101,7 +101,7 @@ namespace DbTool
                             {
                                 tableEntity.TableName = currentTable.TableName;
                                 tableEntity.TableDescription = currentTable.TableDescription;
-                                tableEntity.Columns = dbHelper.GetColumnsInfo(tableEntity.TableName);
+                                tableEntity.Columns = _dbHelper.GetColumnsInfo(tableEntity.TableName);
                                 var content = tableEntity.GenerateModelText(ns, prefix, suffix, cbGenField.Checked, cbGenDescriptionAttr.Checked);
                                 var path = dir + "\\" + tableEntity.TableName.TrimTableName() + ".cs";
                                 File.WriteAllText(path, content, Encoding.UTF8);
@@ -297,12 +297,6 @@ namespace DbTool
                         }
                         //sql
                         var sql = table.GenerateSqlStatement(cbGenDbDescription.Checked);
-                        //注：创建数据表个人觉得属于危险操作，暂时先不考虑直接在数据库中生成表，可以将创建表的sql粘贴到所需执行的地方二次确认后再创建数据库表，如果确实要在数据库中直接生成表可以取消注释以下代码
-                        ////数据库连接字符串不为空则创建表
-                        //if (!String.IsNullOrEmpty(txtConnString.Text))
-                        //{
-                        //    new DbHelper(txtConnString.Text).ExecuteNonQuery(sql);
-                        //}
                         txtGeneratedSqlText.Text = sql;
                         Clipboard.SetText(sql);
                         MessageBox.Show("生成成功，sql语句已赋值至粘贴板");
@@ -340,15 +334,10 @@ namespace DbTool
                                     column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
                                     column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
                                     column.DataType = row.Cells[4].StringCellValue;
-                                    if (string.IsNullOrEmpty(row.Cells[5].ToString()))
-                                    {
-                                        column.Size = Utility.GetDefaultSizeForDbType(column.DataType);
-                                    }
-                                    else
-                                    {
-                                        column.Size = Convert.ToInt32(row.Cells[5].ToString());
-                                    }
-                                    if (row.Cells.Count > 6)
+
+                                    column.Size = string.IsNullOrEmpty(row.Cells[5].ToString()) ? Utility.GetDefaultSizeForDbType(column.DataType) : Convert.ToInt32(row.Cells[5].ToString());
+
+                                    if (row.Cells.Count > 6 && !string.IsNullOrWhiteSpace(row.Cells[6].ToString()))
                                     {
                                         column.DefaultValue = row.Cells[6].ToString();
                                     }
@@ -398,7 +387,7 @@ namespace DbTool
         /// <param name="e"></param>
         private void btnExportExcel_Click(object sender, EventArgs e)
         {
-            if (dbHelper == null)
+            if (_dbHelper == null)
             {
                 MessageBox.Show("请先连接数据库");
                 return;
@@ -421,7 +410,7 @@ namespace DbTool
                     var tableEntity = new TableEntity();
                     if (cbTables.CheckedItems.Count > 0)
                     {
-                        var tempFileName = cbTables.CheckedItems.Count > 1 ? dbHelper.DatabaseName : ((cbTables.CheckedItems[0] as TableEntity)?.TableName ?? dbHelper.DatabaseName);
+                        var tempFileName = cbTables.CheckedItems.Count > 1 ? _dbHelper.DatabaseName : ((cbTables.CheckedItems[0] as TableEntity)?.TableName ?? _dbHelper.DatabaseName);
                         var path = dir + "\\" + tempFileName + ".xlsx";
                         var workbook = ExcelHelper.PrepareWorkbook(path);
                         foreach (var item in cbTables.CheckedItems)
@@ -433,7 +422,7 @@ namespace DbTool
                             }
                             tableEntity.TableName = currentTable.TableName;
                             tableEntity.TableDescription = currentTable.TableDescription;
-                            tableEntity.Columns = dbHelper.GetColumnsInfo(tableEntity.TableName);
+                            tableEntity.Columns = _dbHelper.GetColumnsInfo(tableEntity.TableName);
                             //Create Sheet
                             var tempSheet = workbook.CreateSheet(tableEntity.TableName);
                             //create title
