@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.7.3">
     </PackageReference>
-    <PackageReference Include="WeihanLi.Npoi" Version="1.0.0.0-beta">
+    <PackageReference Include="WeihanLi.Npoi" Version="1.0.0">
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
