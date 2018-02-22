@@ -26,7 +26,7 @@ namespace DbTool
 #if DEBUG
             txtConnString.Text = "server=.;database=AccountingApp;uid=liweihan;pwd=Admin888";
 #endif
-            lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xls");
+            lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xlsx");
         }
 
         /// <summary>
