@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using WeihanLi.Extensions;
 
 namespace DbTool
@@ -23,7 +25,22 @@ namespace DbTool
                                                                                            AND [EP].[minor_id] = 0;";
 
         /// <summary>
+        /// 查询MySql数据库中的表
+        /// @dbName 数据库名称
+        /// </summary>
+        private const string QueryDbTablesSqlForMysql = @"SELECT
+	@dbName AS DatabaseName,
+    `ENGINE` AS TableSchema,
+	TABLE_NAME AS TableName,
+	TABLE_COMMENT AS TableDescription
+FROM
+	information_schema.`TABLES`
+WHERE
+	table_schema = @dbName";
+
+        /// <summary>
         /// 查询数据库表字段信息SQL
+        /// @tableName 数据库表名称
         /// </summary>
         private const string QueryColumnsSql = @"SELECT  t.[name] AS TableName ,
                                                                                         c.[name] AS ColumnName ,
@@ -44,6 +61,26 @@ namespace DbTool
                                                                                                                                     AND dc.[type] = 'D'
                                                                                 WHERE   t.name = @tableName
                                                                                 ORDER BY c.[column_id];";
+
+        /// <summary>
+        /// 查询MySql列信息
+        /// @dbName 数据库名称
+        /// @tableName 表名称
+        /// </summary>
+        private const string QueryColumnsSqlForMySql = @"SELECT
+	TABLE_NAME AS TableName,
+	COLUMN_NAME AS ColumnName,
+	COLUMN_Comment AS ColumnDescription,
+	IF(IS_NULLABLE='YES','True','False') AS IsNullable,
+	DATA_TYPE AS DataType,
+	CHARACTER_MAXIMUM_LENGTH AS Size,
+	IF(COLUMN_KEY != '','True','False') AS IsPrimaryKey,
+	COLUMN_DEFAULT AS DefaultValue
+FROM
+	information_schema.`COLUMNS`
+WHERE
+	table_schema = @dbName
+AND table_name = @tableName;";
 
         /// <summary>
         /// 表描述
@@ -98,17 +135,19 @@ ELSE
 END";
 
         private readonly string _connString;
+        private readonly bool _isSqlServer;
 
-        private SqlConnection _conn;
+        private DbConnection _conn;
 
         /// <summary>
         /// 数据库名称
         /// </summary>
         public string DatabaseName => _conn.Database;
 
-        public DbHelper(string connString)
+        public DbHelper(string connString, bool isSqlServer = true)
         {
             _connString = connString;
+            _isSqlServer = isSqlServer;
             InitSqlConnection();
         }
 
@@ -116,7 +155,7 @@ END";
         {
             if (null == _conn || _conn.ConnectionString.IsNullOrEmpty())
             {
-                _conn = new SqlConnection(_connString);
+                _conn = _isSqlServer ? (DbConnection)new SqlConnection(_connString) : new MySqlConnection(_connString);
             }
         }
 
@@ -126,7 +165,7 @@ END";
         /// <returns></returns>
         public List<TableEntity> GetTablesInfo()
         {
-            return _conn.Select<TableEntity>(QueryDbTablesSql).Chain(t => _conn.Close());
+            return _conn.Select<TableEntity>(_isSqlServer ? QueryDbTablesSql : QueryDbTablesSqlForMysql, new { dbName = DatabaseName }).Chain(t => _conn.Close());
         }
 
         /// <summary>
@@ -140,7 +179,10 @@ END";
             {
                 throw new ArgumentNullException(nameof(tableName));
             }
-            return _conn.Select<ColumnEntity>(QueryColumnsSql, new { tableName }).Chain(t => _conn.Close());
+            return _conn.Select<ColumnEntity>(
+                   _isSqlServer ? QueryColumnsSql : QueryColumnsSqlForMySql,
+                new { dbName = DatabaseName, tableName })
+                .Chain(t => _conn.Close());
         }
     }
 }

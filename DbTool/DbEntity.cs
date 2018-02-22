@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WeihanLi.Extensions;
 
 namespace DbTool
 {
@@ -46,7 +47,7 @@ namespace DbTool
         /// <summary>
         /// 表架构 scheme
         /// </summary>
-        public string TableSchema { get; set; } = "dbo";
+        public string TableSchema { get; set; }
 
         /// <summary>
         /// 列信息
@@ -64,20 +65,22 @@ namespace DbTool
     /// </summary>
     public class ColumnEntity
     {
+        private string _columnDescription;
+        private string _dataType;
+        private object _defaultValue;
+
         /// <summary>
         /// 列名称
         /// </summary>
         public string ColumnName { get; set; }
-
-        private string columnDescription;
 
         /// <summary>
         /// 列描述
         /// </summary>
         public string ColumnDescription
         {
-            get => columnDescription;
-            set => columnDescription = !string.IsNullOrEmpty(value) ? value : "";
+            get => _columnDescription;
+            set => _columnDescription = !string.IsNullOrEmpty(value) ? value : "";
         }
 
         /// <summary>
@@ -98,11 +101,47 @@ namespace DbTool
         /// <summary>
         /// 数据类型
         /// </summary>
-        public string DataType { get; set; }
+        public string DataType
+        {
+            get => _dataType;
+            set => _dataType = value.ToUpper();
+        }
 
         /// <summary>
         /// 默认值
         /// </summary>
-        public object DefaultValue { get; set; }
+        public object DefaultValue
+        {
+            get => _defaultValue;
+            set
+            {
+                if (null == value)
+                {
+                    _defaultValue = null;
+                    return;
+                }
+
+                var str = value.ToString().ToUpper();
+                if ((str.Contains("GETDATE") || str.Contains("NOW") || str.Contains("CURRENT_TIMESTAMP")) && (_dataType.Contains("DATE") || _dataType.Contains("TIME")))
+                {
+                    _defaultValue = "DateTime.Now";
+                    return;
+                }
+
+                if (_dataType.Equals("BIT"))
+                {
+                    if (value is int)
+                    {
+                        _defaultValue = value.To<int>() == 1;
+                        return;
+                    }
+
+                    if (str.StartsWith("b'"))
+                    {
+                        _defaultValue = str.Substring(2, 1);
+                    }
+                }
+            }
+        }
     }
 }

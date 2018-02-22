@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTool", "DbTool\DbTool.csproj", "{A6D854F4-DB8D-4D13-8E6F-74215A73525E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbTool", "DbTool\DbTool.csproj", "{A6D854F4-DB8D-4D13-8E6F-74215A73525E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38A50AF5-39DF-4B53-B6B9-F2CF05185D25}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTool.Test", "DbTool.Test\DbTool.Test.csproj", "{B18883F7-FCF4-4B99-AAEE-4FA8F623B452}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +23,15 @@ Global
 		{A6D854F4-DB8D-4D13-8E6F-74215A73525E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6D854F4-DB8D-4D13-8E6F-74215A73525E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6D854F4-DB8D-4D13-8E6F-74215A73525E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B18883F7-FCF4-4B99-AAEE-4FA8F623B452}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B18883F7-FCF4-4B99-AAEE-4FA8F623B452}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B18883F7-FCF4-4B99-AAEE-4FA8F623B452}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B18883F7-FCF4-4B99-AAEE-4FA8F623B452}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA62B63B-D806-4F28-A365-7FAE5B0E8341}
 	EndGlobalSection
 EndGlobal

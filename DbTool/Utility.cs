@@ -11,7 +11,7 @@ namespace DbTool
     /// <summary>
     /// 工具类
     /// </summary>
-    internal static class Utility
+    public static class Utility
     {
         /// <summary>
         /// 根据数据库表列信息，生成model
@@ -23,7 +23,7 @@ namespace DbTool
         /// <param name="genPrivateField">生成private的字段</param>
         /// <param name="genDescriptionAttr">生成 Description Attribute</param>
         /// <returns></returns>
-        internal static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix, bool genPrivateField = false, bool genDescriptionAttr = true)
+        public static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix, bool genPrivateField = false, bool genDescriptionAttr = true)
         {
             if (tableEntity == null)
             {
@@ -72,7 +72,7 @@ namespace DbTool
                             $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
                         if (genDescriptionAttr)
                         {
-                            sbText.AppendLine($"\t\t[Description(\"{(item.IsPrimaryKey && !item.ColumnDescription.Contains("主键") ? item.ColumnDescription.Replace(Environment.NewLine, " ") + "(主键)" : item.ColumnDescription.Replace(Environment.NewLine, " "))}\")]");
+                            sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
                         }
                     }
                     else
@@ -126,7 +126,7 @@ namespace DbTool
         /// </summary>
         /// <param name="type">Fcl 类型</param>
         /// <returns></returns>
-        internal static DbType FclType2DbType(Type type)
+        public static DbType FclType2DbType(Type type)
         {
             var typeFullName = type.Unwrap().FullName;
 
@@ -179,7 +179,7 @@ namespace DbTool
         /// <param name="dbType"> 数据库数据类型 </param>
         /// <param name="isNullable"> 该数据列是否可以为空 </param>
         /// <returns></returns>
-        internal static string SqlDbType2FclType(string dbType, bool isNullable = true)
+        public static string SqlDbType2FclType(string dbType, bool isNullable = true)
         {
             var sqlDbType = (DbType)Enum.Parse(typeof(DbType), dbType, true);
             string type;
@@ -263,7 +263,7 @@ namespace DbTool
         /// <param name="dbType">数据类型</param>
         /// <param name="defaultLength">自定义默认长度</param>
         /// <returns></returns>
-        internal static int GetDefaultSizeForDbType(string dbType, int defaultLength = 64)
+        public static int GetDefaultSizeForDbType(string dbType, int defaultLength = 64)
         {
             var sqlDbType = (DbType)Enum.Parse(typeof(DbType), dbType, true);
             var len = defaultLength;
@@ -380,52 +380,56 @@ namespace DbTool
         /// 根据表信息生成sql语句
         /// </summary>
         /// <param name="tableEntity"> 表信息 </param>
-        /// <param name="genDescriotion">生成描述信息</param>
+        /// <param name="genDescription">生成描述信息</param>
+        /// <param name="isSqlServer">is db SqlServer</param>
         /// <returns></returns>
-        internal static string GenerateSqlStatement(this TableEntity tableEntity, bool genDescriotion = true)
+        public static string GenerateSqlStatement(this TableEntity tableEntity, bool genDescription = true, bool isSqlServer = true)
         {
             if (string.IsNullOrEmpty(tableEntity.TableName))
             {
                 return "";
             }
-            StringBuilder sbSqlText = new StringBuilder(), sbSqlDescText = new StringBuilder();
-            //create table
-            sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName.Trim()}】 Sql -----------");
-            sbSqlText.AppendFormat("CREATE TABLE [{0}].[{1}](", tableEntity.TableSchema, tableEntity.TableName.Trim());
-            //create description
-            if (genDescriotion && !string.IsNullOrEmpty(tableEntity.TableDescription))
+            var sbSqlText = new StringBuilder();
+
+            if (isSqlServer)
             {
-                sbSqlDescText.AppendFormat(DbHelper.AddTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
-            }
-            if (tableEntity.Columns.Count > 0)
-            {
-                foreach (var col in tableEntity.Columns)
+                var sbSqlDescText = new StringBuilder();
+                //create table
+                sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName.Trim()}】 Sql -----------");
+                sbSqlText.Append($"CREATE TABLE [{(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "dbo" : tableEntity.TableSchema)}].[{tableEntity.TableName.Trim()}](");
+                //create description
+                if (genDescription && !string.IsNullOrEmpty(tableEntity.TableDescription))
                 {
-                    sbSqlText.AppendLine();
-                    sbSqlText.AppendFormat("\t[{0}] {1}", col.ColumnName.Trim(), col.DataType);
-                    if (col.DataType.ToUpperInvariant().Contains("CHAR"))
+                    sbSqlDescText.AppendFormat(DbHelper.AddTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
+                }
+                if (tableEntity.Columns.Count > 0)
+                {
+                    foreach (var col in tableEntity.Columns)
                     {
-                        sbSqlText.AppendFormat("({0})", col.Size.ToString());
-                    }
-                    if (col.IsPrimaryKey)
-                    {
-                        sbSqlText.Append(" PRIMARY KEY ");
-                    }
-                    //Nullable
-                    if (!col.IsNullable)
-                    {
-                        sbSqlText.Append(" NOT NULL ");
-                    }
-                    //Default Value
-                    if (col.DefaultValue != null && !string.IsNullOrEmpty(col.DefaultValue.ToString()))
-                    {
-                        if (col.IsPrimaryKey && col.DataType.ToUpper().Contains("INT"))
+                        sbSqlText.AppendLine();
+                        sbSqlText.AppendFormat("\t[{0}] {1}", col.ColumnName.Trim(), col.DataType);
+                        if (col.DataType.ToUpperInvariant().Contains("CHAR"))
                         {
-                            sbSqlText.Append(" IDENTITY(1,1) ");
+                            sbSqlText.Append($"({col.Size})");
                         }
-                        else
+                        if (col.IsPrimaryKey)
                         {
-                            if (col.DataType.ToUpperInvariant().Contains("CHAR") && !col.DefaultValue.ToString().StartsWith("N'"))
+                            sbSqlText.Append(" PRIMARY KEY");
+                            if (col.DataType.Contains("INT"))
+                            {
+                                sbSqlText.Append(" IDENTITY(1,1) ");
+                            }
+                        }
+                        //Nullable
+                        if (!col.IsNullable)
+                        {
+                            sbSqlText.Append(" NOT NULL");
+                        }
+                        //Default Value
+                        if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
+                        {
+                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
+                                && !col.DefaultValue.ToString().StartsWith("N'") && !col.DefaultValue.ToString().StartsWith("'"))
                             {
                                 sbSqlText.AppendFormat(" DEFAULT(N'{0}')", col.DefaultValue);
                             }
@@ -434,26 +438,85 @@ namespace DbTool
                                 sbSqlText.AppendFormat(" DEFAULT({0}) ", col.DefaultValue);
                             }
                         }
+                        //
+                        sbSqlText.Append(",");
+                        //
+                        if (genDescription && !string.IsNullOrEmpty(col.ColumnDescription))
+                        {
+                            sbSqlDescText.AppendLine();
+                            sbSqlDescText.AppendFormat(DbHelper.AddColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
+                        }
                     }
-                    //
-                    sbSqlText.Append(",");
-                    //
-                    if (genDescriotion && !string.IsNullOrEmpty(col.ColumnDescription))
-                    {
-                        sbSqlDescText.AppendLine();
-                        sbSqlDescText.AppendFormat(DbHelper.AddColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
-                    }
+                    sbSqlText.Remove(sbSqlText.Length - 1, 1);
+                    sbSqlText.AppendLine();
                 }
-                sbSqlText.Remove(sbSqlText.Length - 1, 1);
+                sbSqlText.AppendLine(");");
+                if (genDescription && sbSqlDescText.Length > 0)
+                {
+                    sbSqlText.AppendLine();
+                    sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Description Sql -----------");
+                    sbSqlText.Append(sbSqlDescText);
+                }
                 sbSqlText.AppendLine();
             }
-            sbSqlText.AppendLine(");");
-            if (genDescriotion && sbSqlDescText.Length > 0)
+            else
             {
-                sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Description Sql -----------");
-                sbSqlText.Append(sbSqlDescText);
+                sbSqlText.AppendLine($"# ---------- Create Table 【{tableEntity.TableName.Trim()}】 Sql -----------");
+                sbSqlText.Append($"CREATE TABLE {tableEntity.TableName.Trim()}(");
+
+                if (tableEntity.Columns.Count > 0)
+                {
+                    foreach (var col in tableEntity.Columns)
+                    {
+                        sbSqlText.AppendLine();
+                        sbSqlText.Append($"\t{col.ColumnName} {col.DataType}");
+                        if (col.DataType.Contains("CHAR"))
+                        {
+                            sbSqlText.Append($"({(col.Size == 0 ? GetDefaultSizeForDbType(col.DataType) : col.Size)})");
+                        }
+                        if (col.IsPrimaryKey)
+                        {
+                            sbSqlText.Append(" PRIMARY KEY");
+                            if (col.DataType.Contains("INT"))
+                            {
+                                sbSqlText.Append(" AUTO_INCREMENT");
+                            }
+                        }
+                        //Nullable
+                        if (!col.IsNullable)
+                        {
+                            sbSqlText.Append(" NOT NULL");
+                        }
+                        //Default Value
+                        if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
+                        {
+                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
+                                 && !col.DefaultValue.ToString().StartsWith("'"))
+                            {
+                                sbSqlText.AppendFormat(" DEFAULT '{0}'", col.DefaultValue);
+                            }
+                            else
+                            {
+                                sbSqlText.AppendFormat(" DEFAULT {0}", col.DefaultValue);
+                            }
+                        }
+                        //Comment
+                        if (genDescription && !string.IsNullOrEmpty(col.ColumnDescription))
+                        {
+                            sbSqlText.Append($" COMMENT '{col.ColumnDescription}'");
+                        }
+
+                        sbSqlText.Append(",");
+                    }
+                    sbSqlText.Remove(sbSqlText.Length - 1, 1);
+                    sbSqlText.AppendLine();
+                }
+
+                sbSqlText.Append($") ENGINE={(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "InnoDB" : tableEntity.TableSchema)}");
+                sbSqlText.AppendLine(!string.IsNullOrWhiteSpace(tableEntity.TableDescription) && genDescription
+                    ? $" COMMENT='{tableEntity.TableDescription}'" : "");
+                sbSqlText.AppendLine();
             }
-            sbSqlText.AppendLine();
             return sbSqlText.ToString();
         }
 
@@ -461,7 +524,7 @@ namespace DbTool
         /// TrimTableName
         /// </summary>
         /// <returns></returns>
-        internal static string TrimTableName(this string tableName)
+        public static string TrimTableName(this string tableName)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -470,9 +533,9 @@ namespace DbTool
             tableName = tableName.Trim();
             if (tableName.StartsWith("tab_") || tableName.StartsWith("tbl_"))
             {
-                tableName = tableName.Substring(4);
+                return tableName.Substring(4);
             }
-            else if (tableName.StartsWith("tab") || tableName.StartsWith("tbl"))
+            if (tableName.StartsWith("tab") || tableName.StartsWith("tbl"))
             {
                 return tableName.Substring(3);
             }
@@ -484,7 +547,7 @@ namespace DbTool
         /// </summary>
         /// <param name="modelName">modelName</param>
         /// <returns></returns>
-        internal static string TrimModelName(this string modelName)
+        public static string TrimModelName(this string modelName)
         {
             if (string.IsNullOrEmpty(modelName))
             {
@@ -507,7 +570,7 @@ namespace DbTool
         /// </summary>
         /// <param name="sourceFilePaths">sourceCodeFiles</param>
         /// <returns></returns>
-        internal static List<TableEntity> GeTableEntityFromSourceCode(params string[] sourceFilePaths)
+        public static List<TableEntity> GeTableEntityFromSourceCode(params string[] sourceFilePaths)
         {
             if (sourceFilePaths == null || sourceFilePaths.Length <= 0)
             {
@@ -560,12 +623,41 @@ namespace DbTool
             return tables;
         }
 
+        public static string GetDefaultFromDbDefaultValue(string dataType, object defaultValue)
+        {
+            if (null == defaultValue)
+            {
+                return null;
+            }
+
+            dataType = dataType.Trim().ToUpper();
+            var str = defaultValue.ToString().ToUpper();
+            if ((str.Contains("GETDATE") || str.Contains("NOW") || str.Contains("CURRENT_TIMESTAMP")) && (dataType.Contains("DATE") || dataType.Contains("TIME")))
+            {
+                return "DateTime.Now";
+            }
+
+            if (dataType.Equals("BIT"))
+            {
+                if (str.StartsWith("b'"))
+                {
+                    return str.Substring(2, 1).Equals("1") ? "true" : "false";
+                }
+                if (defaultValue is int)
+                {
+                    return defaultValue.To<int>() == 1 ? "true" : "false";
+                }
+            }
+
+            return defaultValue.ToString();
+        }
+
         /// <summary>
         /// 将属性名称转换为私有字段名称
         /// </summary>
         /// <param name="propertyName"> 属性名称 </param>
         /// <returns> 私有字段名称 </returns>
-        internal static string ToPrivateFieldName(this string propertyName)
+        public static string ToPrivateFieldName(this string propertyName)
         {
             if (string.IsNullOrEmpty(propertyName))
             {
