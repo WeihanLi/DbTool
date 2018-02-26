@@ -96,7 +96,7 @@ namespace DbTool
         /// <summary>
         /// 字段长度
         /// </summary>
-        public int Size { get; set; }
+        public uint Size { get; set; }
 
         /// <summary>
         /// 数据类型

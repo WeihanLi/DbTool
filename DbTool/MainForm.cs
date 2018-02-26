@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
@@ -24,7 +25,7 @@ namespace DbTool
         {
             InitializeComponent();
 #if DEBUG
-            txtConnString.Text = "server=.;database=AccountingApp;uid=liweihan;pwd=Admin888";
+            txtConnString.Text = "server=localhost;database=AccountingApp;uid=liweihan;pwd=Admin888";
 #endif
             lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xlsx");
         }
@@ -42,7 +43,7 @@ namespace DbTool
             }
             try
             {
-                _dbHelper = new DbHelper(txtConnString.Text);
+                _dbHelper = new DbHelper(txtConnString.Text, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer"));
                 var tables = _dbHelper.GetTablesInfo();
                 var tableList = (from table in tables orderby table.TableName select table).ToList();
                 //
@@ -185,20 +186,14 @@ namespace DbTool
                         IsPrimaryKey = dataGridView.Rows[k].Cells[2].Value != null && (bool)dataGridView.Rows[k].Cells[2].Value,
                         IsNullable = dataGridView.Rows[k].Cells[3].Value != null && (bool)dataGridView.Rows[k].Cells[3].Value,
                         DataType = dataGridView.Rows[k].Cells[4].Value.ToString(),
-                        Size = dataGridView.Rows[k].Cells[5].Value == null ? 0 : Convert.ToInt32(dataGridView.Rows[k].Cells[5].Value.ToString()),
+                        Size = dataGridView.Rows[k].Cells[5].Value == null ? Utility.GetDefaultSizeForDbType(dataGridView.Rows[k].Cells[4].Value.ToString()) : Convert.ToUInt32(dataGridView.Rows[k].Cells[5].Value.ToString()),
                         DefaultValue = dataGridView.Rows[k].Cells[6].Value
                     };
                     //
                     tableInfo.Columns.Add(column);
                 }
                 //sql
-                var sql = tableInfo.GenerateSqlStatement(cbGenDbDescription.Checked);
-                //注：创建数据表个人觉得属于危险操作，暂时先不考虑直接在数据库中生成表，可以将创建表的sql粘贴到所需执行的地方二次确认后再创建数据库表，如果确实要在数据库中直接生成表可以取消注释以下代码
-                ////数据库连接字符串不为空则创建表
-                //if (!String.IsNullOrEmpty(txtConnString.Text))
-                //{
-                //    new DbHelper(txtConnString.Text).ExecuteNonQuery(sql);
-                //}
+                var sql = tableInfo.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer"));
                 txtGeneratedSqlText.Text = sql;
                 Clipboard.SetText(sql);
                 MessageBox.Show("生成成功,sql语句已赋值至粘贴板");
@@ -246,6 +241,10 @@ namespace DbTool
                         while (rows.MoveNext())
                         {
                             var row = (IRow)rows.Current;
+                            if (null == row)
+                            {
+                                continue;
+                            }
                             if (row.RowNum == 0)
                             {
                                 table.TableDescription = row.Cells[0].StringCellValue;
@@ -273,7 +272,7 @@ namespace DbTool
                                 }
                                 else
                                 {
-                                    column.Size = row.Cells[5].GetCellValue<int>();
+                                    column.Size = row.Cells[5].GetCellValue<uint>();
                                 }
                                 if (row.Cells.Count > 6)
                                 {
@@ -296,7 +295,7 @@ namespace DbTool
                             }
                         }
                         //sql
-                        var sql = table.GenerateSqlStatement(cbGenDbDescription.Checked);
+                        var sql = table.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer"));
                         txtGeneratedSqlText.Text = sql;
                         Clipboard.SetText(sql);
                         MessageBox.Show("生成成功，sql语句已赋值至粘贴板");
@@ -315,6 +314,10 @@ namespace DbTool
                             while (rows.MoveNext())
                             {
                                 var row = (IRow)rows.Current;
+                                if (null == row)
+                                {
+                                    continue;
+                                }
                                 if (row.RowNum == 0)
                                 {
                                     table.TableDescription = row.Cells[0].StringCellValue;
@@ -335,7 +338,7 @@ namespace DbTool
                                     column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
                                     column.DataType = row.Cells[4].StringCellValue;
 
-                                    column.Size = string.IsNullOrEmpty(row.Cells[5].ToString()) ? Utility.GetDefaultSizeForDbType(column.DataType) : Convert.ToInt32(row.Cells[5].ToString());
+                                    column.Size = string.IsNullOrEmpty(row.Cells[5].ToString()) ? Utility.GetDefaultSizeForDbType(column.DataType) : Convert.ToUInt32(row.Cells[5].ToString());
 
                                     if (row.Cells.Count > 6 && !string.IsNullOrWhiteSpace(row.Cells[6].ToString()))
                                     {
@@ -344,7 +347,7 @@ namespace DbTool
                                     table.Columns.Add(column);
                                 }
                             }
-                            sbSqlText.AppendLine(table.GenerateSqlStatement(cbGenDbDescription.Checked));
+                            sbSqlText.AppendLine(table.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer")));
                         }
                         var dialog = new FolderBrowserDialog
                         {
@@ -375,7 +378,7 @@ namespace DbTool
                 }
                 finally
                 {
-                    stream?.Dispose();
+                    stream.Dispose();
                 }
             }
         }
@@ -576,7 +579,7 @@ namespace DbTool
                             var node = treeViewTable.Nodes.Add(table.TableName);
                             node.ToolTipText = table.TableDescription ?? table.TableName;
                             node.Nodes.AddRange(table.Columns.Select(c => new TreeNode(c.ColumnName) { ToolTipText = c.ColumnDescription ?? c.ColumnName }).ToArray());
-                            txtCodeModelSql.AppendText(table.GenerateSqlStatement(cbGenCodeSqlDescription.Checked));
+                            txtCodeModelSql.AppendText(table.GenerateSqlStatement(cbGenCodeSqlDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer")));
                         }
                     }
                 }

@@ -289,7 +289,7 @@
             this.cbGenDbDescription.Name = "cbGenDbDescription";
             this.cbGenDbDescription.Size = new System.Drawing.Size(112, 24);
             this.cbGenDbDescription.TabIndex = 26;
-            this.cbGenDbDescription.Text = "生成描述信息";
+            this.cbGenDbDescription.Text = "生成数据库描述";
             this.cbGenDbDescription.UseVisualStyleBackColor = true;
             // 
             // lnkExcelTemplate

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
+using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
 namespace DbTool
@@ -47,7 +48,7 @@ namespace DbTool
                     sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
                 }
             }
-            sbText.AppendLine($"\tpublic class {prefix}{tableEntity.TableName.Trim()}{suffix}");
+            sbText.AppendLine($"\tpublic class {prefix}{tableEntity.TableName.TrimTableName()}{suffix}");
             sbText.AppendLine("\t{");
             var index = 0;
             if (genPrivateField)
@@ -62,10 +63,10 @@ namespace DbTool
                     {
                         index++;
                     }
-                    item.DataType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
+                    var fclType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
 
                     var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
-                    sbText.AppendLine($"\t\tprivate {item.DataType} {tmpColName};");
+                    sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
                         sbText.AppendLine(
@@ -82,7 +83,7 @@ namespace DbTool
                             sbText.AppendLine($"\t\t[Description(\"主键\")]");
                         }
                     }
-                    sbText.AppendLine($"\t\tpublic {item.DataType} {item.ColumnName.Trim()}");
+                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName.Trim()}");
                     sbText.AppendLine("\t\t{");
                     sbText.AppendLine($"\t\t\tget {{ return {tmpColName}; }}");
                     sbText.AppendLine($"\t\t\tset {{ {tmpColName} = value; }}");
@@ -102,7 +103,7 @@ namespace DbTool
                     {
                         index++;
                     }
-                    item.DataType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
+                    var fclType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
 
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
@@ -113,7 +114,7 @@ namespace DbTool
                             sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
                         }
                     }
-                    sbText.AppendLine($"\t\tpublic {item.DataType} {item.ColumnName} {{ get; set; }}");
+                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName} {{ get; set; }}");
                 }
             }
             sbText.AppendLine("\t}");
@@ -221,6 +222,7 @@ namespace DbTool
                 case DbType.NVarChar:
                 case DbType.VarChar:
                 case DbType.Text:
+                case DbType.LongText:
                     type = "string";
                     break;
 
@@ -263,7 +265,7 @@ namespace DbTool
         /// <param name="dbType">数据类型</param>
         /// <param name="defaultLength">自定义默认长度</param>
         /// <returns></returns>
-        public static int GetDefaultSizeForDbType(string dbType, int defaultLength = 64)
+        public static uint GetDefaultSizeForDbType(string dbType, uint defaultLength = 64)
         {
             var sqlDbType = (DbType)Enum.Parse(typeof(DbType), dbType, true);
             var len = defaultLength;
@@ -395,7 +397,7 @@ namespace DbTool
             {
                 var sbSqlDescText = new StringBuilder();
                 //create table
-                sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName.Trim()}】 Sql -----------");
+                sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName.Trim().ToTitleCase()}】 Sql -----------");
                 sbSqlText.Append($"CREATE TABLE [{(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "dbo" : tableEntity.TableSchema)}].[{tableEntity.TableName.Trim()}](");
                 //create description
                 if (genDescription && !string.IsNullOrEmpty(tableEntity.TableDescription))
@@ -531,15 +533,17 @@ namespace DbTool
                 return "";
             }
             tableName = tableName.Trim();
-            if (tableName.StartsWith("tab_") || tableName.StartsWith("tbl_"))
+            if (tableName.Substring(0, 4).EqualsIgnoreCase("tab_")
+                || tableName.Substring(0, 4).EqualsIgnoreCase("tbl_"))
             {
-                return tableName.Substring(4);
+                return tableName.Substring(4).ToTitleCase();
             }
-            if (tableName.StartsWith("tab") || tableName.StartsWith("tbl"))
+            if (tableName.Substring(0, 3).EqualsIgnoreCase("tab")
+                || tableName.Substring(0, 3).EqualsIgnoreCase("tbl"))
             {
-                return tableName.Substring(3);
+                return tableName.Substring(3).ToTitleCase();
             }
-            return tableName;
+            return tableName.ToTitleCase();
         }
 
         /// <summary>
@@ -612,7 +616,11 @@ namespace DbTool
                             null == val || property.PropertyType.GetDefaultValue().Equals(val) || columnInfo.IsNullable
                             ? null : val;
                         columnInfo.IsPrimaryKey = columnInfo.ColumnDescription?.Contains("主键") ?? false;
-                        columnInfo.DataType = FclType2DbType(property.PropertyType).ToString().ToUpper();
+                        columnInfo.DataType = FclType2DbType(property.PropertyType).ToString();
+                        if (!ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer") && columnInfo.DataType.Equals("NVARCHAR"))
+                        {
+                            columnInfo.DataType = "VARCHAR";
+                        }
                         columnInfo.Size = GetDefaultSizeForDbType(columnInfo.DataType);
                         table.Columns.Add(columnInfo);
                     }
@@ -647,6 +655,8 @@ namespace DbTool
                 {
                     return defaultValue.To<int>() == 1 ? "true" : "false";
                 }
+
+                defaultValue = defaultValue.ToString().ToLower();
             }
 
             return defaultValue.ToString();
