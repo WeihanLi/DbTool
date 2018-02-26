@@ -52,10 +52,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MainForm.cs">
-      <SubType>Form</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Update="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
