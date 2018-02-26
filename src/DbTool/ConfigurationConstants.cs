@@ -1,6 +1,6 @@
 ﻿namespace DbTool
 {
-    internal class ConfigurationConstants
+    internal static class ConfigurationConstants
     {
         /// <summary>
         /// 数据库类型

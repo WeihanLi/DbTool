@@ -12,6 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DbTool\DbTool.csproj" />
+    <ProjectReference Include="..\..\src\DbTool\DbTool.csproj" />
   </ItemGroup>
 </Project>

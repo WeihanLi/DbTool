@@ -656,7 +656,7 @@ namespace DbTool
                     return defaultValue.To<int>() == 1 ? "true" : "false";
                 }
 
-                defaultValue = defaultValue.ToString().ToLower();
+               return defaultValue.ToString().ToLower();
             }
 
             return defaultValue.ToString();
