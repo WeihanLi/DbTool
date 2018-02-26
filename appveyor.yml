@@ -86,3 +86,6 @@ build_script:
   - dotnet build -c Release DbTool.sln
 # to disable automatic builds
 #build: off
+
+# disable automatic test
+test: off
