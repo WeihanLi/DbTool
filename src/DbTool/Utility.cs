@@ -402,7 +402,7 @@ namespace DbTool
                 //create description
                 if (genDescription && !string.IsNullOrEmpty(tableEntity.TableDescription))
                 {
-                    sbSqlDescText.AppendFormat(DbHelper.AddTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
+                    sbSqlDescText.AppendFormat(ConfigurationHelper.AppSetting(ConfigurationConstants.DbDescriptionGenType).EqualsIgnoreCase("AddOrUpdate") ? DbHelper.CreateOrUpdateTableDescSqlFormat : DbHelper.CreateTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
                 }
                 if (tableEntity.Columns.Count > 0)
                 {
@@ -446,7 +446,7 @@ namespace DbTool
                         if (genDescription && !string.IsNullOrEmpty(col.ColumnDescription))
                         {
                             sbSqlDescText.AppendLine();
-                            sbSqlDescText.AppendFormat(DbHelper.AddColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
+                            sbSqlDescText.AppendFormat(ConfigurationHelper.AppSetting(ConfigurationConstants.DbDescriptionGenType).EqualsIgnoreCase("AddOrUpdate") ? DbHelper.CreateOrUpdateColumnDescSqlFormat : DbHelper.CreateColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
                         }
                     }
                     sbSqlText.Remove(sbSqlText.Length - 1, 1);
@@ -656,7 +656,7 @@ namespace DbTool
                     return defaultValue.To<int>() == 1 ? "true" : "false";
                 }
 
-               return defaultValue.ToString().ToLower();
+                return defaultValue.ToString().ToLower();
             }
 
             return defaultValue.ToString();

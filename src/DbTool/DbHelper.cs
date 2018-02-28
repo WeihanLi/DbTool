@@ -83,11 +83,11 @@ WHERE
 AND table_name = @tableName;";
 
         /// <summary>
-        /// 表描述
+        /// 创建或更新表描述
         /// 0：表名称
         /// 1：表描述
         /// </summary>
-        public static string AddTableDescSqlFormat => @"
+        public static string CreateOrUpdateTableDescSqlFormat => @"
 BEGIN
 IF EXISTS (
        SELECT 1
@@ -107,10 +107,17 @@ ELSE
 END";
 
         /// <summary>
+        /// 创建表描述
+        /// 0：表名称
+        /// 1：表描述
+        /// </summary>
+        public static string CreateTableDescSqlFormat => @"EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}';";
+
+        /// <summary>
         /// 列描述信息
         /// 0：表名称，1：列名称，2：列描述信息
         /// </summary>
-        public static string AddColumnDescSqlFormat => @"
+        public static string CreateOrUpdateColumnDescSqlFormat => @"
 BEGIN
 IF EXISTS (
         select 1
@@ -133,6 +140,12 @@ IF EXISTS (
 ELSE
         EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}';
 END";
+
+        /// <summary>
+        /// 列描述信息
+        /// 0：表名称，1：列名称，2：列描述信息
+        /// </summary>
+        public static string CreateColumnDescSqlFormat => @"EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'SCHEMA', N'dbo',  N'TABLE', N'{0}', N'COLUMN', N'{1}';";
 
         private readonly string _connString;
         private readonly bool _isSqlServer;
