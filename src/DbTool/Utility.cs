@@ -536,14 +536,14 @@ namespace DbTool
             if (tableName.Substring(0, 4).EqualsIgnoreCase("tab_")
                 || tableName.Substring(0, 4).EqualsIgnoreCase("tbl_"))
             {
-                return tableName.Substring(4).ToTitleCase();
+                return tableName.Substring(4);
             }
             if (tableName.Substring(0, 3).EqualsIgnoreCase("tab")
                 || tableName.Substring(0, 3).EqualsIgnoreCase("tbl"))
             {
-                return tableName.Substring(3).ToTitleCase();
+                return tableName.Substring(3);
             }
-            return tableName.ToTitleCase();
+            return tableName;
         }
 
         /// <summary>
