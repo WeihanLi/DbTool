@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -46,12 +45,22 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <PackageReference Include="MySql.Data" Version="6.9.11" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.7.3">
+    <PackageReference Include="Npgsql" Version="3.2.7" />
+    <PackageReference Include="WeihanLi.Common" Version="1.0.7.12">
     </PackageReference>
-    <PackageReference Include="WeihanLi.Npoi" Version="1.0.0">
+    <PackageReference Include="WeihanLi.Npoi" Version="1.0.3.2">
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="DbProvider.SqlServer.cs">
+      <DependentUpon>DbProvider.cs</DependentUpon>
+    </Compile>
+    <Compile Update="DbProvider.MySql.cs">
+      <DependentUpon>DbProvider.cs</DependentUpon>
+    </Compile>
+    <Compile Update="DbProvider.PgSql.cs">
+      <DependentUpon>DbProvider.cs</DependentUpon>
+    </Compile>
     <Compile Update="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>

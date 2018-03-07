@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Autofac;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using Xunit;
 
@@ -7,6 +9,26 @@ namespace DbTool.Test
     public abstract class BaseDbTest : IDbOperTest
     {
         public abstract string ConnStringKey { get; }
+        private string _dbType;
+
+        static BaseDbTest()
+        {
+            Init();
+        }
+
+        private static void Init()
+        {
+            var container = new ContainerBuilder();
+            container.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
+            container.RegisterType<MySqlDbProvider>().As<IDbProvider>();
+            container.RegisterType<DbProviderFactory>().SingleInstance();
+            DependencyResolver.SetDependencyResolver(new AutofacDependencyResolver(container.Build()));
+        }
+
+        protected BaseDbTest()
+        {
+            _dbType = ConnStringKey.Substring(0, ConnStringKey.Length - 4);
+        }
 
         protected TableEntity TableEntity = new TableEntity()
         {
@@ -65,7 +87,7 @@ namespace DbTool.Test
 
         public virtual void QueryTest()
         {
-            var dbHelper = new DbHelper(ConfigurationHelper.ConnectionString(ConnStringKey), ConnStringKey.Contains("SqlServer"));
+            var dbHelper = new DbHelper(ConfigurationHelper.ConnectionString(ConnStringKey), _dbType);
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = dbHelper.GetTablesInfo();
             Assert.NotNull(tables);
@@ -80,9 +102,9 @@ namespace DbTool.Test
 
         public virtual void CreateTest()
         {
-            var sql = TableEntity.GenerateSqlStatement(isSqlServer: ConnStringKey.Contains("SqlServer"));
+            var sql = TableEntity.GenerateSqlStatement(dbType: _dbType);
             Assert.NotEmpty(sql);
-            sql = TableEntity.GenerateSqlStatement(false, ConnStringKey.Contains("SqlServer"));
+            sql = TableEntity.GenerateSqlStatement(false, _dbType);
             Assert.NotEmpty(sql);
         }
     }

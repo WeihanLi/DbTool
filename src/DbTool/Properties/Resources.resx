@@ -120,4 +120,7 @@
   <data name="ConnectSuccess" xml:space="preserve">
     <value>数据库连接成功，当前数据库为：{0}</value>
   </data>
+  <data name="UnsupportedDbType" xml:space="preserve">
+    <value>不支持的数据库类型：{0}</value>
+  </data>
 </root>

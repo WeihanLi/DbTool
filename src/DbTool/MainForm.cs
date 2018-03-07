@@ -8,7 +8,6 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
 
@@ -24,9 +23,7 @@ namespace DbTool
         public MainForm()
         {
             InitializeComponent();
-#if DEBUG
-            txtConnString.Text = "server=localhost;database=AccountingApp;uid=liweihan;pwd=Admin888";
-#endif
+            txtConnString.Text = ConfigurationHelper.AppSetting("DefaultConnString");
             lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xlsx");
         }
 
@@ -43,7 +40,7 @@ namespace DbTool
             }
             try
             {
-                _dbHelper = new DbHelper(txtConnString.Text, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer"));
+                _dbHelper = new DbHelper(txtConnString.Text, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType));
                 var tables = _dbHelper.GetTablesInfo();
                 var tableList = (from table in tables orderby table.TableName select table).ToList();
                 //
@@ -193,7 +190,7 @@ namespace DbTool
                     tableInfo.Columns.Add(column);
                 }
                 //sql
-                var sql = tableInfo.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer"));
+                var sql = tableInfo.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType));
                 txtGeneratedSqlText.Text = sql;
                 Clipboard.SetText(sql);
                 MessageBox.Show("生成成功,sql语句已赋值至粘贴板");
@@ -295,7 +292,7 @@ namespace DbTool
                             }
                         }
                         //sql
-                        var sql = table.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer"));
+                        var sql = table.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType));
                         txtGeneratedSqlText.Text = sql;
                         Clipboard.SetText(sql);
                         MessageBox.Show("生成成功，sql语句已赋值至粘贴板");
@@ -347,7 +344,7 @@ namespace DbTool
                                     table.Columns.Add(column);
                                 }
                             }
-                            sbSqlText.AppendLine(table.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer")));
+                            sbSqlText.AppendLine(table.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType)));
                         }
                         var dialog = new FolderBrowserDialog
                         {
@@ -579,7 +576,7 @@ namespace DbTool
                             var node = treeViewTable.Nodes.Add(table.TableName);
                             node.ToolTipText = table.TableDescription ?? table.TableName;
                             node.Nodes.AddRange(table.Columns.Select(c => new TreeNode(c.ColumnName) { ToolTipText = c.ColumnDescription ?? c.ColumnName }).ToArray());
-                            txtCodeModelSql.AppendText(table.GenerateSqlStatement(cbGenCodeSqlDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer")));
+                            txtCodeModelSql.AppendText(table.GenerateSqlStatement(cbGenCodeSqlDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType)));
                         }
                     }
                 }

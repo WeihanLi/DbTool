@@ -68,5 +68,14 @@ namespace DbTool.Properties {
                 return ResourceManager.GetString("ConnectSuccess", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 不支持的数据库类型：{0} 的本地化字符串。
+        /// </summary>
+        internal static string UnsupportedDbType {
+            get {
+                return ResourceManager.GetString("UnsupportedDbType", resourceCulture);
+            }
+        }
     }
 }

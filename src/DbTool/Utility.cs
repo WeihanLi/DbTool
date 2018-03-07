@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
@@ -383,143 +384,16 @@ namespace DbTool
         /// </summary>
         /// <param name="tableEntity"> 表信息 </param>
         /// <param name="genDescription">生成描述信息</param>
-        /// <param name="isSqlServer">is db SqlServer</param>
+        /// <param name="dbType">数据库类型</param>
         /// <returns></returns>
-        public static string GenerateSqlStatement(this TableEntity tableEntity, bool genDescription = true, bool isSqlServer = true)
+        public static string GenerateSqlStatement(this TableEntity tableEntity, bool genDescription = true, string dbType = "SqlServer")
         {
-            if (string.IsNullOrEmpty(tableEntity.TableName))
+            if (string.IsNullOrEmpty(tableEntity?.TableName))
             {
                 return "";
             }
-            var sbSqlText = new StringBuilder();
-
-            if (isSqlServer)
-            {
-                var sbSqlDescText = new StringBuilder();
-                //create table
-                sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName.Trim().ToTitleCase()}】 Sql -----------");
-                sbSqlText.Append($"CREATE TABLE [{(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "dbo" : tableEntity.TableSchema)}].[{tableEntity.TableName.Trim()}](");
-                //create description
-                if (genDescription && !string.IsNullOrEmpty(tableEntity.TableDescription))
-                {
-                    sbSqlDescText.AppendFormat(ConfigurationHelper.AppSetting(ConfigurationConstants.DbDescriptionGenType).EqualsIgnoreCase("AddOrUpdate") ? DbHelper.CreateOrUpdateTableDescSqlFormat : DbHelper.CreateTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
-                }
-                if (tableEntity.Columns.Count > 0)
-                {
-                    foreach (var col in tableEntity.Columns)
-                    {
-                        sbSqlText.AppendLine();
-                        sbSqlText.AppendFormat("\t[{0}] {1}", col.ColumnName.Trim(), col.DataType);
-                        if (col.DataType.ToUpperInvariant().Contains("CHAR"))
-                        {
-                            sbSqlText.Append($"({col.Size})");
-                        }
-                        if (col.IsPrimaryKey)
-                        {
-                            sbSqlText.Append(" PRIMARY KEY");
-                            if (col.DataType.Contains("INT"))
-                            {
-                                sbSqlText.Append(" IDENTITY(1,1) ");
-                            }
-                        }
-                        //Nullable
-                        if (!col.IsNullable)
-                        {
-                            sbSqlText.Append(" NOT NULL");
-                        }
-                        //Default Value
-                        if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
-                        {
-                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
-                                && !col.DefaultValue.ToString().StartsWith("N'") && !col.DefaultValue.ToString().StartsWith("'"))
-                            {
-                                sbSqlText.AppendFormat(" DEFAULT(N'{0}')", col.DefaultValue);
-                            }
-                            else
-                            {
-                                sbSqlText.AppendFormat(" DEFAULT({0}) ", col.DefaultValue);
-                            }
-                        }
-                        //
-                        sbSqlText.Append(",");
-                        //
-                        if (genDescription && !string.IsNullOrEmpty(col.ColumnDescription))
-                        {
-                            sbSqlDescText.AppendLine();
-                            sbSqlDescText.AppendFormat(ConfigurationHelper.AppSetting(ConfigurationConstants.DbDescriptionGenType).EqualsIgnoreCase("AddOrUpdate") ? DbHelper.CreateOrUpdateColumnDescSqlFormat : DbHelper.CreateColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
-                        }
-                    }
-                    sbSqlText.Remove(sbSqlText.Length - 1, 1);
-                    sbSqlText.AppendLine();
-                }
-                sbSqlText.AppendLine(");");
-                if (genDescription && sbSqlDescText.Length > 0)
-                {
-                    sbSqlText.AppendLine();
-                    sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Description Sql -----------");
-                    sbSqlText.Append(sbSqlDescText);
-                }
-                sbSqlText.AppendLine();
-            }
-            else
-            {
-                sbSqlText.AppendLine($"# ---------- Create Table 【{tableEntity.TableName.Trim()}】 Sql -----------");
-                sbSqlText.Append($"CREATE TABLE {tableEntity.TableName.Trim()}(");
-
-                if (tableEntity.Columns.Count > 0)
-                {
-                    foreach (var col in tableEntity.Columns)
-                    {
-                        sbSqlText.AppendLine();
-                        sbSqlText.Append($"\t{col.ColumnName} {col.DataType}");
-                        if (col.DataType.Contains("CHAR"))
-                        {
-                            sbSqlText.Append($"({(col.Size == 0 ? GetDefaultSizeForDbType(col.DataType) : col.Size)})");
-                        }
-                        if (col.IsPrimaryKey)
-                        {
-                            sbSqlText.Append(" PRIMARY KEY");
-                            if (col.DataType.Contains("INT"))
-                            {
-                                sbSqlText.Append(" AUTO_INCREMENT");
-                            }
-                        }
-                        //Nullable
-                        if (!col.IsNullable)
-                        {
-                            sbSqlText.Append(" NOT NULL");
-                        }
-                        //Default Value
-                        if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
-                        {
-                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
-                                 && !col.DefaultValue.ToString().StartsWith("'"))
-                            {
-                                sbSqlText.AppendFormat(" DEFAULT '{0}'", col.DefaultValue);
-                            }
-                            else
-                            {
-                                sbSqlText.AppendFormat(" DEFAULT {0}", col.DefaultValue);
-                            }
-                        }
-                        //Comment
-                        if (genDescription && !string.IsNullOrEmpty(col.ColumnDescription))
-                        {
-                            sbSqlText.Append($" COMMENT '{col.ColumnDescription}'");
-                        }
-
-                        sbSqlText.Append(",");
-                    }
-                    sbSqlText.Remove(sbSqlText.Length - 1, 1);
-                    sbSqlText.AppendLine();
-                }
-
-                sbSqlText.Append($") ENGINE={(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "InnoDB" : tableEntity.TableSchema)}");
-                sbSqlText.AppendLine(!string.IsNullOrWhiteSpace(tableEntity.TableDescription) && genDescription
-                    ? $" COMMENT='{tableEntity.TableDescription}'" : "");
-                sbSqlText.AppendLine();
-            }
-            return sbSqlText.ToString();
+            return DependencyResolver.Current.GetService<DbProviderFactory>().GetDbProvider(dbType)?
+                .GenerateSqlStatement(tableEntity, genDescription);
         }
 
         /// <summary>
