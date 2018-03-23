@@ -17,6 +17,7 @@
             {
                 components.Dispose();
             }
+            _dbHelper?.Dispose();
             base.Dispose(disposing);
         }
 

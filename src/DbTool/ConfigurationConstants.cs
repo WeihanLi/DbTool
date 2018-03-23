@@ -3,6 +3,11 @@
     internal static class ConfigurationConstants
     {
         /// <summary>
+        /// 默认连接字符串
+        /// </summary>
+        public const string DefaultConnectionString = "DefaultConnString";
+
+        /// <summary>
         /// 数据库类型
         /// </summary>
         public const string DbType = "DbType";

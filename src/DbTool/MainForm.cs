@@ -23,7 +23,7 @@ namespace DbTool
         public MainForm()
         {
             InitializeComponent();
-            txtConnString.Text = ConfigurationHelper.AppSetting("DefaultConnString");
+            txtConnString.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
             lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xlsx");
         }
 

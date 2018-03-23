@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using WeihanLi.Extensions;
 
 namespace DbTool
 {
@@ -67,7 +66,6 @@ namespace DbTool
     {
         private string _columnDescription;
         private string _dataType;
-        private object _defaultValue;
 
         /// <summary>
         /// 列名称
@@ -80,7 +78,7 @@ namespace DbTool
         public string ColumnDescription
         {
             get => _columnDescription;
-            set => _columnDescription = !string.IsNullOrEmpty(value) ? value : "";
+            set => _columnDescription = !string.IsNullOrEmpty(value) ? value : string.Empty;
         }
 
         /// <summary>
@@ -104,44 +102,12 @@ namespace DbTool
         public string DataType
         {
             get => _dataType;
-            set => _dataType = value.ToUpper();
+            set => _dataType = value?.ToUpper();
         }
 
         /// <summary>
         /// 默认值
         /// </summary>
-        public object DefaultValue
-        {
-            get => _defaultValue;
-            set
-            {
-                if (null == value)
-                {
-                    _defaultValue = null;
-                    return;
-                }
-
-                var str = value.ToString().ToUpper();
-                if ((str.Contains("GETDATE") || str.Contains("NOW") || str.Contains("CURRENT_TIMESTAMP")) && (_dataType.Contains("DATE") || _dataType.Contains("TIME")))
-                {
-                    _defaultValue = "DateTime.Now";
-                    return;
-                }
-
-                if (_dataType.Equals("BIT"))
-                {
-                    if (value is int)
-                    {
-                        _defaultValue = value.To<int>() == 1;
-                        return;
-                    }
-
-                    if (str.StartsWith("b'"))
-                    {
-                        _defaultValue = str.Substring(2, 1);
-                    }
-                }
-            }
-        }
+        public object DefaultValue { get; set; }
     }
 }

@@ -71,14 +71,17 @@ AND table_name = @tableName;";
                     //Default Value
                     if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
                     {
-                        if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
-                             && !col.DefaultValue.ToString().StartsWith("'"))
+                        if (!col.IsPrimaryKey)
                         {
-                            sbSqlText.AppendFormat(" DEFAULT '{0}'", col.DefaultValue);
-                        }
-                        else
-                        {
-                            sbSqlText.AppendFormat(" DEFAULT {0}", col.DefaultValue);
+                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
+                                && !col.DefaultValue.ToString().StartsWith("'"))
+                            {
+                                sbSqlText.AppendFormat(" DEFAULT '{0}'", col.DefaultValue);
+                            }
+                            else
+                            {
+                                sbSqlText.AppendFormat(" DEFAULT {0}", col.DefaultValue);
+                            }
                         }
                     }
                     //Comment

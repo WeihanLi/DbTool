@@ -153,26 +153,29 @@ END";
                     //Default Value
                     if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
                     {
-                        if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
-                            && !col.DefaultValue.ToString().StartsWith("N'") && !col.DefaultValue.ToString().StartsWith("'"))
+                        if (!col.IsPrimaryKey)
                         {
-                            sbSqlText.AppendFormat(" DEFAULT(N'{0}')", col.DefaultValue);
-                        }
-                        else
-                        {
-                            switch (col.DataType)
+                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
+                                && !col.DefaultValue.ToString().StartsWith("N'") && !col.DefaultValue.ToString().StartsWith("'"))
                             {
-                                case "BIT":
-                                    if (col.DefaultValue is bool bVal)
-                                    {
-                                        sbSqlText.AppendFormat(" DEFAULT({0}) ", bVal ? 1 : 0);
-                                    }
+                                sbSqlText.AppendFormat(" DEFAULT(N'{0}')", col.DefaultValue);
+                            }
+                            else
+                            {
+                                switch (col.DataType)
+                                {
+                                    case "BIT":
+                                        if (col.DefaultValue is bool bVal)
+                                        {
+                                            sbSqlText.AppendFormat(" DEFAULT({0}) ", bVal ? 1 : 0);
+                                        }
 
-                                    break;
+                                        break;
 
-                                default:
-                                    sbSqlText.AppendFormat(" DEFAULT({0}) ", col.DefaultValue);
-                                    break;
+                                    default:
+                                        sbSqlText.AppendFormat(" DEFAULT({0}) ", col.DefaultValue);
+                                        break;
+                                }
                             }
                         }
                     }
