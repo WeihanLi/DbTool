@@ -44,7 +44,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <PackageReference Include="Microsoft.Net.Compilers" Version="2.7.0" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="1.0.9" />
     <PackageReference Include="MySql.Data" Version="6.9.11" />
     <PackageReference Include="Npgsql" Version="3.2.7" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.7.12">
