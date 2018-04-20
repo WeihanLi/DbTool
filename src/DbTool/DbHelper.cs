@@ -44,7 +44,7 @@ namespace DbTool
         /// <returns></returns>
         public List<TableEntity> GetTablesInfo()
         {
-            return _conn.Select<TableEntity>(_dbProvider.QueryDbTablesSqlFormat, new { dbName = DatabaseName })
+            return _conn.Select<TableEntity>(_dbProvider.QueryDbTablesSqlFormat, new { dbName = DatabaseName }).ToList()
                 .Chain(t => _conn.Close());
         }
 
@@ -61,7 +61,7 @@ namespace DbTool
             }
             return _conn.Select<ColumnEntity>(
                     _dbProvider.QueryTableColumnsSqlFormat,
-                new { dbName = DatabaseName, tableName })
+                new { dbName = DatabaseName, tableName }).ToList()
                 .Chain(t => _conn.Close());
         }
 
@@ -82,7 +82,7 @@ namespace DbTool
             }
         }
 
-        // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
+        // 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
         // ~DbHelper() {
         //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
         //   Dispose(false);

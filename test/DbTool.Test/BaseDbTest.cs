@@ -9,7 +9,7 @@ namespace DbTool.Test
     public abstract class BaseDbTest : IDbOperTest
     {
         public abstract string ConnStringKey { get; }
-        private string _dbType;
+        private readonly string _dbType;
 
         static BaseDbTest()
         {
@@ -18,11 +18,12 @@ namespace DbTool.Test
 
         private static void Init()
         {
-            var container = new ContainerBuilder();
-            container.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
-            container.RegisterType<MySqlDbProvider>().As<IDbProvider>();
-            container.RegisterType<DbProviderFactory>().SingleInstance();
-            DependencyResolver.SetDependencyResolver(new AutofacDependencyResolver(container.Build()));
+            var builder = new ContainerBuilder();
+            builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
+            builder.RegisterType<MySqlDbProvider>().As<IDbProvider>();
+            builder.RegisterType<DbProviderFactory>().SingleInstance();
+            var container = builder.Build();
+            DependencyResolver.SetDependencyResolver(t => container.Resolve(t));
         }
 
         protected BaseDbTest()

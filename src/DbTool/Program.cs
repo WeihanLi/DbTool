@@ -21,11 +21,12 @@ namespace DbTool
 
         public static void Init()
         {
-            var container = new ContainerBuilder();
-            container.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
-            container.RegisterType<MySqlDbProvider>().As<IDbProvider>();
-            container.RegisterType<DbProviderFactory>().SingleInstance();
-            DependencyResolver.SetDependencyResolver(new AutofacDependencyResolver(container.Build()));
+            var builder = new ContainerBuilder();
+            builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
+            builder.RegisterType<MySqlDbProvider>().As<IDbProvider>();
+            builder.RegisterType<DbProviderFactory>().SingleInstance();
+            var container = builder.Build();
+            DependencyResolver.SetDependencyResolver(t => container.Resolve(t));
         }
     }
 }
