@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using DbTool.Core;
+using DbTool.Core.Entity;
+using DbTool.MySql;
+using DbTool.SqlServer;
 using WeihanLi.Common;
-using WeihanLi.Common.Helpers;
 using Xunit;
 
 namespace DbTool.Test
 {
     public abstract class BaseDbTest : IDbOperTest
     {
-        public abstract string ConnStringKey { get; }
-        private readonly string _dbType;
+        protected abstract string DbType { get; }
+        protected abstract string ConnectionString { get; }
 
         static BaseDbTest()
         {
@@ -24,11 +27,6 @@ namespace DbTool.Test
             builder.RegisterType<DbProviderFactory>().SingleInstance();
             var container = builder.Build();
             DependencyResolver.SetDependencyResolver(t => container.Resolve(t));
-        }
-
-        protected BaseDbTest()
-        {
-            _dbType = ConnStringKey.Substring(0, ConnStringKey.Length - 4);
         }
 
         protected TableEntity TableEntity = new TableEntity()
@@ -88,7 +86,7 @@ namespace DbTool.Test
 
         public virtual void QueryTest()
         {
-            var dbHelper = new DbHelper(ConfigurationHelper.ConnectionString(ConnStringKey), _dbType);
+            var dbHelper = new DbHelper(ConnectionString, DbType);
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = dbHelper.GetTablesInfo();
             Assert.NotNull(tables);
@@ -103,9 +101,9 @@ namespace DbTool.Test
 
         public virtual void CreateTest()
         {
-            var sql = TableEntity.GenerateSqlStatement(dbType: _dbType);
+            var sql = TableEntity.GenerateSqlStatement(dbType: DbType);
             Assert.NotEmpty(sql);
-            sql = TableEntity.GenerateSqlStatement(false, _dbType);
+            sql = TableEntity.GenerateSqlStatement(false, DbType);
             Assert.NotEmpty(sql);
         }
     }

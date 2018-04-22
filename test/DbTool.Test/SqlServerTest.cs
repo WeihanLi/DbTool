@@ -4,7 +4,8 @@ namespace DbTool.Test
 {
     public class SqlServerTest : BaseDbTest
     {
-        public override string ConnStringKey => "SqlServerConn";
+        protected override string DbType => "SqlServer";
+        protected override string ConnectionString => "server=.;database=Reservation;uid=liweihan;pwd=Admin888";
 
         [Fact]
         public override void QueryTest()
