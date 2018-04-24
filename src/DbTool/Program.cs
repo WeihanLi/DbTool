@@ -1,32 +1,20 @@
-﻿using System;
-using System.Windows.Forms;
-using Autofac;
-using WeihanLi.Common;
+﻿using ElectronNET.API;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DbTool
 {
-    public static class Program
+    public class Program
     {
-        /// <summary>
-        /// 应用程序的主入口点。
-        /// </summary>
-        [STAThread]
-        public static void Main()
+        public static void Main(string[] args)
         {
-            Init();
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            BuildWebHost(args).Run();
         }
 
-        public static void Init()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
-            builder.RegisterType<MySqlDbProvider>().As<IDbProvider>();
-            builder.RegisterType<DbProviderFactory>().SingleInstance();
-            var container = builder.Build();
-            DependencyResolver.SetDependencyResolver(t => container.Resolve(t));
-        }
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseElectron(args)
+                .Build();
     }
 }
