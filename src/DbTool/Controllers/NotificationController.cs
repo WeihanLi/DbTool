@@ -19,7 +19,7 @@ namespace DbTool.Controllers
             if (HybridSupport.IsElectronActive)
             {
                 // notify
-                Electron.Notification.Show(new NotificationOptions(title.IsNotNullOrEmpty() ? title : "DbTool", "Model exported success."));
+                Electron.Notification.Show(new NotificationOptions(title.IsNotNullOrEmpty() ? title : "DbTool", message));
                 return 1;
             }
             return 0;
