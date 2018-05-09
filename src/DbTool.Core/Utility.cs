@@ -389,7 +389,7 @@ namespace DbTool.Core
             {
                 return "";
             }
-            return DependencyResolver.Current.GetService<DbProviderFactory>().GetDbProvider(dbType)?
+            return DependencyResolver.Current.ResolveService<DbProviderFactory>().GetDbProvider(dbType)?
                 .GenerateSqlStatement(tableEntity, genDescription);
         }
 

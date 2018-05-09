@@ -5,7 +5,7 @@
   <ItemGroup>
     <PackageReference Include="System.Net.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.8.1" />
+    <PackageReference Include="WeihanLi.Common" Version="1.0.9" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources.Designer.cs">

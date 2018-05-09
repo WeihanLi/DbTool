@@ -5,9 +5,18 @@ namespace DbTool.Controllers
 {
     public class HomeController : Controller
     {
+        public HomeController()
+        {            
+        }
+
         public IActionResult Index()
         {
             return View();
+        }
+
+        public JsonResult Settings()
+        {
+            return Json("");
         }
 
         public IActionResult Error()
