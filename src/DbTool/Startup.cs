@@ -1,5 +1,4 @@
-﻿using ElectronNET.API;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -65,7 +64,7 @@ namespace DbTool
             });
 
             // Open the Electron-Window here
-            Electron.WindowManager.CreateWindowAsync().ConfigureAwait(false);
+            //Electron.WindowManager.CreateWindowAsync().ConfigureAwait(false);
         }
     }
 }

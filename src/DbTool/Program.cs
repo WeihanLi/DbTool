@@ -1,5 +1,4 @@
-﻿using ElectronNET.API;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace DbTool
@@ -14,6 +13,7 @@ namespace DbTool
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseElectron(args);
+        //.UseElectron(args)
+        ;
     }
 }
