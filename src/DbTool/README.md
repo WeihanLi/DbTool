@@ -2,8 +2,9 @@
 
 ## Prepare
 
-1. install node
-1. install electron
+1. [install dotnet](https://www.microsoft.com/net/download)
+1. [install nodejs](https://nodejs.org/en/)
+1. [install electron](https://www.npmjs.com/package/electron)
 
 ## Build
 
