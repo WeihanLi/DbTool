@@ -55,4 +55,13 @@ export class SettingService {
         });
     }
   }
+
+  updateSetting(setting: DbToolSetting): boolean {
+    if (setting && this.supportedDbType.indexOf(setting.DbType) >= 0) {
+      this.setting = setting;
+      localStorage.setItem(this._localCacheKey, JSON.stringify(setting));
+      return true;
+    }
+    return false;
+  }
 }

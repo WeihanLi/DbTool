@@ -1,22 +1,28 @@
 <div>
   <h2>Settings</h2>
-  <div>
-    当前支持的数据库类型：
-    <label *ngFor="let item of supportedDbType">{{item}}&nbsp;&nbsp;</label>
-
+  <div class="form-inline">
     <table>
       <tr>
         <th>数据库类型</th>
-        <td [textContent]="setting?.DbType"></td>
+        <td>
+          <select class="form-control" required [(ngModel)]="setting.DbType">
+            <option *ngFor="let item of supportedDbType" [value]="item">{{item}}</option>
+          </select>
+        </td>
       </tr>
       <tr>
         <th>默认数据库链接字符串</th>
-        <td [textContent]="setting?.DefaultConnString"></td>
+        <td>
+          <input class="form-control" type="text" [(ngModel)]="setting.DefaultConnString" />
+        </td>
       </tr>
       <tr>
         <th>是否生成私有字段</th>
-        <td [textContent]="setting?.GeneratePrivateField"></td>
+        <td>
+          <input type="checkbox" [(ngModel)]="setting.GeneratePrivateField" [checked]="setting?.GeneratePrivateField">
+        </td>
       </tr>
-    </table>
+    </table> <br/>
+    <button type="button" class="btn btn-primary" (click)="saveSetting()">保存</button>
   </div>
 </div>
