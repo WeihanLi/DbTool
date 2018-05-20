@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using DbTool.Core;
+using DbTool.MySql;
+using DbTool.SqlServer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace DbTool
 {
@@ -19,13 +23,25 @@ namespace DbTool
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.Configure<DbToolOption>(Configuration.GetSection("AppSettings"));
+
+            services.AddSingleton<IDbProvider, SqlServerDbProvider>();
+            services.AddSingleton<IDbProvider, MySqlDbProvider>();
+            services.AddSingleton<DbProviderFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +66,7 @@ namespace DbTool
                     template: "{controller}/{action=Index}/{id?}");
             });
 
+#if !DEBUG
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
@@ -64,7 +81,8 @@ namespace DbTool
             });
 
             // Open the Electron-Window here
-            //Electron.WindowManager.CreateWindowAsync().ConfigureAwait(false);
+            Electron.WindowManager.CreateWindowAsync().ConfigureAwait(false);
+#endif
         }
     }
 }

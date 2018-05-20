@@ -1,3 +1,22 @@
-<p>
-  app-settings works!
-</p>
+<div>
+  <h2>Settings</h2>
+  <div>
+    当前支持的数据库类型：
+    <label *ngFor="let item of supportedDbType">{{item}}&nbsp;&nbsp;</label>
+
+    <table>
+      <tr>
+        <th>数据库类型</th>
+        <td [textContent]="setting?.DbType"></td>
+      </tr>
+      <tr>
+        <th>默认数据库链接字符串</th>
+        <td [textContent]="setting?.DefaultConnString"></td>
+      </tr>
+      <tr>
+        <th>是否生成私有字段</th>
+        <td [textContent]="setting?.GeneratePrivateField"></td>
+      </tr>
+    </table>
+  </div>
+</div>

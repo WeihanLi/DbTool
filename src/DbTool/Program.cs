@@ -13,7 +13,10 @@ namespace DbTool
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-        //.UseElectron(args)
+#if !DEBUG
+
+        .UseElectron(args)
+#endif
         ;
     }
 }

@@ -5,8 +5,7 @@ using WeihanLi.Extensions;
 
 namespace DbTool.Controllers
 {
-    [Route("api/[controller]")]
-    public class NotificationController : Controller
+    public class NotificationController : BaseController
     {
         public string Test()
         {

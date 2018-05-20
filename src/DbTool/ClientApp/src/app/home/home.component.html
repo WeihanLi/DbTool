@@ -1,16 +1,25 @@
-<h1>Hello, world!</h1>
-<p>Welcome to your new single-page application, built with:</p>
-<ul>
-    <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-    <li><a href='https://angular.io/'>Angular</a> and <a href='http://www.typescriptlang.org/'>TypeScript</a> for client-side code</li>
-    <li><a href='https://webpack.github.io/'>Webpack</a> for building and bundling client-side resources</li>
-    <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-</ul>
-<p>To help you get started, we've also set up:</p>
-<ul>
-    <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-    <li><strong>Server-side prerendering</strong>. For faster initial loading and improved SEO, your Angular app is prerendered on the server. The resulting HTML is then transferred to the browser where a client-side copy of the app takes over.</li>
-    <li><strong>Webpack dev middleware</strong>. In development mode, there's no need to run the <code>webpack</code> build tool. Your client-side resources are dynamically built on demand. Updates are available as soon as you modify any file.</li>
-    <li><strong>Hot module replacement</strong>. In development mode, you don't even need to reload the page after making most changes. Within seconds of saving changes to files, your Angular app will be rebuilt and a new instance injected into the page.</li>
-    <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and the <code>webpack</code> build tool produces minified static CSS and JavaScript files.</li>
-</ul>
+<div>
+  <h3>简介 Intro</h3>
+  <h4><blockquote>一个支持 DbFirst、ModelFirst 和 CodeFirst 的数据库工具。</blockquote></h4>
+  <div>这是一个针对 <code>C#</code> 的数据库的小工具，可以利用这个小工具生成数据库表对应的 Model，并且会判断数据表列是否可以为空，可以为空的情况下会使用可空的数据类型，如
+  int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性名称上添加列描述的注释，支持导出多个表；可以导出到Excel，可以根据Excel字段文档生成Sql，数据库表误删除又没有备份的时候就很有帮助了，而且支持反向的根据生成的Model去生成创建数据库表的Sql。</div>
+  <br />
+  <h4>目前支持的数据库类型</h4>
+  <div>
+    <ul>
+      <li *ngFor="let item of supportedDbType">{{item}}</li>
+    </ul>
+  </div>
+  <h3>技术架构 Arch</h3>
+  <div>
+    <ul>
+      <li><a target="_blank" href="https://github.com/angular/angular">Angular6</a></li>
+      <li><a target="_blank" href="https://github.com/aspnet/Mvc">ASP.NET Core2.1</a></li>
+      <li><a target="_blank" href="https://github.com/ElectronNET/Electron.NET">Electron.NET</a></li>
+    </ul>
+  </div>
+  <h3>Contact</h3>
+  <div>
+    如果有什么问题或建议反馈，欢迎联系我 <a target="_blank" href="mailto:weihanli@outlook.com?subject=DbTool">weihanli@outlook.com</a> 或者在<a target="_blank" href="https://github.com/WeihanLi/DbTool/issues/new">Github</a>上给我提issue
+  </div>
+</div>

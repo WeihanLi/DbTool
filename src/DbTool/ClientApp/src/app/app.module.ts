@@ -12,6 +12,8 @@ import { DbFirstComponent } from './db-first/db-first.component';
 import { ModelFirstComponent } from './model-first/model-first.component';
 import { AppSettingsComponent } from './app-settings/app-settings.component';
 
+import { SettingService } from './services/setting.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,11 +33,13 @@ import { AppSettingsComponent } from './app-settings/app-settings.component';
       { path: 'home', component: HomeComponent },
       { path: 'codeFirst', component: CodeFirstComponent },
       { path: 'dbFirst', component: DbFirstComponent },
-      { path: 'modelFirst', component: CodeFirstComponent },
+      { path: 'modelFirst', component: ModelFirstComponent },
       { path: 'settings', component: AppSettingsComponent },
     ])
   ],
-  providers: [],
+  providers: [
+    SettingService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

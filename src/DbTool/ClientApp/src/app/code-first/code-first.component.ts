@@ -12,4 +12,7 @@ export class CodeFirstComponent implements OnInit {
   ngOnInit() {
   }
 
+  chooseFile() {
+    console.log('fileChoose');
+  }
 }

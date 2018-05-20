@@ -8,7 +8,7 @@ namespace DbTool.Core
     {
         private readonly IReadOnlyCollection<IDbProvider> _dbProviders;
 
-        public DbProviderFactory(IReadOnlyCollection<IDbProvider> dbProviders) => _dbProviders = dbProviders;
+        public DbProviderFactory(IEnumerable<IDbProvider> dbProviders) => _dbProviders = dbProviders.ToArray();
 
         public IDbProvider GetDbProvider(string dbType) => _dbProviders.FirstOrDefault(p => p.DbType.EqualsIgnoreCase(dbType));
 

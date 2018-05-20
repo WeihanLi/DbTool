@@ -52,4 +52,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DbTool.Core\DbTool.Core.csproj" />
+    <ProjectReference Include="..\DbTool.MySql\DbTool.MySql.csproj" />
+    <ProjectReference Include="..\DbTool.SqlServer\DbTool.SqlServer.csproj" />
+  </ItemGroup>
 </Project>
