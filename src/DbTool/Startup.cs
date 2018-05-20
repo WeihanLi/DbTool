@@ -1,9 +1,12 @@
-﻿using DbTool.Core;
+﻿using System.Threading.Tasks;
+using DbTool.Core;
 using DbTool.MySql;
 using DbTool.SqlServer;
+using ElectronNET.API;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -66,7 +69,6 @@ namespace DbTool
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-#if !DEBUG
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
@@ -81,8 +83,7 @@ namespace DbTool
             });
 
             // Open the Electron-Window here
-            Electron.WindowManager.CreateWindowAsync().ConfigureAwait(false);
-#endif
+            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
         }
     }
 }
