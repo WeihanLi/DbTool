@@ -10,12 +10,9 @@
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
   </PropertyGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="ElectronNET.CLI" Version="0.0.9" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="0.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.0-rc1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.0" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.9" />
   </ItemGroup>
   <ItemGroup>
@@ -30,16 +27,16 @@
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn" />
   </Target>
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="cnpm install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn run build --prod" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn run build:ssr --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)dist\**;" />
       <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
@@ -51,9 +48,6 @@
     <Content Update="electron.manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DbTool.Core\DbTool.Core.csproj" />
