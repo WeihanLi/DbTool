@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using DbTool.Properties;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
+using DbTool.Core.Entity;
 
-namespace DbTool
+namespace DbTool.Core
 {
     /// <summary>
     /// 数据库操作查询帮助类

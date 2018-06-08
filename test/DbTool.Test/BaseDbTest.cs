@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using DbTool.Core;
+using DbTool.Core.Entity;
+using DbTool.MySql;
+using DbTool.SqlServer;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using Xunit;

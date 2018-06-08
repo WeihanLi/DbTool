@@ -1,10 +1,10 @@
 ﻿using System.Data.Common;
 using System.Data.SqlClient;
 using System.Text;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Extensions;
+using DbTool.Core;
+using DbTool.Core.Entity;
 
-namespace DbTool
+namespace DbTool.SqlServer
 {
     public class SqlServerDbProvider : IDbProvider
     {
@@ -110,7 +110,10 @@ END";
 
         public DbConnection GetDbConnection(string connectionString) => new SqlConnection(connectionString);
 
-        public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription = true)
+        public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription = true) =>
+            GenerateSqlStatement(tableEntity, generateDescription, false);
+
+        public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription, bool addorUpdateDesc)
         {
             if (string.IsNullOrWhiteSpace(tableEntity?.TableName))
             {
@@ -185,7 +188,7 @@ END";
                     if (generateDescription && !string.IsNullOrEmpty(col.ColumnDescription))
                     {
                         sbSqlDescText.AppendLine();
-                        sbSqlDescText.AppendFormat(ConfigurationHelper.AppSetting(ConfigurationConstants.DbDescriptionGenType).EqualsIgnoreCase("AddOrUpdate") ? CreateOrUpdateColumnDescSqlFormat : CreateColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
+                        sbSqlDescText.AppendFormat(addorUpdateDesc ? CreateOrUpdateColumnDescSqlFormat : CreateColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
                     }
                 }
                 sbSqlText.Remove(sbSqlText.Length - 1, 1);

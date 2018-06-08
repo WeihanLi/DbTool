@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using DbTool.Core;
+using DbTool.Core.Entity;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -566,7 +568,7 @@ namespace DbTool
 
                 try
                 {
-                    var tables = Utility.GeTableEntityFromSourceCode(ofg.FileNames);
+                    var tables = Utils.GeTableEntityFromSourceCode(ofg.FileNames);
                     if (tables == null)
                     {
                         MessageBox.Show("没有找到 Model");

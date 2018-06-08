@@ -1,8 +1,10 @@
 ﻿using System.Data.Common;
 using System.Text;
+using DbTool.Core;
+using DbTool.Core.Entity;
 using MySql.Data.MySqlClient;
 
-namespace DbTool
+namespace DbTool.MySql
 {
     public class MySqlDbProvider : IDbProvider
     {

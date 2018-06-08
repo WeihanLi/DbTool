@@ -1,4 +1,4 @@
-﻿namespace DbTool
+﻿namespace DbTool.Core
 {
     /// <summary>
     /// 数据库类型

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 using Autofac;
+using DbTool.Core;
+using DbTool.MySql;
+using DbTool.SqlServer;
 using WeihanLi.Common;
 
 namespace DbTool

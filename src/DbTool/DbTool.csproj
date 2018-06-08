@@ -1,43 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net452</TargetFramework>
     <OutputType>WinExe</OutputType>
     <RootNamespace>DbTool</RootNamespace>
     <AssemblyName>DbTool</AssemblyName>
     <Version>1.0.3</Version>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="2.0.0" />
-    <PackageReference Include="MySql.Data" Version="6.9.11" />
-    <PackageReference Include="Npgsql" Version="3.2.7" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.9">
-    </PackageReference>
     <PackageReference Include="WeihanLi.Npoi" Version="1.0.5">
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="DbProvider.*.cs">
-      <DependentUpon>DbProvider.cs</DependentUpon>
-    </Compile>
     <Compile Update="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
@@ -58,6 +34,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <ProjectReference Include="..\DbTool.Core\DbTool.Core.csproj" />
+    <ProjectReference Include="..\DbTool.MySql\DbTool.MySql.csproj" />
+    <ProjectReference Include="..\DbTool.SqlServer\DbTool.SqlServer.csproj" />
     <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>

@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
+using DbTool.Core.Entity;
 
-namespace DbTool
+namespace DbTool.Core
 {
     public interface IDbProvider
     {
