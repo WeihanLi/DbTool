@@ -29,7 +29,7 @@ namespace DbTool
                 throw new ArgumentNullException(nameof(connString));
             }
 
-            var dbProviderFactory = DependencyResolver.Current.GetService<DbProviderFactory>();
+            var dbProviderFactory = DependencyResolver.Current.ResolveService<DbProviderFactory>();
             if (!dbProviderFactory.AllowedDbTypes.Any(_ => _.EqualsIgnoreCase(dbType)))
             {
                 throw new ArgumentException(Resources.UnsupportedDbType.FormatWith(dbType), nameof(dbType));

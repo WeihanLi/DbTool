@@ -1,29 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <TargetFramework>net45</TargetFramework>
     <OutputType>WinExe</OutputType>
     <RootNamespace>DbTool</RootNamespace>
     <AssemblyName>DbTool</AssemblyName>
-    <Version>1.0.2</Version>
-    <TargetFramework>net462</TargetFramework>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <Version>1.0.3</Version>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -44,22 +25,17 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="1.0.9" />
+    <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="2.0.0" />
     <PackageReference Include="MySql.Data" Version="6.9.11" />
     <PackageReference Include="Npgsql" Version="3.2.7" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.8.1">
+    <PackageReference Include="WeihanLi.Common" Version="1.0.9">
     </PackageReference>
-    <PackageReference Include="WeihanLi.Npoi" Version="1.0.4.2">
+    <PackageReference Include="WeihanLi.Npoi" Version="1.0.5">
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="DbProvider.SqlServer.cs">
-      <DependentUpon>DbProvider.cs</DependentUpon>
-    </Compile>
-    <Compile Update="DbProvider.MySql.cs">
-      <DependentUpon>DbProvider.cs</DependentUpon>
-    </Compile>
-    <Compile Update="DbProvider.PgSql.cs">
+    <Compile Update="DbProvider.*.cs">
       <DependentUpon>DbProvider.cs</DependentUpon>
     </Compile>
     <Compile Update="MainForm.Designer.cs">

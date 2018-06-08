@@ -392,7 +392,7 @@ namespace DbTool
             {
                 return "";
             }
-            return DependencyResolver.Current.GetService<DbProviderFactory>().GetDbProvider(dbType)?
+            return DependencyResolver.Current.ResolveService<DbProviderFactory>().GetDbProvider(dbType)?
                 .GenerateSqlStatement(tableEntity, genDescription);
         }
 
@@ -454,12 +454,7 @@ namespace DbTool
             {
                 return null;
             }
-            //
-            //Set hardcoded environment variable to set the path to the library
-            Environment.SetEnvironmentVariable("ROSLYN_COMPILER_LOCATION", System.IO.Directory.GetCurrentDirectory() + "\\roslyn", EnvironmentVariableTarget.Process);
             var provider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
-            //Clean up
-            Environment.SetEnvironmentVariable("ROSLYN_COMPILER_LOCATION", null, EnvironmentVariableTarget.Process);
 
             var result = provider.CompileAssemblyFromFile(new CompilerParameters(new[] { "System.dll" }), sourceFilePaths);
             if (result.Errors.HasErrors)

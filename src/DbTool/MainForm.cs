@@ -244,17 +244,21 @@ namespace DbTool
                             }
                             if (row.RowNum == 0)
                             {
-                                table.TableDescription = row.Cells[0].StringCellValue;
+                                if (row.Cells.Count > 0)
+                                {
+                                    table.TableDescription = row.Cells[0].StringCellValue;
+                                }
                                 txtTableName.Text = table.TableName;
                                 txtTableDesc.Text = table.TableDescription;
                                 continue;
                             }
                             if (row.RowNum > 1)
                             {
-                                var column = new ColumnEntity
+                                var column = new ColumnEntity();
+                                if (row.Cells.Count > 0)
                                 {
-                                    ColumnName = row.Cells[0].StringCellValue.Trim()
-                                };
+                                    column.ColumnName = row.Cells[0].StringCellValue.Trim();
+                                }
                                 if (string.IsNullOrWhiteSpace(column.ColumnName))
                                 {
                                     continue;
@@ -410,7 +414,7 @@ namespace DbTool
                     var tableEntity = new TableEntity();
                     if (cbTables.CheckedItems.Count > 0)
                     {
-                        var tempFileName = cbTables.CheckedItems.Count > 1 ? _dbHelper.DatabaseName : ((cbTables.CheckedItems[0] as TableEntity)?.TableName ?? _dbHelper.DatabaseName);
+                        var tempFileName = cbTables.CheckedItems.Count > 1 ? _dbHelper.DatabaseName : (cbTables.CheckedItems[0] as TableEntity)?.TableName ?? _dbHelper.DatabaseName;
                         var path = dir + "\\" + tempFileName + ".xlsx";
                         var workbook = ExcelHelper.PrepareWorkbook(path);
                         foreach (var item in cbTables.CheckedItems)
