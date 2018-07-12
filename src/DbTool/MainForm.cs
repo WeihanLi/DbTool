@@ -26,7 +26,7 @@ namespace DbTool
         {
             InitializeComponent();
             txtConnString.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
-            lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/DbTool/template.xlsx");
+            lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/src/DbTool/template.xlsx");
         }
 
         /// <summary>
