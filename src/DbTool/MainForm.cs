@@ -6,9 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using DbTool.Core;
 using DbTool.Core.Entity;
-using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Npoi;
 using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
@@ -215,23 +213,17 @@ namespace DbTool
             if (ofg.ShowDialog() == DialogResult.OK)
             {
                 var path = ofg.FileName;
-                var isNewFileVersion = path.EndsWith(".xlsx");
                 var table = new TableEntity();
-                Stream stream = null;
                 try
                 {
-                    stream = File.OpenRead(path);
-                    IWorkbook workbook;
-                    if (isNewFileVersion)
-                    {
-                        workbook = new XSSFWorkbook(stream);
-                    }
-                    else
-                    {
-                        workbook = new HSSFWorkbook(stream);
-                    }
+                    var workbook = ExcelHelper.LoadExcel(path);
+
                     dataGridView.Rows.Clear();
                     var tableCount = workbook.NumberOfSheets;
+                    if (0 == tableCount)
+                    {
+                        return;
+                    }
                     if (tableCount == 1)
                     {
                         var sheet = workbook.GetSheetAt(0);
@@ -330,22 +322,22 @@ namespace DbTool
                                 {
                                     var column = new ColumnEntity
                                     {
-                                        ColumnName = row.Cells[0].StringCellValue
+                                        ColumnName = row.GetCell(0)?.StringCellValue
                                     };
                                     if (string.IsNullOrWhiteSpace(column.ColumnName))
                                     {
                                         continue;
                                     }
-                                    column.ColumnDescription = row.Cells[1].StringCellValue;
-                                    column.IsPrimaryKey = row.Cells[2].StringCellValue.Equals("Y");
-                                    column.IsNullable = row.Cells[3].StringCellValue.Equals("Y");
-                                    column.DataType = row.Cells[4].StringCellValue;
+                                    column.ColumnDescription = row.GetCell(1).StringCellValue;
+                                    column.IsPrimaryKey = row.GetCell(2).StringCellValue.Equals("Y");
+                                    column.IsNullable = row.GetCell(3).StringCellValue.Equals("Y");
+                                    column.DataType = row.GetCell(4).StringCellValue;
 
-                                    column.Size = string.IsNullOrEmpty(row.Cells[5].ToString()) ? Utility.GetDefaultSizeForDbType(column.DataType) : Convert.ToUInt32(row.Cells[5].ToString());
+                                    column.Size = string.IsNullOrEmpty(row.GetCell(5).ToString()) ? Utility.GetDefaultSizeForDbType(column.DataType) : Convert.ToUInt32(row.GetCell(5).ToString());
 
-                                    if (row.Cells.Count > 6 && !string.IsNullOrWhiteSpace(row.Cells[6].ToString()))
+                                    if (!string.IsNullOrWhiteSpace(row.GetCell(6)?.ToString()))
                                     {
-                                        column.DefaultValue = row.Cells[6].ToString();
+                                        column.DefaultValue = row.GetCell(6).ToString();
                                     }
                                     table.Columns.Add(column);
                                 }
@@ -378,10 +370,6 @@ namespace DbTool
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
-                }
-                finally
-                {
-                    stream.Dispose();
                 }
             }
         }

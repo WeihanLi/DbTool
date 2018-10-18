@@ -16,6 +16,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="WeihanLi.Common" Version="1.0.9" />
+    <PackageReference Include="WeihanLi.Common" Version="1.0.10" />
   </ItemGroup>
 </Project>
