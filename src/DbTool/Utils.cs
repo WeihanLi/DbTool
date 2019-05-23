@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using System.Text;
 using DbTool.Core;
@@ -54,17 +55,26 @@ namespace DbTool
                         TableDescription = type.GetCustomAttribute<DescriptionAttribute>()?.Description
                     };
                     var defaultVal = Activator.CreateInstance(type);
-                    foreach (var property in type.GetProperties(BindingFlags.GetField | BindingFlags.Public | BindingFlags.Instance))
+                    foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                     {
+                        if (property.IsDefined(typeof(NotMappedAttribute)))
+                        {
+                            continue;
+                        }
                         var columnInfo = new ColumnEntity
                         {
                             ColumnName = property.Name,
                             ColumnDescription = property.GetCustomAttribute<DescriptionAttribute>()?.Description,
-                            IsNullable = property.PropertyType.Unwrap() != property.PropertyType
                         };
-
-                        if (property.PropertyType == typeof(string) && property.IsAttributeDefined<RequiredAttribute>(true))
+                        var defaultPropertyValue = property.PropertyType.GetDefaultValue();
+                        if (null == defaultPropertyValue)
                         {
+                            // ReferenceType
+                            columnInfo.IsNullable = !property.IsDefined(typeof(RequiredAttribute));
+                        }
+                        else
+                        {
+                            // ValueType
                             columnInfo.IsNullable = false;
                         }
 
@@ -72,7 +82,7 @@ namespace DbTool
                         columnInfo.DefaultValue =
                             null == val || property.PropertyType.GetDefaultValue().Equals(val) || columnInfo.IsNullable
                             ? null : val;
-                        columnInfo.IsPrimaryKey = columnInfo.ColumnDescription?.Contains("主键") ?? false;
+                        columnInfo.IsPrimaryKey = property.Name == "Id" || columnInfo.ColumnDescription?.Contains("主键") == true;
                         columnInfo.DataType = Utility.FclType2DbType(property.PropertyType).ToString();
 
                         // use VARCHAR for MySql
