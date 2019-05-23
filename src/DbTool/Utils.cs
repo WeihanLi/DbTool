@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 using DbTool.Core;
@@ -26,7 +27,13 @@ namespace DbTool
             }
             var provider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
 
-            var result = provider.CompileAssemblyFromFile(new CompilerParameters(new[] { "System.dll" }), sourceFilePaths);
+            var result = provider.CompileAssemblyFromFile(new CompilerParameters(
+                new[]
+                {
+                    "System.dll",
+                    "System.ComponentModel.DataAnnotations.dll",
+                }),
+                sourceFilePaths);
             if (result.Errors.HasErrors)
             {
                 var error = new StringBuilder(result.Errors.Count * 1024);
@@ -55,12 +62,20 @@ namespace DbTool
                             ColumnDescription = property.GetCustomAttribute<DescriptionAttribute>()?.Description,
                             IsNullable = property.PropertyType.Unwrap() != property.PropertyType
                         };
+
+                        if (property.PropertyType == typeof(string) && property.IsAttributeDefined<RequiredAttribute>(true))
+                        {
+                            columnInfo.IsNullable = false;
+                        }
+
                         var val = property.GetValue(defaultVal);
                         columnInfo.DefaultValue =
                             null == val || property.PropertyType.GetDefaultValue().Equals(val) || columnInfo.IsNullable
                             ? null : val;
                         columnInfo.IsPrimaryKey = columnInfo.ColumnDescription?.Contains("主键") ?? false;
                         columnInfo.DataType = Utility.FclType2DbType(property.PropertyType).ToString();
+
+                        // use VARCHAR for MySql
                         if (!ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer") && columnInfo.DataType.Equals("NVARCHAR"))
                         {
                             columnInfo.DataType = "VARCHAR";

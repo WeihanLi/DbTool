@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DbTool.Core.Entity
 {
@@ -10,6 +11,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 表名称
         /// </summary>
+        [Required]
         public string TableName { get; set; }
 
         /// <summary>
