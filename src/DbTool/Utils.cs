@@ -57,14 +57,13 @@ namespace DbTool
             var annotationReference = MetadataReference.CreateFromFile(typeof(TableAttribute).Assembly.Location);
             var weihanliCommonReference = MetadataReference.CreateFromFile(typeof(IDependencyResolver).Assembly.Location);
 
-            var syntaxTree = CSharpSyntaxTree.ParseText(sourceCodeText);
+            var syntaxTree = CSharpSyntaxTree.ParseText(sourceCodeText, new CSharpParseOptions(LanguageVersion.Latest));
 
             // A single, immutable invocation to the compiler
             // to produce a library
             var assemblyName = $"DbTool.DynamicGenerated.{ObjectIdGenerator.Instance.NewId()}";
             var compilation = CSharpCompilation.Create(assemblyName)
-                .WithOptions(
-                    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
                 .AddReferences(systemReference, annotationReference, weihanliCommonReference)
                 .AddSyntaxTrees(syntaxTree);
             var assemblyPath = ApplicationHelper.MapPath($"{assemblyName}.dll");
