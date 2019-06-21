@@ -1,13 +1,17 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using DbTool.Core;
 using DbTool.Core.Entity;
+using Google.Protobuf;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
@@ -26,26 +30,80 @@ namespace DbTool
             {
                 return null;
             }
-            var provider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
+            var usingList = new List<string>();
 
-            var result = provider.CompileAssemblyFromFile(new CompilerParameters(
-                new[]
-                {
-                    "System.dll",
-                    "System.ComponentModel.DataAnnotations.dll",
-                }),
-                sourceFilePaths);
-            if (result.Errors.HasErrors)
+            var sourceCodeTextBuilder = new StringBuilder();
+
+            foreach (var path in sourceFilePaths)
             {
-                var error = new StringBuilder(result.Errors.Count * 1024);
-                for (var i = 0; i < result.Errors.Count; i++)
+                foreach (var line in File.ReadAllLines(path))
                 {
-                    error.AppendLine($"{result.Errors[i].FileName}({result.Errors[i].Line},{result.Errors[i].Column}):{result.Errors[i].ErrorText}");
+                    if (line.StartsWith("using ") && line.EndsWith(";"))
+                    {
+                        //
+                        usingList.AddIfNotContains(line);
+                    }
+                    else
+                    {
+                        sourceCodeTextBuilder.AppendLine(line);
+                    }
                 }
-                throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
             }
-            var tables = new List<TableEntity>(2);
-            foreach (var type in result.CompiledAssembly.GetTypes())
+
+            var sourceCodeText =
+                $"{usingList.StringJoin(Environment.NewLine)}{Environment.NewLine}{sourceCodeTextBuilder}";
+
+            var systemReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+            var annotationReference = MetadataReference.CreateFromFile(typeof(TableAttribute).Assembly.Location);
+            var weihanliCommonReference = MetadataReference.CreateFromFile(typeof(IDependencyResolver).Assembly.Location);
+
+            var syntaxTree = CSharpSyntaxTree.ParseText(sourceCodeText);
+
+            // A single, immutable invocation to the compiler
+            // to produce a library
+            var assemblyName = $"DbTool.DynamicGenerated.{ObjectIdGenerator.Instance.NewId()}";
+            var compilation = CSharpCompilation.Create(assemblyName)
+                .WithOptions(
+                    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .AddReferences(systemReference, annotationReference, weihanliCommonReference)
+                .AddSyntaxTrees(syntaxTree);
+            var assemblyPath = ApplicationHelper.MapPath($"{assemblyName}.dll");
+            var compilationResult = compilation.Emit(assemblyPath);
+            if (compilationResult.Success)
+            {
+                try
+                {
+                    byte[] assemblyBytes;
+                    using (var fs = File.OpenRead(assemblyPath))
+                    {
+                        assemblyBytes = fs.ToByteArray();
+                    }
+                    return GeTableEntityFromAssembly(Assembly.Load(assemblyBytes));
+                }
+                finally
+                {
+                    File.Delete(assemblyPath);
+                }
+            }
+
+            var error = new StringBuilder(compilationResult.Diagnostics.Length * 1024);
+            foreach (var t in compilationResult.Diagnostics)
+            {
+                error.AppendLine($"{t.GetMessage()}");
+            }
+            throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
+        }
+
+        /// <summary>
+        /// 从 Assembly 中提取 Model 信息
+        /// </summary>
+        /// <param name="assembly">assembly</param>
+        /// <returns></returns>
+        private static List<TableEntity> GeTableEntityFromAssembly(Assembly assembly)
+        {
+            var tables = new List<TableEntity>(4);
+
+            foreach (var type in assembly.GetTypes())
             {
                 if (type.IsClass && type.IsPublic && !type.IsAbstract)
                 {
@@ -57,10 +115,19 @@ namespace DbTool
                     var defaultVal = Activator.CreateInstance(type);
                     foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        if (property.IsDefined(typeof(NotMappedAttribute)))
+                        if (property.IsDefined(typeof(NotMappedAttribute)) || property.IsDefined(typeof(ForeignKeyAttribute)))
                         {
-                            continue;
+                            continue; // not mapped or is navigationProperty
                         }
+                        if (property.GetGetMethod().IsVirtual)
+                        {
+                            continue; // virtual navigationProperty
+                        }
+                        if (!property.PropertyType.IsBasicType())
+                        {
+                            continue; // none basic type
+                        }
+
                         var columnInfo = new ColumnEntity
                         {
                             ColumnName = property.Name,

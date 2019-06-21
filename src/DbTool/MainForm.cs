@@ -23,6 +23,13 @@ namespace DbTool
         public MainForm()
         {
             InitializeComponent();
+            this.FormClosed += (sender, args) =>
+                {
+                    foreach (var file in Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, "DbTool.DynamicGenerated.*.dll"))
+                    {
+                        File.Delete(file);
+                    }
+                };
             txtConnString.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
             lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/src/DbTool/template.xlsx");
         }
