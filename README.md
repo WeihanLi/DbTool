@@ -27,7 +27,6 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 ## 后续功能
 
-- [ ] 支持 PostgreSQL
 - [ ] 使用 `Electron.Net` 重写
 - [ ] 插件式自定义扩展 `Model` 信息
 
@@ -38,6 +37,8 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 ![ModelFirst](resources/desc1.png)
 
 ![CodeFirst](resources/desc2.png)
+
+![Settings](https://user-images.githubusercontent.com/7604648/59999201-ff5aa400-9693-11e9-85c0-252d56dcbc95.png)
 
 ## 使用说明
 
