@@ -30,7 +30,7 @@
         private void InitializeComponent()
         {
             this.lblConnStatus = new System.Windows.Forms.Label();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControl = new System.Windows.Forms.TabControl();
             this.tabDbPage = new System.Windows.Forms.TabPage();
             this.btnConnect = new System.Windows.Forms.Button();
             this.txtSuffix = new System.Windows.Forms.TextBox();
@@ -70,11 +70,18 @@
             this.treeViewTable = new System.Windows.Forms.TreeView();
             this.txtCodeModelSql = new System.Windows.Forms.TextBox();
             this.btnImportModel = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
+            this.tabSettingPage = new System.Windows.Forms.TabPage();
+            this.lblDefaultDbConn = new System.Windows.Forms.Label();
+            this.txtDefaultDbConn = new System.Windows.Forms.TextBox();
+            this.lblDefaultDbType = new System.Windows.Forms.Label();
+            this.cbDefaultDbType = new System.Windows.Forms.ComboBox();
+            this.btnUpdateSetting = new System.Windows.Forms.Button();
+            this.tabControl.SuspendLayout();
             this.tabDbPage.SuspendLayout();
             this.tabModelPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.tabCodePage.SuspendLayout();
+            this.tabSettingPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblConnStatus
@@ -86,16 +93,17 @@
             this.lblConnStatus.TabIndex = 6;
             this.lblConnStatus.Text = "数据库未连接！";
             // 
-            // tabControl1
+            // tabControl
             // 
-            this.tabControl1.Controls.Add(this.tabDbPage);
-            this.tabControl1.Controls.Add(this.tabModelPage);
-            this.tabControl1.Controls.Add(this.tabCodePage);
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(938, 509);
-            this.tabControl1.TabIndex = 7;
+            this.tabControl.Controls.Add(this.tabDbPage);
+            this.tabControl.Controls.Add(this.tabModelPage);
+            this.tabControl.Controls.Add(this.tabCodePage);
+            this.tabControl.Controls.Add(this.tabSettingPage);
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(938, 509);
+            this.tabControl.TabIndex = 7;
             // 
             // tabDbPage
             // 
@@ -288,7 +296,7 @@
             this.cbGenDbDescription.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbGenDbDescription.Location = new System.Drawing.Point(410, 13);
             this.cbGenDbDescription.Name = "cbGenDbDescription";
-            this.cbGenDbDescription.Size = new System.Drawing.Size(112, 24);
+            this.cbGenDbDescription.Size = new System.Drawing.Size(126, 24);
             this.cbGenDbDescription.TabIndex = 26;
             this.cbGenDbDescription.Text = "生成数据库描述";
             this.cbGenDbDescription.UseVisualStyleBackColor = true;
@@ -471,9 +479,9 @@
             // 
             this.treeViewTable.Location = new System.Drawing.Point(22, 65);
             this.treeViewTable.Name = "treeViewTable";
+            this.treeViewTable.ShowNodeToolTips = true;
             this.treeViewTable.Size = new System.Drawing.Size(206, 382);
             this.treeViewTable.TabIndex = 3;
-            this.treeViewTable.ShowNodeToolTips = true;
             // 
             // txtCodeModelSql
             // 
@@ -494,18 +502,76 @@
             this.btnImportModel.UseVisualStyleBackColor = true;
             this.btnImportModel.Click += new System.EventHandler(this.btnImportModel_Click);
             // 
+            // tabSettingPage
+            // 
+            this.tabSettingPage.Controls.Add(this.btnUpdateSetting);
+            this.tabSettingPage.Controls.Add(this.cbDefaultDbType);
+            this.tabSettingPage.Controls.Add(this.lblDefaultDbType);
+            this.tabSettingPage.Controls.Add(this.txtDefaultDbConn);
+            this.tabSettingPage.Controls.Add(this.lblDefaultDbConn);
+            this.tabSettingPage.Location = new System.Drawing.Point(4, 29);
+            this.tabSettingPage.Name = "tabSettingPage";
+            this.tabSettingPage.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSettingPage.Size = new System.Drawing.Size(930, 476);
+            this.tabSettingPage.TabIndex = 3;
+            this.tabSettingPage.Text = "Settings";
+            this.tabSettingPage.UseVisualStyleBackColor = true;
+            // 
+            // lblDefaultDbConn
+            // 
+            this.lblDefaultDbConn.AutoSize = true;
+            this.lblDefaultDbConn.Location = new System.Drawing.Point(20, 45);
+            this.lblDefaultDbConn.Name = "lblDefaultDbConn";
+            this.lblDefaultDbConn.Size = new System.Drawing.Size(149, 20);
+            this.lblDefaultDbConn.TabIndex = 0;
+            this.lblDefaultDbConn.Text = "默认数据库连接字符串";
+            // 
+            // txtDefaultDbConn
+            // 
+            this.txtDefaultDbConn.Location = new System.Drawing.Point(177, 42);
+            this.txtDefaultDbConn.Name = "txtDefaultDbConn";
+            this.txtDefaultDbConn.Size = new System.Drawing.Size(714, 26);
+            this.txtDefaultDbConn.TabIndex = 1;
+            // 
+            // lblDefaultDbType
+            // 
+            this.lblDefaultDbType.AutoSize = true;
+            this.lblDefaultDbType.Location = new System.Drawing.Point(24, 98);
+            this.lblDefaultDbType.Name = "lblDefaultDbType";
+            this.lblDefaultDbType.Size = new System.Drawing.Size(107, 20);
+            this.lblDefaultDbType.TabIndex = 2;
+            this.lblDefaultDbType.Text = "默认数据库类型";
+            // 
+            // cbDefaultDbType
+            // 
+            this.cbDefaultDbType.FormattingEnabled = true;
+            this.cbDefaultDbType.Location = new System.Drawing.Point(177, 95);
+            this.cbDefaultDbType.Name = "cbDefaultDbType";
+            this.cbDefaultDbType.Size = new System.Drawing.Size(133, 28);
+            this.cbDefaultDbType.TabIndex = 3;
+            // 
+            // btnUpdateSetting
+            // 
+            this.btnUpdateSetting.Location = new System.Drawing.Point(28, 199);
+            this.btnUpdateSetting.Name = "btnUpdateSetting";
+            this.btnUpdateSetting.Size = new System.Drawing.Size(103, 33);
+            this.btnUpdateSetting.TabIndex = 4;
+            this.btnUpdateSetting.Text = "修改默认配置";
+            this.btnUpdateSetting.UseVisualStyleBackColor = true;
+            this.btnUpdateSetting.Click += new System.EventHandler(this.BtnUpdateSetting_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 506);
-            this.Controls.Add(this.tabControl1);
-            this.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Controls.Add(this.tabControl);
+            this.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "MainForm";
             this.Text = "DbTool";
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            this.tabControl1.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
             this.tabDbPage.ResumeLayout(false);
             this.tabDbPage.PerformLayout();
             this.tabModelPage.ResumeLayout(false);
@@ -513,13 +579,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.tabCodePage.ResumeLayout(false);
             this.tabCodePage.PerformLayout();
+            this.tabSettingPage.ResumeLayout(false);
+            this.tabSettingPage.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private System.Windows.Forms.Label lblConnStatus;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabDbPage;
         private System.Windows.Forms.CheckedListBox cbTables;
         private System.Windows.Forms.Button btnGenerateModel0;
@@ -559,5 +627,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn FieldSize;
         private System.Windows.Forms.DataGridViewTextBoxColumn DefaultValue;
         private System.Windows.Forms.CheckBox cbGenDescriptionAttr;
+        private System.Windows.Forms.TabPage tabSettingPage;
+        private System.Windows.Forms.ComboBox cbDefaultDbType;
+        private System.Windows.Forms.Label lblDefaultDbType;
+        private System.Windows.Forms.TextBox txtDefaultDbConn;
+        private System.Windows.Forms.Label lblDefaultDbConn;
+        private System.Windows.Forms.Button btnUpdateSetting;
     }
 }

@@ -7,7 +7,9 @@ using System.Windows.Forms;
 using DbTool.Core;
 using DbTool.Core.Entity;
 using NPOI.SS.UserModel;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
 
@@ -23,15 +25,24 @@ namespace DbTool
         public MainForm()
         {
             InitializeComponent();
-            this.FormClosed += (sender, args) =>
-                {
-                    foreach (var file in Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, "DbTool.DynamicGenerated.*.dll"))
-                    {
-                        File.Delete(file);
-                    }
-                };
             txtConnString.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
             lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/src/DbTool/template.xlsx");
+
+            #region InitSetting
+            var factory = DependencyResolver.Current.ResolveService<DbProviderFactory>();
+            cbDefaultDbType.DataSource = factory.SupportedDbTypes;
+            cbDefaultDbType.SelectedItem = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
+
+            txtDefaultDbConn.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString); 
+            #endregion
+
+            FormClosed += (sender, args) =>
+            {
+                foreach (var file in Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, "DbTool.DynamicGenerated.*.dll"))
+                {
+                    File.Delete(file);
+                }
+            };
         }
 
         /// <summary>
@@ -138,13 +149,12 @@ namespace DbTool
         /// <param name="e"></param>
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            tabControl1.Width = Size.Width;
-            tabControl1.Height = Size.Height;
-            tabControl1.Left = 0;
-            tabControl1.Top = 0;
+            tabControl.Size = Size;
+
             //DbFirst
             cbTables.Height = Size.Height - 260;
             lblConnStatus.Top = cbTables.Height + cbTables.Top + 10;
+
             //ModelFirst
             dataGridView.Left = 10;
             dataGridView.Width = Size.Width - 40;
@@ -591,6 +601,25 @@ namespace DbTool
         private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             MessageBox.Show(e.Exception.ToString());
+        }
+
+        private void BtnUpdateSetting_Click(object sender, EventArgs e)
+        {
+            var defaultConnString = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
+            var inputConnString = txtDefaultDbConn.Text.Trim();
+            if (!string.IsNullOrWhiteSpace(inputConnString) && !defaultConnString.EqualsIgnoreCase(inputConnString))
+            {
+                ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.DefaultConnectionString, inputConnString);
+            }
+            //
+            var checkedDbType = cbDefaultDbType.Text;
+            var defaultDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
+            if (checkedDbType != defaultDbType)
+            {
+                ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.DbType, checkedDbType);
+            }
+
+            MessageBox.Show("Success");
         }
     }
 }

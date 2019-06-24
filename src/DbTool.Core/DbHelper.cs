@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using Dapper;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
 using DbTool.Core.Entity;
@@ -30,7 +31,7 @@ namespace DbTool.Core
             }
 
             var dbProviderFactory = DependencyResolver.Current.ResolveService<DbProviderFactory>();
-            if (!dbProviderFactory.AllowedDbTypes.Any(_ => _.EqualsIgnoreCase(dbType)))
+            if (!dbProviderFactory.SupportedDbTypes.Any(_ => _.EqualsIgnoreCase(dbType)))
             {
                 throw new ArgumentException(Resources.UnsupportedDbType.FormatWith(dbType), nameof(dbType));
             }
@@ -44,8 +45,7 @@ namespace DbTool.Core
         /// <returns></returns>
         public List<TableEntity> GetTablesInfo()
         {
-            return _conn.Select<TableEntity>(_dbProvider.QueryDbTablesSqlFormat, new { dbName = DatabaseName }).ToList()
-                .Chain(t => _conn.Close());
+            return _conn.Query<TableEntity>(_dbProvider.QueryDbTablesSqlFormat, new { dbName = DatabaseName }).ToList();
         }
 
         /// <summary>
@@ -59,10 +59,9 @@ namespace DbTool.Core
             {
                 throw new ArgumentNullException(nameof(tableName));
             }
-            return _conn.Select<ColumnEntity>(
+            return _conn.Query<ColumnEntity>(
                     _dbProvider.QueryTableColumnsSqlFormat,
-                new { dbName = DatabaseName, tableName }).ToList()
-                .Chain(t => _conn.Close());
+                new { dbName = DatabaseName, tableName }).ToList();
         }
 
         #region IDisposable Support

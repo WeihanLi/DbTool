@@ -12,6 +12,6 @@ namespace DbTool.Core
 
         public IDbProvider GetDbProvider(string dbType) => _dbProviders.FirstOrDefault(p => p.DbType.EqualsIgnoreCase(dbType));
 
-        public IReadOnlyCollection<string> AllowedDbTypes => _dbProviders.Select(_ => _.DbType).ToArray();
+        public IReadOnlyCollection<string> SupportedDbTypes => _dbProviders.Select(_ => _.DbType).ToArray();
     }
 }
