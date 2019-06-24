@@ -4,13 +4,12 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>DbTool</RootNamespace>
     <AssemblyName>DbTool</AssemblyName>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.1.0" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.22" />
     <PackageReference Include="WeihanLi.Npoi" Version="1.3.5" />
   </ItemGroup>
   <ItemGroup>
