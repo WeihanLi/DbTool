@@ -27,7 +27,6 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 ## 后续功能
 
-- [ ] 支持 PostgreSQL
 - [ ] 使用 `Electron.Net` 重写
 - [ ] 插件式自定义扩展 `Model` 信息
 
@@ -38,6 +37,8 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 ![ModelFirst](resources/desc1.png)
 
 ![CodeFirst](resources/desc2.png)
+
+![Settings](resources/desc3.png)
 
 ## 使用说明
 
@@ -75,16 +76,21 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
         1. 选择要导出到 Excel 的数据库表
         1. 导出到 Excel
 
-1. ModelFirst
+2. ModelFirst
 
     1. 可以手动填写信息或者先填写 Excel 再进行导入操作
     1. 只生成 Sql 语句，不会自动在数据库里创建表，根据生成的 Sql 语句再创建表
 
-1. CodeFirst
+3. CodeFirst
 
     1. 根据已有的 Model 生成创建表的 sql ，字段注释会从属性的 `Description` Attribute 中获取
     1. 根据需要设置是否生成数据库描述 sql
     1. 左侧生成表字段信息，右侧生成创建表的sql，生成的 Sql 仅供参考，请自行根据需要调整数据类型以及字段长度
+
+4. Settings
+
+    1. 修改默认数据库连接字符串
+    1. 修改默认数据库类型
 
 ## Contact Me
 

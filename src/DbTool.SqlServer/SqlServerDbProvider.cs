@@ -113,7 +113,7 @@ END";
         public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription = true) =>
             GenerateSqlStatement(tableEntity, generateDescription, false);
 
-        public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription, bool addorUpdateDesc)
+        public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription, bool addOrUpdateDesc)
         {
             if (string.IsNullOrWhiteSpace(tableEntity?.TableName))
             {
@@ -188,7 +188,7 @@ END";
                     if (generateDescription && !string.IsNullOrEmpty(col.ColumnDescription))
                     {
                         sbSqlDescText.AppendLine();
-                        sbSqlDescText.AppendFormat(addorUpdateDesc ? CreateOrUpdateColumnDescSqlFormat : CreateColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
+                        sbSqlDescText.AppendFormat(addOrUpdateDesc ? CreateOrUpdateColumnDescSqlFormat : CreateColumnDescSqlFormat, tableEntity.TableName, col.ColumnName, col.ColumnDescription);
                     }
                 }
                 sbSqlText.Remove(sbSqlText.Length - 1, 1);

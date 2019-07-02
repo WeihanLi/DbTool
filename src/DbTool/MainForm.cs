@@ -11,7 +11,6 @@ using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 using WeihanLi.Npoi;
-using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
 
 namespace DbTool
 {
@@ -29,12 +28,14 @@ namespace DbTool
             lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/src/DbTool/template.xlsx");
 
             #region InitSetting
+
             var factory = DependencyResolver.Current.ResolveService<DbProviderFactory>();
             cbDefaultDbType.DataSource = factory.SupportedDbTypes;
             cbDefaultDbType.SelectedItem = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
 
-            txtDefaultDbConn.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString); 
-            #endregion
+            txtDefaultDbConn.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
+
+            #endregion InitSetting
 
             FormClosed += (sender, args) =>
             {
@@ -102,7 +103,7 @@ namespace DbTool
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var dir = dialog.SelectedPath;
-                if (string.IsNullOrEmpty(ns))
+                if (string.IsNullOrWhiteSpace(ns))
                 {
                     ns = "Models";
                 }
@@ -111,6 +112,15 @@ namespace DbTool
                     var tableEntity = new TableEntity();
                     if (cbTables.CheckedItems.Count > 0)
                     {
+                        var options = new ModelCodeGenerateOptions()
+                        {
+                            GeneratePrivateFields = cbGenField.Checked,
+                            GenerateDescriptionAttribute = cbGenDescriptionAttr.Checked,
+                            Prefix = prefix,
+                            Suffix = suffix,
+                            Namespace = ns.Trim()
+                        };
+                        var modelCodeGenerator = DependencyResolver.Current.ResolveService<IModelCodeGenerator>();
                         foreach (var item in cbTables.CheckedItems)
                         {
                             if (item is TableEntity currentTable)
@@ -118,26 +128,27 @@ namespace DbTool
                                 tableEntity.TableName = currentTable.TableName;
                                 tableEntity.TableDescription = currentTable.TableDescription;
                                 tableEntity.Columns = _dbHelper.GetColumnsInfo(tableEntity.TableName);
-                                var content = tableEntity.GenerateModelText(ns, prefix, suffix, cbGenField.Checked, cbGenDescriptionAttr.Checked);
+                                var content = modelCodeGenerator.GenerateModelCode(tableEntity, options);
+
                                 var path = dir + "\\" + tableEntity.TableName.TrimTableName() + ".cs";
                                 File.WriteAllText(path, content, Encoding.UTF8);
                             }
                         }
-                        MessageBox.Show("保存成功");
+                        MessageBox.Show("保存成功", "提示");
                         System.Diagnostics.Process.Start("Explorer.exe", dir);
                     }
                     else
                     {
-                        MessageBox.Show("请选择要生成的表");
+                        MessageBox.Show("请选择要生成 Model 的表", "提示");
                     }
                 }
                 catch (IOException ex)
                 {
-                    MessageBox.Show("IOException:" + ex.Message);
+                    MessageBox.Show("IOException:" + ex.Message, "错误");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                    MessageBox.Show(ex.ToString(), "错误");
                 }
             }
         }
@@ -418,121 +429,29 @@ namespace DbTool
                 var dir = dialog.SelectedPath;
                 try
                 {
-                    var tableEntity = new TableEntity();
                     if (cbTables.CheckedItems.Count > 0)
                     {
                         var tempFileName = cbTables.CheckedItems.Count > 1 ? _dbHelper.DatabaseName : (cbTables.CheckedItems[0] as TableEntity)?.TableName ?? _dbHelper.DatabaseName;
                         var path = dir + "\\" + tempFileName + ".xlsx";
-                        var workbook = ExcelHelper.PrepareWorkbook(path);
-                        foreach (var item in cbTables.CheckedItems)
+
+                        var tableEntities = cbTables.CheckedItems.Cast<TableEntity>().ToArray();
+                        foreach (var item in tableEntities)
                         {
-                            var currentTable = item as TableEntity;
-                            if (currentTable == null)
+                            if (item.Columns == null || item.Columns.Count == 0)
                             {
-                                continue;
+                                item.Columns = _dbHelper.GetColumnsInfo(item.TableName);
                             }
-                            tableEntity.TableName = currentTable.TableName;
-                            tableEntity.TableDescription = currentTable.TableDescription;
-                            tableEntity.Columns = _dbHelper.GetColumnsInfo(tableEntity.TableName);
-                            //Create Sheet
-                            var tempSheet = workbook.CreateSheet(tableEntity.TableName);
-                            //create title
-                            var titleRow = tempSheet.CreateRow(0);
-                            var titleCell = titleRow.CreateCell(0);
-                            titleCell.SetCellValue(tableEntity.TableDescription);
-                            var titleStyle = workbook.CreateCellStyle();
-                            titleStyle.Alignment = HorizontalAlignment.Left;
-                            var font = workbook.CreateFont();
-                            font.FontHeight = 14 * 14;
-                            font.FontName = "微软雅黑";
-                            font.IsBold = true;
-                            titleStyle.SetFont(font);
-                            titleStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Black.Index;
-                            titleStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.SeaGreen.Index;
-                            titleStyle.FillPattern = FillPattern.SolidForeground;
-                            titleCell.CellStyle = titleStyle;
-                            //merged cells on single row
-                            //ATTENTION: don't use Region class, which is obsolete
-                            tempSheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 0, 6));
-
-                            //create header
-                            var headerRow = tempSheet.CreateRow(1);
-                            var headerStyle = workbook.CreateCellStyle();
-                            headerStyle.Alignment = HorizontalAlignment.Center;
-                            var headerfont = workbook.CreateFont();
-                            font.FontHeight = 11 * 11;
-                            font.FontName = "微软雅黑";
-                            titleStyle.SetFont(headerfont);
-
-                            var headerCell0 = headerRow.CreateCell(0);
-                            headerCell0.CellStyle = headerStyle;
-                            headerCell0.SetCellValue("列名称");
-                            var headerCell1 = headerRow.CreateCell(1);
-                            headerCell1.CellStyle = headerStyle;
-                            headerCell1.SetCellValue("列描述");
-                            var headerCell2 = headerRow.CreateCell(2);
-                            headerCell2.CellStyle = headerStyle;
-                            headerCell2.SetCellValue("是否是主键");
-                            var headerCell3 = headerRow.CreateCell(3);
-                            headerCell3.CellStyle = headerStyle;
-                            headerCell3.SetCellValue("是否可以为空");
-                            var headerCell4 = headerRow.CreateCell(4);
-                            headerCell4.CellStyle = headerStyle;
-                            headerCell4.SetCellValue("数据类型");
-                            var headerCell5 = headerRow.CreateCell(5);
-                            headerCell5.CellStyle = headerStyle;
-                            headerCell5.SetCellValue("数据长度");
-                            var headerCell6 = headerRow.CreateCell(6);
-                            headerCell6.CellStyle = headerStyle;
-                            headerCell6.SetCellValue("默认值");
-
-                            //exist any column
-                            if (tableEntity.Columns.Any())
-                            {
-                                IRow tempRow;
-                                ICell tempCell;
-                                for (var i = 1; i <= tableEntity.Columns.Count; i++)
-                                {
-                                    tempRow = tempSheet.CreateRow(i + 1);
-                                    tempCell = tempRow.CreateCell(0);
-                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].ColumnName);
-                                    tempCell = tempRow.CreateCell(1);
-                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].ColumnDescription);
-                                    tempCell = tempRow.CreateCell(2);
-                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].IsPrimaryKey ? "Y" : "N");
-                                    tempCell = tempRow.CreateCell(3);
-                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].IsNullable ? "Y" : "N");
-                                    tempCell = tempRow.CreateCell(4);
-                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].DataType.ToUpper());
-                                    tempCell = tempRow.CreateCell(5);
-                                    tempCell.SetCellValue(tableEntity.Columns[i - 1].Size > 0 ? tableEntity.Columns[i - 1].Size.ToString() : "");
-                                    tempCell = tempRow.CreateCell(6);
-                                    if (tableEntity.Columns[i - 1].DefaultValue != null)
-                                    {
-                                        tempCell.SetCellValue(tableEntity.Columns[i - 1].DefaultValue.ToString());
-                                    }
-                                    else
-                                    {
-                                        if (tableEntity.Columns[i - 1].DataType.ToUpper().Contains("INT") && tableEntity.Columns[i - 1].IsPrimaryKey)
-                                        {
-                                            tempCell.SetCellValue("IDENTITY(1,1)");
-                                        }
-                                    }
-                                }
-                            }
-
-                            // 自动调整单元格的宽度
-                            tempSheet.AutoSizeColumn(0);
-                            tempSheet.AutoSizeColumn(1);
-                            tempSheet.AutoSizeColumn(2);
-                            tempSheet.AutoSizeColumn(3);
-                            tempSheet.AutoSizeColumn(4);
-                            tempSheet.AutoSizeColumn(5);
-                            tempSheet.AutoSizeColumn(6);
                         }
-                        workbook.WriteToFile(path);
-                        MessageBox.Show("保存成功");
-                        System.Diagnostics.Process.Start("Explorer.exe", dir);
+                        var exportResult = new ExcelDbDocExporter().Export(tableEntities, path);
+                        if (exportResult)
+                        {
+                            MessageBox.Show("导出成功");
+                            System.Diagnostics.Process.Start("Explorer.exe", dir);
+                        }
+                        else
+                        {
+                            MessageBox.Show("导出失败");
+                        }
                     }
                     else
                     {

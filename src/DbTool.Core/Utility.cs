@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using DbTool.Core.Entity;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
@@ -12,114 +10,6 @@ namespace DbTool.Core
     /// </summary>
     public static class Utility
     {
-        /// <summary>
-        /// 根据数据库表列信息，生成model
-        /// </summary>
-        /// <param name="tableEntity"> 表信息 </param>
-        /// <param name="modelNamespace"> model class 命名空间 </param>
-        /// <param name="prefix"> model class前缀 </param>
-        /// <param name="suffix"> model class后缀 </param>
-        /// <param name="genPrivateField">生成private的字段</param>
-        /// <param name="genDescriptionAttr">生成 Description Attribute</param>
-        /// <returns></returns>
-        public static string GenerateModelText(this TableEntity tableEntity, string modelNamespace, string prefix, string suffix, bool genPrivateField = false, bool genDescriptionAttr = true)
-        {
-            if (tableEntity == null)
-            {
-                throw new ArgumentNullException(nameof(tableEntity), "表信息不能为空");
-            }
-            var sbText = new StringBuilder();
-            sbText.AppendLine("using System;");
-            if (genDescriptionAttr)
-            {
-                sbText.AppendLine("using System.ComponentModel;");
-            }
-            sbText.AppendLine();
-            sbText.AppendLine($"namespace {modelNamespace}");
-            sbText.AppendLine("{");
-            if (!string.IsNullOrEmpty(tableEntity.TableDescription))
-            {
-                sbText.AppendLine(
-                    $"\t/// <summary>{Environment.NewLine}\t/// {tableEntity.TableDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t/// </summary>");
-                if (genDescriptionAttr)
-                {
-                    sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
-                }
-            }
-            sbText.AppendLine($"\tpublic class {prefix}{tableEntity.TableName.TrimTableName()}{suffix}");
-            sbText.AppendLine("\t{");
-            var index = 0;
-            if (genPrivateField)
-            {
-                foreach (var item in tableEntity.Columns)
-                {
-                    if (index > 0)
-                    {
-                        sbText.AppendLine();
-                    }
-                    else
-                    {
-                        index++;
-                    }
-                    var fclType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
-
-                    var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
-                    sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
-                    if (!string.IsNullOrEmpty(item.ColumnDescription))
-                    {
-                        sbText.AppendLine(
-                            $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (genDescriptionAttr)
-                        {
-                            sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
-                        }
-                    }
-                    else
-                    {
-                        if (item.IsPrimaryKey && genDescriptionAttr)
-                        {
-                            sbText.AppendLine($"\t\t[Description(\"主键\")]");
-                        }
-                    }
-                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName.Trim()}");
-                    sbText.AppendLine("\t\t{");
-                    sbText.AppendLine($"\t\t\tget {{ return {tmpColName}; }}");
-                    sbText.AppendLine($"\t\t\tset {{ {tmpColName} = value; }}");
-                    sbText.AppendLine("\t\t}");
-                    sbText.AppendLine();
-                }
-            }
-            else
-            {
-                foreach (var item in tableEntity.Columns)
-                {
-                    if (index > 0)
-                    {
-                        sbText.AppendLine();
-                    }
-                    else
-                    {
-                        index++;
-                    }
-                    var fclType = SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
-
-                    if (!string.IsNullOrEmpty(item.ColumnDescription))
-                    {
-                        sbText.AppendLine(
-                            $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (genDescriptionAttr)
-                        {
-                            sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
-                        }
-                    }
-                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName} {{ get; set; }}");
-                }
-            }
-            sbText.AppendLine("\t}");
-            sbText.AppendLine("}");
-            return sbText.ToString();
-        }
-
         /// <summary>
         /// FCL类型转换为DbType
         /// </summary>
@@ -391,21 +281,6 @@ namespace DbTool.Core
             }
             return DependencyResolver.Current.ResolveService<DbProviderFactory>().GetDbProvider(dbType)?
                 .GenerateSqlStatement(tableEntity, genDescription);
-        }
-
-        /// <summary>
-        /// 从 源代码 中获取表信息
-        /// </summary>
-        /// <param name="sourceFilePaths">sourceCodeFiles</param>
-        /// <returns></returns>
-        public static List<TableEntity> GeTableEntityFromSourceCode(params string[] sourceFilePaths)
-        {
-            if (sourceFilePaths == null || sourceFilePaths.Length <= 0)
-            {
-                return null;
-            }
-            // TODO:使用 Roslyn 分析，解析出包含的类
-            return new List<TableEntity>();
         }
 
         /// <summary>
