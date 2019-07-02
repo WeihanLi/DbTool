@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Text;
 using DbTool.Core;
 using DbTool.Core.Entity;
-using Google.Protobuf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using WeihanLi.Common;

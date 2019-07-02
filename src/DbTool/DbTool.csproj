@@ -34,7 +34,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <ProjectReference Include="..\DbTool.Core\DbTool.Core.csproj" />
-    <ProjectReference Include="..\DbTool.MySql\DbTool.DbProvider.MySql.csproj" />
     <ProjectReference Include="..\DbTool.SqlServer\DbTool.DbProvider.SqlServer.csproj" />
     <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
