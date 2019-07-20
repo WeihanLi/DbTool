@@ -1,4 +1,20 @@
-﻿namespace DbTool
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using DbTool.Core;
+using DbTool.Core.Entity;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using WeihanLi.Common;
+using WeihanLi.Common.Helpers;
+using WeihanLi.Extensions;
+
+namespace DbTool
 {
     public static class Utils
     {
@@ -52,22 +68,19 @@
             var assemblyPath = ApplicationHelper.MapPath($"{assemblyName}.dll");
             using (var ms = new MemoryStream())
             {
-                using (var xmlMs = new MemoryStream())
+                var compilationResult = compilation.Emit(ms);
+                if (compilationResult.Success)
                 {
-                    var compilationResult = compilation.Emit(ms, xmlMs);
-                    if (compilationResult.Success)
-                    {
-                        byte[] assemblyBytes = ms.ToArray();
-                        return GeTableEntityFromAssembly(Assembly.Load(assemblyBytes));
-                    }
-
-                    var error = new StringBuilder(compilationResult.Diagnostics.Length * 1024);
-                    foreach (var t in compilationResult.Diagnostics)
-                    {
-                        error.AppendLine($"{t.GetMessage()}");
-                    }
-                    throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
+                    var assemblyBytes = ms.ToArray();
+                    return GeTableEntityFromAssembly(Assembly.Load(assemblyBytes));
                 }
+
+                var error = new StringBuilder(compilationResult.Diagnostics.Length * 1024);
+                foreach (var t in compilationResult.Diagnostics)
+                {
+                    error.AppendLine($"{t.GetMessage()}");
+                }
+                throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
             }
         }
 
