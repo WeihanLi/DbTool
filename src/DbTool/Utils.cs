@@ -1,20 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using DbTool.Core;
-using DbTool.Core.Entity;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using WeihanLi.Common;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Extensions;
-
-namespace DbTool
+﻿namespace DbTool
 {
     public static class Utils
     {
@@ -66,30 +50,25 @@ namespace DbTool
                 .AddReferences(systemReference, annotationReference, weihanliCommonReference)
                 .AddSyntaxTrees(syntaxTree);
             var assemblyPath = ApplicationHelper.MapPath($"{assemblyName}.dll");
-            var compilationResult = compilation.Emit(assemblyPath);
-            if (compilationResult.Success)
+            using (var ms = new MemoryStream())
             {
-                try
+                using (var xmlMs = new MemoryStream())
                 {
-                    byte[] assemblyBytes;
-                    using (var fs = File.OpenRead(assemblyPath))
+                    var compilationResult = compilation.Emit(ms, xmlMs);
+                    if (compilationResult.Success)
                     {
-                        assemblyBytes = fs.ToByteArray();
+                        byte[] assemblyBytes = ms.ToArray();
+                        return GeTableEntityFromAssembly(Assembly.Load(assemblyBytes));
                     }
-                    return GeTableEntityFromAssembly(Assembly.Load(assemblyBytes));
-                }
-                finally
-                {
-                    File.Delete(assemblyPath);
-                }
-            }
 
-            var error = new StringBuilder(compilationResult.Diagnostics.Length * 1024);
-            foreach (var t in compilationResult.Diagnostics)
-            {
-                error.AppendLine($"{t.GetMessage()}");
+                    var error = new StringBuilder(compilationResult.Diagnostics.Length * 1024);
+                    foreach (var t in compilationResult.Diagnostics)
+                    {
+                        error.AppendLine($"{t.GetMessage()}");
+                    }
+                    throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
+                }
             }
-            throw new ArgumentException($"所选文件编译有错误{Environment.NewLine}{error}");
         }
 
         /// <summary>
