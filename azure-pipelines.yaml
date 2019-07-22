@@ -1,0 +1,8 @@
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- script: dotnet restore
+  displayName: "dotnet restore"
+- script: dotnet build -c Release
+  displayName: "dotnet build"
