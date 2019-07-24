@@ -31,6 +31,11 @@ namespace DbTool
             builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
             builder.RegisterType<DbProviderFactory>().SingleInstance();
             builder.RegisterType<DefaultModelCodeGenerator>().As<IModelCodeGenerator>();
+            //
+            //IServiceCollection services = new ServiceCollection();
+            //services.AddSingleton<IModelCodeGenerator, DefaultModelCodeGenerator>();
+            //services.AddSingleton<IDbProvider, SqlServerDbProvider>();
+            //services.AddSingleton<DbProviderFactory>();
 
             var pluginDir = ApplicationHelper.MapPath("plugins");
             if (Directory.Exists(pluginDir))

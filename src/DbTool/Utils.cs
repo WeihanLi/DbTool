@@ -11,7 +11,6 @@ using DbTool.Core.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using WeihanLi.Common;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
 namespace DbTool
@@ -65,7 +64,6 @@ namespace DbTool
                 .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
                 .AddReferences(systemReference, annotationReference, weihanliCommonReference)
                 .AddSyntaxTrees(syntaxTree);
-            var assemblyPath = ApplicationHelper.MapPath($"{assemblyName}.dll");
             using (var ms = new MemoryStream())
             {
                 var compilationResult = compilation.Emit(ms);

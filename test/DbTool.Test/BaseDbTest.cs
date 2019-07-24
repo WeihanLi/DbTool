@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Autofac;
 using DbTool.Core;
 using DbTool.Core.Entity;
 using DbTool.MySql;
 using DbTool.SqlServer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
-using WeihanLi.Common.Helpers;
 using Xunit;
 
 namespace DbTool.Test
@@ -22,12 +22,17 @@ namespace DbTool.Test
 
         private static void Init()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
-            builder.RegisterType<MySqlDbProvider>().As<IDbProvider>();
-            builder.RegisterType<DbProviderFactory>().SingleInstance();
-            var container = builder.Build();
-            DependencyResolver.SetDependencyResolver(t => container.Resolve(t));
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton<IDbProvider, SqlServerDbProvider>();
+            services.AddSingleton<IDbProvider, MySqlDbProvider>();
+            services.AddSingleton<DbProviderFactory>();
+
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+            services.AddSingleton(configuration);
+
+            DependencyResolver.SetDependencyResolver(services);
         }
 
         protected BaseDbTest()
@@ -92,7 +97,8 @@ namespace DbTool.Test
 
         public virtual void QueryTest()
         {
-            var dbHelper = new DbHelper(ConfigurationHelper.ConnectionString(ConnStringKey), _dbType);
+            var connString = DependencyResolver.Current.GetService<IConfiguration>().GetConnectionString(ConnStringKey);
+            var dbHelper = new DbHelper(connString, _dbType);
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = dbHelper.GetTablesInfo();
             Assert.NotNull(tables);
