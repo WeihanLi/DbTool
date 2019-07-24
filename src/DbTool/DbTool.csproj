@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- <UseWPF>true</UseWPF> -->
     <OutputType>WinExe</OutputType>
     <RootNamespace>DbTool</RootNamespace>
     <AssemblyName>DbTool</AssemblyName>
-    <Version>1.0.6</Version>
-    <UseWindowsForms>true</UseWindowsForms>
-    <!-- <UseWPF>true</UseWPF> -->
+    <Version>1.0.7</Version>
+    <Authors>WeihanLi</Authors>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.3" />
