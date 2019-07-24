@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Autofac;
 using DbTool.Core;
+using DbTool.MySql;
 using DbTool.SqlServer;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
@@ -28,10 +29,12 @@ namespace DbTool
         public static void Init()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>();
+
+            builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>().SingleInstance();
+            builder.RegisterType<MySqlDbProvider>().As<IDbProvider>().SingleInstance();
             builder.RegisterType<DbProviderFactory>().SingleInstance();
-            builder.RegisterType<DefaultModelCodeGenerator>().As<IModelCodeGenerator>();
-            //
+            builder.RegisterType<DefaultModelCodeGenerator>().As<IModelCodeGenerator>().SingleInstance();
+
             //IServiceCollection services = new ServiceCollection();
             //services.AddSingleton<IModelCodeGenerator, DefaultModelCodeGenerator>();
             //services.AddSingleton<IDbProvider, SqlServerDbProvider>();
