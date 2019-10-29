@@ -97,7 +97,8 @@ namespace DbTool.Test
 
         public virtual void QueryTest()
         {
-            var connString = DependencyResolver.Current.GetService<IConfiguration>().GetConnectionString(ConnStringKey);
+            var connString = DependencyResolver.Current.GetService<IConfiguration>()
+                .GetConnectionString(ConnStringKey);
             var dbHelper = new DbHelper(connString, _dbType);
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = dbHelper.GetTablesInfo();

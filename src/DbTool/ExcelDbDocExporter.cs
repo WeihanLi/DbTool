@@ -40,10 +40,10 @@ namespace DbTool
                 var headerRow = tempSheet.CreateRow(1);
                 var headerStyle = workbook.CreateCellStyle();
                 headerStyle.Alignment = HorizontalAlignment.Center;
-                var headerfont = workbook.CreateFont();
+                var headerFont = workbook.CreateFont();
                 font.FontHeight = 11 * 11;
                 font.FontName = "微软雅黑";
-                titleStyle.SetFont(headerfont);
+                titleStyle.SetFont(headerFont);
 
                 var headerCell0 = headerRow.CreateCell(0);
                 headerCell0.CellStyle = headerStyle;
