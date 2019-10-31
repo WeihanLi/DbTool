@@ -2,7 +2,7 @@
 
 一个支持 DbFirst、ModelFirst 和 CodeFirst 的数据库工具。
 
-[![Build status](https://ci.appveyor.com/api/projects/status/vo1kipiyqlo8r2kg/branch/master?svg=true)](https://ci.appveyor.com/project/WeihanLi/dbtool/branch/master)
+[![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/WeihanLi.DbTool?branchName=wfdev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=18&branchName=wfdev)
 
 [![GitHub release](https://img.shields.io/github/release/WeihanLi/DbTool.svg?style=plastic)](https://github.com/WeihanLi/DbTool/releases/latest)
 
@@ -27,7 +27,6 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 ## 后续功能
 
-- [ ] 使用 `Electron.Net` 重写
 - [ ] 插件式自定义扩展 `Model` 信息
 
 ## 功能一览
@@ -94,8 +93,6 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 ## Contact Me
 
-如果你遇到了什么问题，欢迎联系我
-
-<weihanli@outlook.com>
+如果你遇到了什么问题，欢迎联系我 <weihanli@outlook.com>
 
 或者在这里[提出问题](https://github.com/WeihanLi/DbTool/issues/new)
