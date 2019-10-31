@@ -1,0 +1,15 @@
+trigger:
+  branches:
+    include:
+    - '*'  # must quote since "*" is a YAML reserved character; we want a string
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- script: dotnet --info
+  displayName: "dotnet info"
+- script: dotnet restore
+  displayName: "dotnet restore"
+- script: dotnet build -c Release
+  displayName: "dotnet build"
