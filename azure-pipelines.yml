@@ -7,6 +7,12 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 3.1.100
+
 - script: dotnet --info
   displayName: "dotnet info"
 - script: dotnet restore
