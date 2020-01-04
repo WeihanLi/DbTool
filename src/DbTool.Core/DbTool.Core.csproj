@@ -1,6 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Title>DbTool.Core</Title>
+    <PackageId>DbTool.Core</PackageId>
+    <Authors>WeihanLi</Authors>
+    <Company>WeihanLi</Company>
+    <Product>DbTool</Product>
+    <PackageIconUrl>https://avatars3.githubusercontent.com/u/7604648</PackageIconUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/WeihanLi/DbTool</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/WeihanLi/DbTool</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>DbTool</PackageTags>
+    <Description>
+      DbTool core defined interface for extensions
+    </Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Resources.Designer.cs">
