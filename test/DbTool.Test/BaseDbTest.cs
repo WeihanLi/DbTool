@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using DbTool.Core;
 using DbTool.Core.Entity;
-using DbTool.MySql;
-using DbTool.SqlServer;
+using DbTool.DbProvider.MySql;
+using DbTool.DbProvider.SqlServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;

@@ -37,7 +37,8 @@ namespace DbTool.Core
         /// </summary>
         /// <param name="tableEntity">表信息</param>
         /// <param name="options">options</param>
+        /// <param name="databaseType">database type</param>
         /// <returns></returns>
-        string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options);
+        string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options, string databaseType);
     }
 }

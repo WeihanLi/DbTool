@@ -8,7 +8,6 @@ using DbTool.Core;
 using DbTool.Core.Entity;
 using NPOI.SS.UserModel;
 using WeihanLi.Common;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 
@@ -25,7 +24,7 @@ namespace DbTool
         {
             InitializeComponent();
             txtConnString.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
-            lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/master/src/DbTool/template.xlsx");
+            lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/wfdev/src/DbTool/template.xlsx");
 
             #region InitSetting
 
@@ -39,10 +38,6 @@ namespace DbTool
 
             FormClosed += (sender, args) =>
             {
-                foreach (var file in Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, "DbTool.DynamicGenerated.*.dll"))
-                {
-                    File.Delete(file);
-                }
             };
         }
 
@@ -120,6 +115,7 @@ namespace DbTool
                             Suffix = suffix,
                             Namespace = ns.Trim()
                         };
+                        var currentDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
                         var modelCodeGenerator = DependencyResolver.Current.ResolveService<IModelCodeGenerator>();
                         foreach (var item in cbTables.CheckedItems)
                         {
@@ -128,7 +124,7 @@ namespace DbTool
                                 tableEntity.TableName = currentTable.TableName;
                                 tableEntity.TableDescription = currentTable.TableDescription;
                                 tableEntity.Columns = _dbHelper.GetColumnsInfo(tableEntity.TableName);
-                                var content = modelCodeGenerator.GenerateModelCode(tableEntity, options);
+                                var content = modelCodeGenerator.GenerateModelCode(tableEntity, options, currentDbType);
 
                                 var path = dir + "\\" + tableEntity.TableName.TrimTableName() + ".cs";
                                 File.WriteAllText(path, content, Encoding.UTF8);
@@ -211,7 +207,7 @@ namespace DbTool
                         IsPrimaryKey = dataGridView.Rows[k].Cells[2].Value != null && (bool)dataGridView.Rows[k].Cells[2].Value,
                         IsNullable = dataGridView.Rows[k].Cells[3].Value != null && (bool)dataGridView.Rows[k].Cells[3].Value,
                         DataType = dataGridView.Rows[k].Cells[4].Value.ToString(),
-                        Size = dataGridView.Rows[k].Cells[5].Value == null ? Utility.GetDefaultSizeForDbType(dataGridView.Rows[k].Cells[4].Value.ToString()) : Convert.ToUInt32(dataGridView.Rows[k].Cells[5].Value.ToString()),
+                        Size = dataGridView.Rows[k].Cells[5].Value == null ? Utils.GetDefaultSizeForDbType(dataGridView.Rows[k].Cells[4].Value.ToString()) : Convert.ToUInt32(dataGridView.Rows[k].Cells[5].Value.ToString()),
                         DefaultValue = dataGridView.Rows[k].Cells[6].Value
                     };
                     //
@@ -291,7 +287,7 @@ namespace DbTool
                                 column.DataType = row.Cells[4].StringCellValue.ToUpper();
                                 if (string.IsNullOrEmpty(row.Cells[5].ToString()))
                                 {
-                                    column.Size = Utility.GetDefaultSizeForDbType(column.DataType);
+                                    column.Size = Utils.GetDefaultSizeForDbType(column.DataType);
                                 }
                                 else
                                 {
@@ -361,7 +357,7 @@ namespace DbTool
                                     column.IsNullable = row.GetCell(3).StringCellValue.Equals("Y");
                                     column.DataType = row.GetCell(4).StringCellValue;
 
-                                    column.Size = string.IsNullOrEmpty(row.GetCell(5).ToString()) ? Utility.GetDefaultSizeForDbType(column.DataType) : Convert.ToUInt32(row.GetCell(5).ToString());
+                                    column.Size = string.IsNullOrEmpty(row.GetCell(5).ToString()) ? Utils.GetDefaultSizeForDbType(column.DataType) : Convert.ToUInt32(row.GetCell(5).ToString());
 
                                     if (!string.IsNullOrWhiteSpace(row.GetCell(6)?.ToString()))
                                     {

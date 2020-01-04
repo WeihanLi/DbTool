@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using Autofac;
 using DbTool.Core;
-using DbTool.MySql;
-using DbTool.SqlServer;
+using DbTool.DbProvider.MySql;
+using DbTool.DbProvider.SqlServer;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 

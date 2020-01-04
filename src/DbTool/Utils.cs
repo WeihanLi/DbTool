@@ -90,7 +90,7 @@ namespace DbTool
         private static List<TableEntity> GeTableEntityFromAssembly(Assembly assembly)
         {
             var tables = new List<TableEntity>(4);
-
+            var currentDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
             foreach (var type in assembly.GetTypes())
             {
                 if (type.IsClass && type.IsPublic && !type.IsAbstract)
@@ -138,14 +138,14 @@ namespace DbTool
                             null == val || property.PropertyType.GetDefaultValue().Equals(val) || columnInfo.IsNullable
                             ? null : val;
                         columnInfo.IsPrimaryKey = property.Name == "Id" || columnInfo.ColumnDescription?.Contains("主键") == true;
-                        columnInfo.DataType = Utility.FclType2DbType(property.PropertyType).ToString();
+                        columnInfo.DataType = ClrType2DbType(property.PropertyType, currentDbType);
 
                         // use VARCHAR for MySql
-                        if (!ConfigurationHelper.AppSetting(ConfigurationConstants.DbType).EqualsIgnoreCase("SqlServer") && columnInfo.DataType.Equals("NVARCHAR"))
+                        if (!currentDbType.EqualsIgnoreCase("SqlServer") && columnInfo.DataType.Equals("NVARCHAR"))
                         {
                             columnInfo.DataType = "VARCHAR";
                         }
-                        columnInfo.Size = Utility.GetDefaultSizeForDbType(columnInfo.DataType);
+                        columnInfo.Size = GetDefaultSizeForDbType(columnInfo.DataType, 64, currentDbType);
                         table.Columns.Add(columnInfo);
                     }
                     tables.Add(table);
@@ -153,6 +153,56 @@ namespace DbTool
             }
 
             return tables;
+        }
+
+        /// <summary>
+        /// FCL类型转换为DbType
+        /// </summary>
+        /// <param name="type">Fcl 类型</param>
+        /// <param name="databaseType">数据库类型</param>
+        /// <returns></returns>
+        public static string ClrType2DbType(Type type, string databaseType)
+        {
+            if (databaseType.IsNullOrEmpty())
+            {
+                databaseType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
+            }
+            return DependencyResolver.Current.ResolveService<DbProviderFactory>()
+                .GetDbProvider(databaseType).ClrType2DbType(type);
+        }
+
+        /// <summary>
+        /// 数据库数据类型转换为FCL类型
+        /// </summary>
+        /// <param name="dbType"> 数据库数据类型 </param>
+        /// <param name="isNullable"> 该数据列是否可以为空 </param>
+        /// <param name="databaseType">数据库类型</param>
+        /// <returns></returns>
+        public static string SqlDbType2ClrType(string dbType, bool isNullable, string databaseType)
+        {
+            if (databaseType.IsNullOrEmpty())
+            {
+                databaseType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
+            }
+            return DependencyResolver.Current.ResolveService<DbProviderFactory>()
+                .GetDbProvider(databaseType)?.DbType2ClrType(dbType, isNullable);
+        }
+
+        /// <summary>
+        /// 获取数据库类型对应的默认长度
+        /// </summary>
+        /// <param name="dbType">数据类型</param>
+        /// <param name="defaultLength">自定义默认长度</param>
+        /// <param name="databaseType"></param>
+        /// <returns></returns>
+        public static uint GetDefaultSizeForDbType(string dbType, uint defaultLength = 64, string databaseType = null)
+        {
+            if (databaseType.IsNullOrEmpty())
+            {
+                databaseType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
+            }
+            return DependencyResolver.Current.ResolveService<DbProviderFactory>()
+                       .GetDbProvider(databaseType)?.GetDefaultSizeForDbType(dbType, defaultLength) ?? defaultLength;
         }
     }
 }

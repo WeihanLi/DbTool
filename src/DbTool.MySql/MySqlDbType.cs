@@ -1,9 +1,6 @@
-﻿namespace DbTool.Core
+﻿namespace DbTool.DbProvider.MySql
 {
-    /// <summary>
-    /// 数据库类型
-    /// </summary>
-    public enum DbType : byte
+    internal enum MySqlDbType
     {
         BigInt,
         Binary,

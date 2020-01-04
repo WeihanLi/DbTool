@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Text;
+using DbTool.Core;
 using DbTool.Core.Entity;
 
-namespace DbTool.Core
+namespace DbTool
 {
     public class DefaultModelCodeGenerator : IModelCodeGenerator
     {
-        public string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options)
+        public string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options, string databaseType)
         {
             if (tableEntity == null)
             {
@@ -51,7 +52,7 @@ namespace DbTool.Core
                     {
                         index++;
                     }
-                    var fclType = Utility.SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
+                    var fclType = Utils.SqlDbType2ClrType(item.DataType, item.IsNullable, databaseType); //转换为FCL数据类型
 
                     var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
@@ -91,7 +92,7 @@ namespace DbTool.Core
                     {
                         index++;
                     }
-                    var fclType = Utility.SqlDbType2FclType(item.DataType, item.IsNullable); //转换为FCL数据类型
+                    var fclType = Utils.SqlDbType2ClrType(item.DataType, item.IsNullable, databaseType); //转换为FCL数据类型
 
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {

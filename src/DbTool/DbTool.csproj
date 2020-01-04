@@ -6,7 +6,6 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>DbTool</RootNamespace>
     <AssemblyName>DbTool</AssemblyName>
-    <Version>1.0.7</Version>
     <Authors>WeihanLi</Authors>
   </PropertyGroup>
   <ItemGroup>
