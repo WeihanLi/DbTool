@@ -28,8 +28,13 @@ namespace DbTool
 
             #region InitSetting
 
-            var factory = DependencyResolver.Current.ResolveService<DbProviderFactory>();
-            cbDefaultDbType.DataSource = factory.SupportedDbTypes;
+            var dbProviderFactory = DependencyResolver.Current.ResolveService<DbProviderFactory>();
+            cbDefaultDbType.DataSource = dbProviderFactory.SupportedDbTypes;
+            var defaultDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
+            if (string.IsNullOrEmpty(defaultDbType))
+            {
+                defaultDbType = dbProviderFactory.SupportedDbTypes[0];
+            }
             cbDefaultDbType.SelectedItem = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
 
             txtDefaultDbConn.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);

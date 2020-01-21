@@ -29,22 +29,28 @@ namespace DbTool
         public static void Init()
         {
             var builder = new ContainerBuilder();
-
-            builder.RegisterType<SqlServerDbProvider>().As<IDbProvider>().SingleInstance();
-            builder.RegisterType<MySqlDbProvider>().As<IDbProvider>().SingleInstance();
-            builder.RegisterType<DbProviderFactory>().SingleInstance();
-            builder.RegisterType<DefaultModelCodeGenerator>().As<IModelCodeGenerator>().SingleInstance();
-
-            //IServiceCollection services = new ServiceCollection();
-            //services.AddSingleton<IModelCodeGenerator, DefaultModelCodeGenerator>();
-            //services.AddSingleton<IDbProvider, SqlServerDbProvider>();
-            //services.AddSingleton<DbProviderFactory>();
+            builder.RegisterType<SqlServerDbProvider>()
+                .As<IDbProvider>()
+                .SingleInstance();
+            builder.RegisterType<MySqlDbProvider>()
+                .As<IDbProvider>()
+                .SingleInstance();
+            builder.RegisterType<DbProviderFactory>()
+                .SingleInstance();
+            builder.RegisterType<DefaultModelCodeGenerator>()
+                .As<IModelCodeGenerator>()
+                .SingleInstance();
+            builder.RegisterType<ExcelDbDocExporter>()
+                .As<IDbDocExporter>()
+                .SingleInstance();
 
             var pluginDir = ApplicationHelper.MapPath("plugins");
             if (Directory.Exists(pluginDir))
             {
                 // load plugins
-                var plugins = Directory.GetFiles(pluginDir).Where(_ => _.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)).ToArray();
+                var plugins = Directory.GetFiles(pluginDir)
+                    .Where(_ => _.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
                 if (plugins.Length > 0)
                 {
                     var assemblies = plugins.Select(Assembly.LoadFrom).ToArray();
