@@ -200,9 +200,9 @@
             this.btnExportExcel.Enabled = false;
             this.btnExportExcel.Location = new System.Drawing.Point(219, 112);
             this.btnExportExcel.Name = "btnExportExcel";
-            this.btnExportExcel.Size = new System.Drawing.Size(118, 38);
+            this.btnExportExcel.Size = new System.Drawing.Size(80, 38);
             this.btnExportExcel.TabIndex = 16;
-            this.btnExportExcel.Text = "导出Excel文档";
+            this.btnExportExcel.Text = "导出Excel";
             this.btnExportExcel.UseVisualStyleBackColor = true;
             this.btnExportExcel.Click += new System.EventHandler(this.btnExportExcel_Click);
             // 

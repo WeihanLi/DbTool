@@ -14,7 +14,7 @@ namespace DbTool.Core
         /// </summary>
         /// <param name="tableInfo">表信息</param>
         /// <param name="path">要保存的路径</param>
-        /// <returns></returns>
+        /// <returns>whether success</returns>
         bool Export(TableEntity[] tableInfo, string path);
     }
 }
