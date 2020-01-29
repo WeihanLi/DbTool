@@ -24,7 +24,7 @@ namespace DbTool
         {
             InitializeComponent();
             txtConnString.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
-            lnkExcelTemplate.Links.Add(0, 2, "https://github.com/WeihanLi/DbTool/raw/wfdev/src/DbTool/template.xlsx");
+            lnkExcelTemplate.Links.Add(0, 2, ConfigurationHelper.AppSetting(ConfigurationConstants.ExcelTemplateDownloadLink));
 
             #region InitSetting
 
@@ -38,6 +38,8 @@ namespace DbTool
             cbDefaultDbType.SelectedItem = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
 
             txtDefaultDbConn.Text = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
+
+            // init DbDocExporter
 
             #endregion InitSetting
 
@@ -443,7 +445,8 @@ namespace DbTool
                                 item.Columns = _dbHelper.GetColumnsInfo(item.TableName);
                             }
                         }
-                        var exportResult = new ExcelDbDocExporter().Export(tableEntities, path);
+                        var exportResult = new ExcelDbDocExporter()
+                            .Export(tableEntities, path);
                         if (exportResult)
                         {
                             MessageBox.Show("导出成功");

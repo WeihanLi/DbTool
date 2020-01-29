@@ -3,6 +3,11 @@
     internal static class ConfigurationConstants
     {
         /// <summary>
+        /// Excel 模板下载地址
+        /// </summary>
+        public const string ExcelTemplateDownloadLink = "ExcelTemplateDownloadLink";
+
+        /// <summary>
         /// 默认连接字符串
         /// </summary>
         public const string DefaultConnectionString = "DefaultConnString";
