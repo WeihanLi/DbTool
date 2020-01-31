@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
 		<VersionMajor>1</VersionMajor>
-		<VersionMinor>0</VersionMinor>
-		<VersionPatch>8</VersionPatch>
+		<VersionMinor>1</VersionMinor>
+		<VersionPatch>0</VersionPatch>
 		<VersionRevision>0</VersionRevision>
 		<VersionPrefix Condition="'$(VersionRevision)'=='0'">$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
     <VersionPrefix Condition="'$(VersionRevision)'!='0'">$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionRevision)</VersionPrefix>
@@ -22,7 +22,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2017-2019 (c) WeihanLi</Copyright>
+    <Copyright>Copyright 2017-2020 (c) WeihanLi</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Condition="'$(OS)' == 'Windows_NT'" Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
