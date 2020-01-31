@@ -22,7 +22,7 @@ namespace DbTool
         /// </summary>
         /// <param name="sourceFilePaths">sourceCodeFiles</param>
         /// <returns></returns>
-        public static List<TableEntity> GeTableEntityFromSourceCode(params string[] sourceFilePaths)
+        public static List<TableEntity> GetTableEntityFromSourceCode(params string[] sourceFilePaths)
         {
             if (sourceFilePaths == null || sourceFilePaths.Length <= 0)
             {
@@ -53,16 +53,16 @@ namespace DbTool
 
             var systemReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
             var annotationReference = MetadataReference.CreateFromFile(typeof(TableAttribute).Assembly.Location);
-            var weihanliCommonReference = MetadataReference.CreateFromFile(typeof(IDependencyResolver).Assembly.Location);
+            var weihanLiCommonReference = MetadataReference.CreateFromFile(typeof(IDependencyResolver).Assembly.Location);
 
             var syntaxTree = CSharpSyntaxTree.ParseText(sourceCodeText, new CSharpParseOptions(LanguageVersion.Latest));
 
             // A single, immutable invocation to the compiler
             // to produce a library
-            var assemblyName = $"DbTool.DynamicGenerated.{ObjectIdGenerator.Instance.NewId()}";
+            var assemblyName = $"DbTool.DynamicGenerated.{GuidIdGenerator.Instance.NewId()}";
             var compilation = CSharpCompilation.Create(assemblyName)
                 .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .AddReferences(systemReference, annotationReference, weihanliCommonReference)
+                .AddReferences(systemReference, annotationReference, weihanLiCommonReference)
                 .AddSyntaxTrees(syntaxTree);
             using (var ms = new MemoryStream())
             {
@@ -135,7 +135,9 @@ namespace DbTool
 
                         var val = property.GetValue(defaultVal);
                         columnInfo.DefaultValue =
-                            null == val || property.PropertyType.GetDefaultValue().Equals(val) || columnInfo.IsNullable
+                            (columnInfo.IsNullable
+                             || null == val
+                             || val.Equals(defaultPropertyValue))
                             ? null : val;
                         columnInfo.IsPrimaryKey = property.Name == "Id" || columnInfo.ColumnDescription?.Contains("主键") == true;
                         columnInfo.DataType = ClrType2DbType(property.PropertyType, currentDbType);
