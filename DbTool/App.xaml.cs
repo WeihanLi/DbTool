@@ -10,7 +10,6 @@ using Autofac.Extensions.DependencyInjection;
 using DbTool.Core;
 using DbTool.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions.Localization.Json;
@@ -30,7 +29,6 @@ namespace DbTool
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(builder => { builder.AddDebug(); });
             services.AddJsonLocalization(options => options.ResourcesPathType = ResourcesPathType.CultureBased);
         }
 
