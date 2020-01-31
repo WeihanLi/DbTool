@@ -135,7 +135,7 @@ namespace DbTool
 
                         var val = property.GetValue(defaultVal);
                         columnInfo.DefaultValue =
-                            null == val || property.PropertyType.GetDefaultValue().Equals(val) || columnInfo.IsNullable
+                            null == val || columnInfo.IsNullable || val.Equals(defaultPropertyValue)
                             ? null : val;
                         columnInfo.IsPrimaryKey = property.Name == "Id" || columnInfo.ColumnDescription?.Contains("主键") == true;
                         columnInfo.DataType = ClrType2DbType(property.PropertyType, currentDbType);
