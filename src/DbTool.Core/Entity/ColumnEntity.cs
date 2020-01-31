@@ -1,4 +1,6 @@
-﻿namespace DbTool.Core.Entity
+﻿using WeihanLi.Extensions;
+
+namespace DbTool.Core.Entity
 {
     /// <summary>
     /// 列信息
@@ -18,7 +20,7 @@
         /// </summary>
         public string ColumnDescription
         {
-            get => _columnDescription;
+            get => _columnDescription.GetValueOrDefault(ColumnName);
             set => _columnDescription = !string.IsNullOrEmpty(value) ? value : string.Empty;
         }
 

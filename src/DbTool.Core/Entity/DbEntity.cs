@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WeihanLi.Extensions;
 
 namespace DbTool.Core.Entity
 {
@@ -7,6 +8,8 @@ namespace DbTool.Core.Entity
     /// </summary>
     public class DbEntity
     {
+        private string databaseDescription;
+
         /// <summary>
         /// 数据库名称
         /// </summary>
@@ -15,7 +18,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 数据库描述
         /// </summary>
-        public string DatabaseDescription { get; set; }
+        public string DatabaseDescription { get => databaseDescription.GetValueOrDefault(DatabaseName); set => databaseDescription = value; }
 
         /// <summary>
         /// 表信息
