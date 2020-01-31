@@ -20,17 +20,17 @@ namespace DbTool
         private readonly SettingsViewModel _settings;
         private readonly IStringLocalizer<MainWindow> _localizer;
 
-        public MainWindow(IStringLocalizer<MainWindow> localizer, SettingsViewModel settings, IEnumerable<IDbProvider> dbProviders)
+        public MainWindow(IStringLocalizer<MainWindow> localizer, SettingsViewModel settings, DbProviderFactory dbProviderFactory)
         {
             InitializeComponent();
 
             _localizer = localizer;
             _settings = settings;
 
-            InitDataBinding(dbProviders.Select(p => p.DbType));
+            InitDataBinding(dbProviderFactory.SupportedDbTypes);
         }
 
-        private void InitDataBinding(IEnumerable<string> dbProviders)
+        private void InitDataBinding(IReadOnlyList<string> dbProviders)
         {
             DataContext = _settings;
 
