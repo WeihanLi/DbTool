@@ -7,6 +7,13 @@ namespace DbTool
 {
     public class DefaultModelCodeGenerator : IModelCodeGenerator
     {
+        private readonly DbProviderFactory _dbProviderFactory;
+
+        public DefaultModelCodeGenerator(DbProviderFactory dbProviderFactory)
+        {
+            _dbProviderFactory = dbProviderFactory;
+        }
+
         public string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options, string databaseType)
         {
             if (tableEntity == null)
@@ -19,6 +26,7 @@ namespace DbTool
                 throw new ArgumentNullException(nameof(tableEntity));
             }
 
+            var dbProvider = _dbProviderFactory.GetDbProvider(databaseType);
             var sbText = new StringBuilder();
             sbText.AppendLine("using System;");
             if (options.GenerateDescriptionAttribute)
@@ -52,7 +60,7 @@ namespace DbTool
                     {
                         index++;
                     }
-                    var fclType = Utils.SqlDbType2ClrType(item.DataType, item.IsNullable, databaseType); //转换为FCL数据类型
+                    var fclType = dbProvider.DbType2ClrType(item.DataType, item.IsNullable);
 
                     var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
@@ -92,7 +100,7 @@ namespace DbTool
                     {
                         index++;
                     }
-                    var fclType = Utils.SqlDbType2ClrType(item.DataType, item.IsNullable, databaseType); //转换为FCL数据类型
+                    var fclType = dbProvider.DbType2ClrType(item.DataType, item.IsNullable);
 
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {

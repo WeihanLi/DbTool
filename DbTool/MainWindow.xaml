@@ -23,7 +23,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Button Margin="10" Name="BtnChooseModel" Grid.Row="0" Grid.Column="0" Click="BtnChooseModel_OnClick">选择Model文件</Button>
+                    <Button Margin="10" MaxWidth="300" Name="BtnChooseModel" Grid.Row="0" Grid.Column="0" Click="BtnChooseModel_OnClick">选择Model文件</Button>
                     <StackPanel Margin="10" Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
                         <CheckBox Name="CodeGenDbDescCheckBox">生成数据库描述</CheckBox>
                     </StackPanel>

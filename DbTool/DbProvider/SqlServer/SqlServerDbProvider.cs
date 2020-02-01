@@ -391,7 +391,7 @@ END";
                         }
                     }
                     //Nullable
-                    if (!col.IsNullable)
+                    if (!col.IsNullable && !col.IsPrimaryKey)
                     {
                         sbSqlText.Append(" NOT NULL");
                     }

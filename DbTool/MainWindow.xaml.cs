@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -8,33 +7,37 @@ using DbTool.Core;
 using DbTool.ViewModels;
 using Microsoft.Extensions.Localization;
 using Microsoft.Win32;
-using WeihanLi.Extensions;
 
 namespace DbTool
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private readonly SettingsViewModel _settings;
         private readonly IStringLocalizer<MainWindow> _localizer;
+        private readonly DbProviderFactory _dbProviderFactory;
+        private readonly SettingsViewModel _settings;
 
-        public MainWindow(IStringLocalizer<MainWindow> localizer, SettingsViewModel settings, DbProviderFactory dbProviderFactory)
+        public MainWindow(
+            IStringLocalizer<MainWindow> localizer,
+            DbProviderFactory dbProviderFactory,
+            SettingsViewModel settings)
         {
             InitializeComponent();
 
             _localizer = localizer;
             _settings = settings;
+            _dbProviderFactory = dbProviderFactory;
 
-            InitDataBinding(dbProviderFactory.SupportedDbTypes);
+            InitDataBinding();
         }
 
-        private void InitDataBinding(IReadOnlyList<string> dbProviders)
+        private void InitDataBinding()
         {
             DataContext = _settings;
 
-            DefaultDbType.ItemsSource = dbProviders;
+            DefaultDbType.ItemsSource = _dbProviderFactory.SupportedDbTypes;
             DefaultDbType.SelectedItem = _settings.DefaultDbType;
 
             var supportedCultures = _settings.SupportedCultures
@@ -88,7 +91,8 @@ namespace DbTool
 
                 try
                 {
-                    var tables = Utils.GetTableEntityFromSourceCode(ofg.FileNames);
+                    var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
+                    var tables = Utils.GetTableEntityFromSourceCode(ofg.FileNames, dbProvider);
                     if (tables == null)
                     {
                         MessageBox.Show("没有找到 Model");
@@ -98,7 +102,8 @@ namespace DbTool
                         TxtCodeGenSql.Clear();
                         foreach (var table in tables)
                         {
-                            TxtCodeGenSql.AppendText(table.GenerateSqlStatement(CodeGenDbDescCheckBox.IsChecked == true, _settings.DefaultDbType));
+                            var tableSql = dbProvider.GenerateSqlStatement(table, CodeGenDbDescCheckBox.IsChecked == true);
+                            TxtCodeGenSql.AppendText(tableSql);
                         }
 
                         CodeGenTableTreeView.ItemsSource = tables;

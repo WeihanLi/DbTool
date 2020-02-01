@@ -61,8 +61,6 @@
             }
         }
 
-        // localization
-
         public string DefaultCulture
         {
             get => _defaultCulture;

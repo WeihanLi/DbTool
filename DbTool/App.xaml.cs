@@ -58,15 +58,14 @@ namespace DbTool
             #region Init Services and plugins
 
             var builder = new ContainerBuilder();
-            builder.RegisterType<MainWindow>().SingleInstance();
             builder.RegisterInstance(settings);
+            builder.RegisterType<MainWindow>().SingleInstance();
 
             builder.RegisterType<DbProviderFactory>().AsSelf().SingleInstance();
             var interfaces = typeof(IDbProvider).Assembly
                 .GetExportedTypes()
                 .Where(x => x.IsInterface)
                 .ToArray();
-
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .Select(x => x.GetTypes())
                 .SelectMany(t => t)
