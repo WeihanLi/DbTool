@@ -17,7 +17,7 @@ using WeihanLi.Extensions;
 
 namespace DbTool
 {
-    public static class Utils
+    internal static class Utils
     {
         /// <summary>
         /// 从 源代码 中获取表信息
@@ -25,7 +25,7 @@ namespace DbTool
         /// <param name="sourceFilePaths">sourceCodeFiles</param>
         /// <param name="dbProvider">dbProvider</param>
         /// <returns></returns>
-        public static List<TableEntity> GetTableEntityFromSourceCode(string[] sourceFilePaths, IDbProvider dbProvider)
+        public static List<TableEntity> GetTableEntityFromSourceCode(this IDbProvider dbProvider, params string[] sourceFilePaths)
         {
             if (sourceFilePaths == null || sourceFilePaths.Length <= 0)
             {

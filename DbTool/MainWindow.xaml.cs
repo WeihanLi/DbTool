@@ -92,7 +92,7 @@ namespace DbTool
                 try
                 {
                     var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
-                    var tables = Utils.GetTableEntityFromSourceCode(ofg.FileNames, dbProvider);
+                    var tables = dbProvider.GetTableEntityFromSourceCode(ofg.FileNames);
                     if (tables == null)
                     {
                         MessageBox.Show("没有找到 Model");
