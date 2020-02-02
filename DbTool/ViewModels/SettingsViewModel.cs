@@ -5,7 +5,7 @@
         private string _defaultDbType;
         private string _defaultConnectionString;
         private bool _generatePrivateField;
-        private bool _generateAnnotation;
+        private bool _generateDataAnnotation;
         private string _excelTemplateDownloadLink;
         private string _defaultCulture;
 
@@ -41,13 +41,13 @@
             }
         }
 
-        public bool GenerateAnnotation
+        public bool GenerateDataAnnotation
         {
-            get => _generateAnnotation;
+            get => _generateDataAnnotation;
             set
             {
-                _generateAnnotation = value;
-                ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.GenerateAnnotation, value);
+                _generateDataAnnotation = value;
+                ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.GenerateDataAnnotation, value);
             }
         }
 

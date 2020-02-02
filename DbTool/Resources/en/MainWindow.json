@@ -3,5 +3,6 @@
   "DefaultConnectionString": "DefaultConnectionString",
   "DefaultDbType": "DefaultDbType",
   "Tip": "Tip",
-  "Success": "Success"
+  "Success": "Success",
+  "TableName": "TableName"
 }

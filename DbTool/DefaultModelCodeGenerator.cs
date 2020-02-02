@@ -32,6 +32,8 @@ namespace DbTool
             if (options.GenerateDescriptionAttribute)
             {
                 sbText.AppendLine("using System.ComponentModel;");
+                sbText.AppendLine("using System.ComponentModel.DataAnnotations;");
+                sbText.AppendLine("using System.ComponentModel.DataAnnotations.Schema;");
             }
             sbText.AppendLine();
             sbText.AppendLine($"namespace {options.Namespace}");
@@ -42,6 +44,7 @@ namespace DbTool
                     $"\t/// <summary>{Environment.NewLine}\t/// {tableEntity.TableDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t/// </summary>");
                 if (options.GenerateDescriptionAttribute)
                 {
+                    sbText.AppendLine($"\t[Table(\"{tableEntity.TableName}\")]");
                     sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
                 }
             }
@@ -64,6 +67,7 @@ namespace DbTool
 
                     var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
+
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
                         sbText.AppendLine(
@@ -80,7 +84,12 @@ namespace DbTool
                             sbText.AppendLine($"\t\t[Description(\"主键\")]");
                         }
                     }
-                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName.Trim()}");
+                    if (item.IsPrimaryKey)
+                    {
+                        sbText.AppendLine($"\t\t[Key]");
+                    }
+                    sbText.AppendLine($"\t\t[Column(\"{item.ColumnName}\")]");
+                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName}");
                     sbText.AppendLine("\t\t{");
                     sbText.AppendLine($"\t\t\tget {{ return {tmpColName}; }}");
                     sbText.AppendLine($"\t\t\tset {{ {tmpColName} = value; }}");
@@ -111,6 +120,11 @@ namespace DbTool
                             sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
                         }
                     }
+                    if (item.IsPrimaryKey)
+                    {
+                        sbText.AppendLine($"\t\t[Key]");
+                    }
+                    sbText.AppendLine($"\t\t[Column(\"{item.ColumnName}\")]");
                     sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName} {{ get; set; }}");
                 }
             }

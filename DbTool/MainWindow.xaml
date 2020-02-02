@@ -3,15 +3,102 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:loc="clr-namespace:DbTool.Localization"
         mc:Ignorable="d"
-        Title="DbTool" Height="450" Width="800">
+        Title="DbTool" Height="450" Width="800" FontSize="14">
     <Grid>
         <TabControl Background="#EEE">
             <TabItem Header="DbFirst">
-                <Grid />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0,0,4,0" Text="{loc:Localizer DbConnectionString}"></TextBlock>
+                        <TextBox Name="TxtConnectionString" Margin="4,0,4,0" MinWidth="200" Text="{Binding Path=ConnectionString}"></TextBox>
+                        <Button Name="BtnConnectDb" Margin="4,0,0,0" Click="BtnConnectDb_OnClick" MinWidth="80" Content="{loc:Localizer Connect}"></Button>
+                    </StackPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Model 配置"></TextBlock>
+                        <StackPanel Margin="8,4,0,0" Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="命名空间"></TextBlock>
+                            <TextBox Name="TxtNamespace" Text="Models" Margin="8,0,6,0" Width="200"></TextBox>
+                            <TextBlock Text="前缀" Margin="2,0,6,0"></TextBlock>
+                            <TextBox Name="TxtPrefix" Text="" Width="200" Margin="2,0,6,0"></TextBox>
+                            <TextBlock Text="后缀" Margin="2,0,6,0"></TextBlock>
+                            <TextBox Name="TxtSuffix" Text="" Width="200" Margin="2,0,6,0"></TextBox>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Margin="4" Grid.Row="2" Orientation="Horizontal">
+                        <CheckBox Name="CbGenPrivateFields" Margin="8,0,4,0"  Content="{loc:Localizer GeneratePrivateFields}"></CheckBox>
+                        <CheckBox Name="CbGenDataAnnotation" Margin="4,0,4,0" Content="{loc:Localizer GenerateDataAnnotation}"></CheckBox>
+                    </StackPanel>
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="8,4,4,4" Text="选择要操作的表"></TextBlock>
+                            <Button Name="BtnExportModel" Click="BtnExportModel_OnClick" Margin="4" MaxWidth="300">导出Model</Button>
+                            <StackPanel Name="DbDocExportersPanel" HorizontalAlignment="Left" Orientation="Vertical">
+                            </StackPanel>
+                        </StackPanel>
+                        <ListBox Name="CheckedTables" Grid.Row="1">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding TableName}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Grid>
             </TabItem>
             <TabItem Header="ModelFirst">
-                <Grid />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Margin="0,4,0,4" Orientation="Horizontal">
+                        <TextBlock Text="{loc:Localizer TableName}"></TextBlock>
+                        <TextBox Name="TxtModelFirstTableName" Width="120"></TextBox>
+                        <TextBlock Margin="4,0,4,0" Text="{loc:Localizer TableDescription}"></TextBlock>
+                        <TextBox Name="TxtModelFirstTableDesc" Width="120" Margin="4,0,4,0"></TextBox>
+                        <CheckBox Name="ModelFirstGenDesc" Margin="4,0,4,0" VerticalContentAlignment="Center" Content="{loc:Localizer GenerateDbDesc}"></CheckBox>
+                        <Button Name="BtnGenerateSql" Margin="4,0,4,0" Click="BtnGenerateSql_OnClick" Content="{loc:Localizer GenerateSqlScript}"></Button>
+                        <Button Name="BtnImportModelExcel" Margin="4,0,4,0" Click="BtnImportModelExcel_OnClick" Content="{loc:Localizer ImportExcelFile}"></Button>
+                        <TextBlock Margin="4,0,0,0">
+                            <Hyperlink Name="DownloadExcelTemplateLink" Click="DownloadExcelTemplateLink_OnClick">
+                                <TextBlock Text="{loc:Localizer Download}"></TextBlock>
+                            </Hyperlink>
+                            <TextBlock Text="{loc:Localizer ExcelTemplate}"></TextBlock>
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Margin="0,4,0,4" Grid.Row="1" Orientation="Vertical">
+                        <DataGrid Name="ModelDataGrid" AutoGenerateColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer ColumnName}" Width="SizeToCells" Binding="{Binding Path=ColumnName}"></DataGridTextColumn>
+                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer ColumnDescription}" Binding="{Binding Path=ColumnDescription}"></DataGridTextColumn>
+                                <DataGridCheckBoxColumn MinWidth="30" Header="{loc:Localizer IsPrimaryKey}" Binding="{Binding Path=IsPrimaryKey}"></DataGridCheckBoxColumn>
+                                <DataGridCheckBoxColumn MinWidth="30" Header="{loc:Localizer IsNullable}" Binding="{Binding Path=IsNullable}"></DataGridCheckBoxColumn>
+                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DataType}" Binding="{Binding Path=DataType}"></DataGridTextColumn>
+                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DataLength}" Binding="{Binding Path=DataLength}"></DataGridTextColumn>
+                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DefaultValue}" Binding="{Binding Path=DefaultValue}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button Visibility="Collapsed" Name="BtnAddNewCol" Click="BtnAddNewCol_OnClick" Width="30" Height="20" HorizontalAlignment="Left">+</Button>
+                    </StackPanel>
+                    <TextBox Margin="0,4,0,0" Grid.Row="2" Name="TxtModelFirstGeneratedSql"></TextBox>
+                </Grid>
             </TabItem>
             <TabItem Header="CodeFirst">
                 <Grid>
@@ -23,11 +110,11 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Button Margin="10" MaxWidth="300" Name="BtnChooseModel" Grid.Row="0" Grid.Column="0" Click="BtnChooseModel_OnClick">选择Model文件</Button>
-                    <StackPanel Margin="10" Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
-                        <CheckBox Name="CodeGenDbDescCheckBox">生成数据库描述</CheckBox>
+                    <Button Margin="8" MaxWidth="300" Name="BtnChooseModel" Grid.Row="0" Grid.Column="0" Click="BtnChooseModel_OnClick" Content="{loc:Localizer ChooseModelFiles}"></Button>
+                    <StackPanel Margin="8" Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+                        <CheckBox Name="CodeGenDbDescCheckBox" VerticalContentAlignment="Center" Content="{loc:Localizer GenerateDbDesc}"></CheckBox>
                     </StackPanel>
-                    <TreeView Name="CodeGenTableTreeView" Grid.Row="1" Grid.Column="0" Margin="0" Padding="-10,0,0,0">
+                    <TreeView Name="CodeGenTableTreeView" Grid.Row="1" Grid.Column="0" Margin="0" Padding="0">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate>
                                 <TreeViewItem IsExpanded="True" Header="{Binding Path=TableName}" ToolTip="{Binding Path=TableDescription}" ItemsSource="{Binding Path=Columns}">
@@ -40,22 +127,22 @@
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
-                    <TextBox Margin="10,0,10,10" Name="TxtCodeGenSql" Grid.Row="1" Grid.Column="1" TextAlignment="Left"></TextBox>
+                    <TextBox Margin="8,0,0,0" Name="TxtCodeGenSql" Grid.Row="1" Grid.Column="1" TextAlignment="Left"></TextBox>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Margin="10,10,0,0" Orientation="Horizontal">
-                        <Label Name="LblDefaultConnStr">默认连接字符串</Label>
-                        <TextBox Name="TxtDefaultConnStr" MinWidth="200" MaxWidth="600" VerticalContentAlignment="Stretch" Text="{Binding Path=DefaultConnectionString}"></TextBox>
+                        <TextBlock Text="{loc:Localizer DefaultConnectionString}"></TextBlock>
+                        <TextBox Name="TxtDefaultConnStr" MinWidth="300" MaxWidth="600" VerticalContentAlignment="Stretch" Text="{Binding Path=DefaultConnectionString}"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="10,10,0,0" Orientation="Horizontal">
-                        <Label Name="LblDefaultDbType">默认数据库类型</Label>
+                        <TextBlock Text="{loc:Localizer DefaultDbType}"></TextBlock>
                         <ComboBox Name="DefaultDbType">
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Visibility="Collapsed"  Margin="10,10,0,0" Orientation="Horizontal">
-                        <Label Name="LblDefaultCulture">默认语言</Label>
+                    <StackPanel Margin="10,10,0,0" Orientation="Horizontal">
+                        <TextBlock Text="{loc:Localizer DefaultLanguage}"></TextBlock>
                         <ComboBox Name="DefaultCulture">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -64,7 +151,8 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     </StackPanel>
-                    <Button Margin="10,10,0,0" MinWidth="80" MaxWidth="300" HorizontalAlignment="Left" Name="BtnSaveSettings" Click="BtnSaveSettings_OnClick">修改默认配置</Button>
+                    <Button Margin="10,10,0,0" MinWidth="80" MaxWidth="300" Content="{loc:Localizer UpdateDefaultSettings}" HorizontalAlignment="Left" Name="BtnSaveSettings" Click="BtnSaveSettings_OnClick">
+                    </Button>
                 </StackPanel>
             </TabItem>
         </TabControl>

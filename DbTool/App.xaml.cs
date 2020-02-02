@@ -10,6 +10,7 @@ using Autofac.Extensions.DependencyInjection;
 using DbTool.Core;
 using DbTool.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions.Localization.Json;
@@ -29,6 +30,7 @@ namespace DbTool
 
         private void ConfigureServices(IServiceCollection services)
         {
+            services.TryAddTransient<MainWindow>();
             services.AddJsonLocalization(options => options.ResourcesPathType = ResourcesPathType.CultureBased);
         }
 
@@ -42,7 +44,7 @@ namespace DbTool
                     ConfigurationHelper.AppSetting(ConfigurationConstants.ExcelTemplateDownloadLink),
                 DefaultConnectionString = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString),
                 DefaultDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType),
-                GenerateAnnotation = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateAnnotation),
+                GenerateDataAnnotation = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDataAnnotation),
                 GeneratePrivateField = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GeneratePrivateField),
             };
             settings.DefaultCulture = ConfigurationHelper.AppSetting(nameof(settings.DefaultCulture));
@@ -59,7 +61,6 @@ namespace DbTool
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(settings);
-            builder.RegisterType<MainWindow>().SingleInstance();
 
             builder.RegisterType<DbProviderFactory>().AsSelf().SingleInstance();
             var interfaces = typeof(IDbProvider).Assembly

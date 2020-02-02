@@ -28,8 +28,8 @@
         public const string GeneratePrivateField = "GeneratePrivateField";
 
         /// <summary>
-        /// 生成 [Description]/[TableName] 等注解
+        /// 生成 [Description]/[Table] 等注解
         /// </summary>
-        public const string GenerateAnnotation = "GenerateAnnotation";
+        public const string GenerateDataAnnotation = "GenerateDataAnnotation";
     }
 }
