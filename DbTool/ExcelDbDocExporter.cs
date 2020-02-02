@@ -10,9 +10,11 @@ namespace DbTool
     {
         public string ExportType => "Excel";
 
-        public bool Export(TableEntity[] tableInfo, string path)
+        public string Suffix => ".xls";
+
+        public byte[] Export(TableEntity[] tableInfo)
         {
-            var workbook = ExcelHelper.PrepareWorkbook(path);
+            var workbook = ExcelHelper.PrepareWorkbook(ExcelFormat.Xls);
             foreach (var tableEntity in tableInfo)
             {
                 //Create Sheet
@@ -111,9 +113,7 @@ namespace DbTool
                 tempSheet.AutoSizeColumn(5);
                 tempSheet.AutoSizeColumn(6);
             }
-            workbook.WriteToFile(path);
-
-            return true;
+            return workbook.ToExcelBytes();
         }
     }
 }

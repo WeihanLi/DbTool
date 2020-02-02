@@ -99,13 +99,25 @@ namespace DbTool
                     }
                 }
                 if (tables.Count == 0) return;
-
-                var fileName = tables.Count > 1
-                    ? _dbHelper.DatabaseName
-                    : tables[0].TableName;
+                //
+                var dir = ChooseFolder();
+                if (string.IsNullOrEmpty(dir))
+                {
+                    return;
+                }
                 try
                 {
-                    exporter.Export(tables.ToArray(), fileName);
+                    var exportBytes = exporter.Export(tables.ToArray());
+                    if (null != exportBytes && exportBytes.Length > 0)
+                    {
+                        var fileName = tables.Count > 1
+                            ? _dbHelper.DatabaseName
+                            : tables[0].TableName;
+                        fileName =
+                            $"{fileName}{(exporter.Suffix.StartsWith(".") ? exporter.Suffix : $".{exporter.Suffix}")}";
+                        var path = Path.Combine(dir, fileName);
+                        File.WriteAllBytes(path, exportBytes);
+                    }
                 }
                 catch (Exception exception)
                 {
@@ -334,12 +346,6 @@ namespace DbTool
             }
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
-            _dbHelper?.Dispose();
-            base.OnClosed(e);
-        }
-
         private void BtnExportModel_OnClick(object sender, RoutedEventArgs e)
         {
             if (CheckedTables.SelectedItems.Count == 0)
@@ -352,10 +358,14 @@ namespace DbTool
                 Namespace = TxtNamespace.Text.GetValueOrDefault("Models"),
                 Prefix = TxtPrefix.Text,
                 Suffix = TxtSuffix.Text,
-                GenerateDescriptionAttribute = CbGenDataAnnotation.IsChecked == true,
+                GenerateDataAnnotation = CbGenDataAnnotation.IsChecked == true,
                 GeneratePrivateFields = CbGenPrivateFields.IsChecked == true,
             };
-            var dir = string.Empty;
+            var dir = ChooseFolder();
+            if (string.IsNullOrEmpty(dir))
+            {
+                return;
+            }
             foreach (var item in CheckedTables.SelectedItems)
             {
                 if (item is TableEntity table)
@@ -367,6 +377,26 @@ namespace DbTool
             }
             // open dir
             Process.Start("Explorer.exe", dir);
+        }
+
+        private string ChooseFolder()
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog
+            {
+                Description = "请选择要保存sql文件的文件夹",
+                ShowNewFolderButton = true
+            };
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                return dialog.SelectedPath;
+            }
+            return null;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _dbHelper?.Dispose();
+            base.OnClosed(e);
         }
     }
 }

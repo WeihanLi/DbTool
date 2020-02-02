@@ -29,7 +29,7 @@ namespace DbTool
             var dbProvider = _dbProviderFactory.GetDbProvider(databaseType);
             var sbText = new StringBuilder();
             sbText.AppendLine("using System;");
-            if (options.GenerateDescriptionAttribute)
+            if (options.GenerateDataAnnotation)
             {
                 sbText.AppendLine("using System.ComponentModel;");
                 sbText.AppendLine("using System.ComponentModel.DataAnnotations;");
@@ -42,7 +42,7 @@ namespace DbTool
             {
                 sbText.AppendLine(
                     $"\t/// <summary>{Environment.NewLine}\t/// {tableEntity.TableDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t/// </summary>");
-                if (options.GenerateDescriptionAttribute)
+                if (options.GenerateDataAnnotation)
                 {
                     sbText.AppendLine($"\t[Table(\"{tableEntity.TableName}\")]");
                     sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
@@ -72,14 +72,14 @@ namespace DbTool
                     {
                         sbText.AppendLine(
                             $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (options.GenerateDescriptionAttribute)
+                        if (options.GenerateDataAnnotation)
                         {
                             sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
                         }
                     }
                     else
                     {
-                        if (item.IsPrimaryKey && options.GenerateDescriptionAttribute)
+                        if (item.IsPrimaryKey && options.GenerateDataAnnotation)
                         {
                             sbText.AppendLine($"\t\t[Description(\"主键\")]");
                         }
@@ -115,7 +115,7 @@ namespace DbTool
                     {
                         sbText.AppendLine(
                             $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (options.GenerateDescriptionAttribute)
+                        if (options.GenerateDataAnnotation)
                         {
                             sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
                         }

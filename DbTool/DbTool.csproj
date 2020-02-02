@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <!--<UseWindowsForms>true</UseWindowsForms>-->
+    <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <RootNamespace>DbTool</RootNamespace>
     <AssemblyName>DbTool</AssemblyName>
@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.2" />
     <PackageReference Include="WeihanLi.Npoi" Version="1.8.2" />
-    <PackageReference Include="DbTool.Core" Version="1.0.9" />
+    <PackageReference Include="DbTool.Core" Version="1.1.0-preview-20200202-214057" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Resources\**\*.json">
