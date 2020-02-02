@@ -377,7 +377,7 @@ END";
                 foreach (var col in tableEntity.Columns)
                 {
                     sbSqlText.AppendLine();
-                    sbSqlText.AppendFormat("\t[{0}] {1}", col.ColumnName.Trim(), col.DataType);
+                    sbSqlText.AppendFormat("\t[{0}] {1}", col.ColumnName, col.DataType);
                     if (col.DataType.ToUpperInvariant().Contains("CHAR"))
                     {
                         sbSqlText.Append($"({col.Size})");
