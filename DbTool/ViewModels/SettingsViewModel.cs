@@ -8,6 +8,7 @@
         private bool _generateDataAnnotation;
         private string _excelTemplateDownloadLink;
         private string _defaultCulture;
+        private bool _generateDbDescription;
 
         public string DefaultDbType
         {
@@ -48,6 +49,16 @@
             {
                 _generateDataAnnotation = value;
                 ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.GenerateDataAnnotation, value);
+            }
+        }
+
+        public bool GenerateDbDescription
+        {
+            get => _generateDbDescription;
+            set
+            {
+                _generateDbDescription = value;
+                ConfigurationHelper.UpdateAppSetting(nameof(GenerateDbDescription), value);
             }
         }
 

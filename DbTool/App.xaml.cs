@@ -46,6 +46,7 @@ namespace DbTool
                 DefaultDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType),
                 GenerateDataAnnotation = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDataAnnotation),
                 GeneratePrivateField = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GeneratePrivateField),
+                GenerateDbDescription = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDbDescription),
             };
             settings.DefaultCulture = ConfigurationHelper.AppSetting(nameof(settings.DefaultCulture));
             settings.SupportedCultures = ConfigurationHelper.AppSetting(nameof(settings.SupportedCultures))

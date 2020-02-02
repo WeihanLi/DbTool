@@ -20,7 +20,7 @@
         /// <summary>
         /// 生成数据库描述类型
         /// </summary>
-        public const string DbDescriptionGenType = "DbDescriptionGenType";
+        public const string GenerateDbDescription = "GenerateDbDescription";
 
         /// <summary>
         /// 生成私有字段

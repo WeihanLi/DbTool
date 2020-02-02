@@ -60,6 +60,11 @@ namespace DbTool
             DefaultCulture.ItemsSource = supportedCultures;
             DefaultCulture.SelectedItem = supportedCultures.FirstOrDefault(c => c.Name == _settings.DefaultCulture);
 
+            CbGenPrivateFields.IsChecked = _settings.GeneratePrivateField;
+            CbGenDataAnnotation.IsChecked = _settings.GenerateDataAnnotation;
+            CodeGenDbDescCheckBox.IsChecked = _settings.GenerateDbDescription;
+            ModelFirstGenDesc.IsChecked = _settings.GenerateDbDescription;
+
             var exporters = DependencyResolver.Current.ResolveServices<IDbDocExporter>();
             foreach (var exporter in exporters)
             {
@@ -100,7 +105,7 @@ namespace DbTool
                     : tables[0].TableName;
                 try
                 {
-                    var result = exporter.Export(tables.ToArray(), fileName);
+                    exporter.Export(tables.ToArray(), fileName);
                 }
                 catch (Exception exception)
                 {
