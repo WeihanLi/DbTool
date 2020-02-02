@@ -114,7 +114,7 @@ namespace DbTool
                             ? _dbHelper.DatabaseName
                             : tables[0].TableName;
                         fileName =
-                            $"{fileName}{(exporter.Suffix.StartsWith(".") ? exporter.Suffix : $".{exporter.Suffix}")}";
+                            $"{fileName}.{exporter.Suffix.TrimStart('.')}";
                         var path = Path.Combine(dir, fileName);
                         File.WriteAllBytes(path, exportBytes);
                     }
@@ -183,6 +183,7 @@ namespace DbTool
                         {
                             var tableSql = dbProvider.GenerateSqlStatement(table, CodeGenDbDescCheckBox.IsChecked == true);
                             TxtCodeGenSql.AppendText(tableSql);
+                            TxtCodeGenSql.AppendText(Environment.NewLine);
                         }
 
                         CodeGenTableTreeView.ItemsSource = tables;
@@ -241,6 +242,13 @@ namespace DbTool
                             if (i > 0)
                             {
                                 sbSqlText.AppendLine();
+                            }
+                            else
+                            {
+                                TxtModelFirstTableName.Text = table.TableName;
+                                TxtModelFirstTableDesc.Text = table.TableDescription;
+                                ModelDataGrid.Items.Clear();
+                                ModelDataGrid.ItemsSource = table.Columns;
                             }
                             sbSqlText.AppendLine(dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true));
                         }
@@ -383,7 +391,7 @@ namespace DbTool
         {
             var dialog = new System.Windows.Forms.FolderBrowserDialog
             {
-                Description = "请选择要保存sql文件的文件夹",
+                Description = "请选择要保存的文件夹",
                 ShowNewFolderButton = true
             };
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)

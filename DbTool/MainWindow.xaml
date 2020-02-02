@@ -74,7 +74,7 @@
                         <TextBlock Margin="4,0,4,0" Text="{loc:Localizer TableDescription}"></TextBlock>
                         <TextBox Name="TxtModelFirstTableDesc" Width="120" Margin="4,0,4,0"></TextBox>
                         <CheckBox Name="ModelFirstGenDesc" Margin="4,0,4,0" VerticalContentAlignment="Center" Content="{loc:Localizer GenerateDbDesc}"></CheckBox>
-                        <Button Name="BtnGenerateSql" Margin="4,0,4,0" Click="BtnGenerateSql_OnClick" Content="{loc:Localizer GenerateSqlScript}"></Button>
+                        <Button Name="BtnGenerateSql" Visibility="Collapsed" Margin="4,0,4,0" Click="BtnGenerateSql_OnClick" Content="{loc:Localizer GenerateSqlScript}"></Button>
                         <Button Name="BtnImportModelExcel" Margin="4,0,4,0" Click="BtnImportModelExcel_OnClick" Content="{loc:Localizer ImportExcelFile}"></Button>
                         <TextBlock Margin="4,0,0,0">
                             <Hyperlink Name="DownloadExcelTemplateLink" Click="DownloadExcelTemplateLink_OnClick">
