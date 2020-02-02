@@ -26,13 +26,13 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Model 配置"></TextBlock>
+                        <TextBlock Text="{loc:Localizer ModelSettings}"></TextBlock>
                         <StackPanel Margin="8,4,0,0" Grid.Row="1" Orientation="Horizontal">
-                            <TextBlock Text="命名空间"></TextBlock>
+                            <TextBlock Text="{loc:Localizer Namespace}"></TextBlock>
                             <TextBox Name="TxtNamespace" Text="Models" Margin="8,0,6,0" Width="200"></TextBox>
-                            <TextBlock Text="前缀" Margin="2,0,6,0"></TextBlock>
+                            <TextBlock Text="{loc:Localizer Prefix}" Margin="2,0,6,0"></TextBlock>
                             <TextBox Name="TxtPrefix" Text="" Width="200" Margin="2,0,6,0"></TextBox>
-                            <TextBlock Text="后缀" Margin="2,0,6,0"></TextBlock>
+                            <TextBlock Text="{loc:Localizer Suffix}" Margin="2,0,6,0"></TextBlock>
                             <TextBox Name="TxtSuffix" Text="" Width="200" Margin="2,0,6,0"></TextBox>
                         </StackPanel>
                     </Grid>
@@ -46,8 +46,8 @@
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="8,4,4,4" Text="选择要操作的表"></TextBlock>
-                            <Button Name="BtnExportModel" Click="BtnExportModel_OnClick" Margin="4" MaxWidth="300">导出Model</Button>
+                            <TextBlock Margin="8,4,4,4" Text="{loc:Localizer ChooseTables}"></TextBlock>
+                            <Button Name="BtnExportModel" Click="BtnExportModel_OnClick" Margin="4" MaxWidth="300" Content="{loc:Localizer ExportModel}"></Button>
                             <StackPanel Name="DbDocExportersPanel" HorizontalAlignment="Left" Orientation="Vertical">
                             </StackPanel>
                         </StackPanel>

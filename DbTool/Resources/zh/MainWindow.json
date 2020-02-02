@@ -4,6 +4,7 @@
   "DefaultDbType": "默认数据库类型",
   "DefaultLanguage": "默认语言",
   "UpdateDefaultSettings": "修改默认配置",
+  "ModelSettings": "Model配置",
   "Tip": "提示",
   "Success": "操作成功",
   "TableName": "表名称",
@@ -24,5 +25,10 @@
   "DataLength": "数据长度",
   "DefaultValue": "默认值",
   "DbConnectionString": "数据库连接字符串",
-  "Connect": "连接"
+  "Connect": "连接",
+  "Namespace": "命名空间",
+  "Prefix": "前缀",
+  "Suffix": "后缀",
+  "ChooseTables": "选择要操作的表",
+  "ExportModel": "导出Model"
 }
