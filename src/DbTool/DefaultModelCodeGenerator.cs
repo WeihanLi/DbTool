@@ -21,7 +21,7 @@ namespace DbTool
 
             var sbText = new StringBuilder();
             sbText.AppendLine("using System;");
-            if (options.GenerateDescriptionAttribute)
+            if (options.GenerateDataAnnotation)
             {
                 sbText.AppendLine("using System.ComponentModel;");
             }
@@ -32,7 +32,7 @@ namespace DbTool
             {
                 sbText.AppendLine(
                     $"\t/// <summary>{Environment.NewLine}\t/// {tableEntity.TableDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t/// </summary>");
-                if (options.GenerateDescriptionAttribute)
+                if (options.GenerateDataAnnotation)
                 {
                     sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
                 }
@@ -54,25 +54,25 @@ namespace DbTool
                     }
                     var fclType = Utils.SqlDbType2ClrType(item.DataType, item.IsNullable, databaseType); //转换为FCL数据类型
 
-                    var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
+                    var tmpColName = item.ColumnName.ToPrivateFieldName();
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
                     if (!string.IsNullOrEmpty(item.ColumnDescription))
                     {
                         sbText.AppendLine(
                             $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (options.GenerateDescriptionAttribute)
+                        if (options.GenerateDataAnnotation)
                         {
                             sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
                         }
                     }
                     else
                     {
-                        if (item.IsPrimaryKey && options.GenerateDescriptionAttribute)
+                        if (item.IsPrimaryKey && options.GenerateDataAnnotation)
                         {
                             sbText.AppendLine($"\t\t[Description(\"主键\")]");
                         }
                     }
-                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName.Trim()}");
+                    sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName}");
                     sbText.AppendLine("\t\t{");
                     sbText.AppendLine($"\t\t\tget {{ return {tmpColName}; }}");
                     sbText.AppendLine($"\t\t\tset {{ {tmpColName} = value; }}");
@@ -98,7 +98,7 @@ namespace DbTool
                     {
                         sbText.AppendLine(
                             $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (options.GenerateDescriptionAttribute)
+                        if (options.GenerateDataAnnotation)
                         {
                             sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
                         }

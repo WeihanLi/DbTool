@@ -117,7 +117,7 @@ namespace DbTool
                         var options = new ModelCodeGenerateOptions()
                         {
                             GeneratePrivateFields = cbGenField.Checked,
-                            GenerateDescriptionAttribute = cbGenDescriptionAttr.Checked,
+                            GenerateDataAnnotation = cbGenDescriptionAttr.Checked,
                             Prefix = prefix,
                             Suffix = suffix,
                             Namespace = ns.Trim()
@@ -375,18 +375,23 @@ namespace DbTool
                             }
                             sbSqlText.AppendLine(table.GenerateSqlStatement(cbGenDbDescription.Checked, ConfigurationHelper.AppSetting(ConfigurationConstants.DbType)));
                         }
+
                         var dialog = new FolderBrowserDialog
                         {
                             Description = "请选择要保存sql文件的文件夹",
                             ShowNewFolderButton = true
                         };
+
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
                             var dir = dialog.SelectedPath;
+
                             //获取文件名
                             var fileName = Path.GetFileNameWithoutExtension(path);
+
                             //
                             var sqlFilePath = dir + "\\" + fileName + ".sql";
+
                             File.WriteAllText(sqlFilePath, sbSqlText.ToString(), Encoding.UTF8);
                             MessageBox.Show("保存成功");
                             System.Diagnostics.Process.Start("Explorer.exe", dir);
@@ -412,63 +417,67 @@ namespace DbTool
         /// <param name="e"></param>
         private void btnExportExcel_Click(object sender, EventArgs e)
         {
-            if (_dbHelper == null)
             {
-                MessageBox.Show("请先连接数据库");
-                return;
-            }
-            if (cbTables.CheckedItems.Count <= 0)
-            {
-                MessageBox.Show("请先选择要生成model的表");
-                return;
-            }
-            var dialog = new FolderBrowserDialog
-            {
-                Description = "请选择要保存excel文件的文件夹",
-                ShowNewFolderButton = true
-            };
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                var dir = dialog.SelectedPath;
-                try
+                if (_dbHelper == null)
                 {
-                    if (cbTables.CheckedItems.Count > 0)
-                    {
-                        var tempFileName = cbTables.CheckedItems.Count > 1 ? _dbHelper.DatabaseName : (cbTables.CheckedItems[0] as TableEntity)?.TableName ?? _dbHelper.DatabaseName;
-                        var path = dir + "\\" + tempFileName + ".xlsx";
+                    MessageBox.Show("请先连接数据库");
+                    return;
+                }
 
-                        var tableEntities = cbTables.CheckedItems.Cast<TableEntity>().ToArray();
-                        foreach (var item in tableEntities)
+                if (cbTables.CheckedItems.Count <= 0)
+                {
+                    MessageBox.Show("请先选择要生成model的表");
+                    return;
+                }
+
+                var dialog = new FolderBrowserDialog { Description = "请选择要保存excel文件的文件夹", ShowNewFolderButton = true };
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    var dir = dialog.SelectedPath;
+                    try
+                    {
+                        if (cbTables.CheckedItems.Count > 0)
                         {
-                            if (item.Columns == null || item.Columns.Count == 0)
+                            var tempFileName = cbTables.CheckedItems.Count > 1
+                                ? _dbHelper.DatabaseName
+                                : (cbTables.CheckedItems[0] as TableEntity)?.TableName ?? _dbHelper.DatabaseName;
+                            var path = dir + "\\" + tempFileName + ".xlsx";
+
+                            var tableEntities = cbTables.CheckedItems.Cast<TableEntity>().ToArray();
+                            foreach (var item in tableEntities)
                             {
-                                item.Columns = _dbHelper.GetColumnsInfo(item.TableName);
+                                if (item.Columns == null || item.Columns.Count == 0)
+                                {
+                                    item.Columns = _dbHelper.GetColumnsInfo(item.TableName);
+                                }
                             }
-                        }
-                        var exportResult = new ExcelDbDocExporter()
-                            .Export(tableEntities, path);
-                        if (exportResult)
-                        {
-                            MessageBox.Show("导出成功");
-                            System.Diagnostics.Process.Start("Explorer.exe", dir);
+
+                            var exportBytes = new ExcelDbDocExporter()
+                                .Export(tableEntities);
+                            if (exportBytes != null)
+                            {
+                                File.WriteAllBytes(path, exportBytes);
+                                MessageBox.Show("导出成功");
+                                System.Diagnostics.Process.Start("Explorer.exe", dir);
+                            }
+                            else
+                            {
+                                MessageBox.Show("导出失败");
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("导出失败");
+                            MessageBox.Show("请选择要生成的表");
                         }
                     }
-                    else
+                    catch (IOException ex)
                     {
-                        MessageBox.Show("请选择要生成的表");
+                        MessageBox.Show("IOException:" + ex.Message);
                     }
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show("IOException:" + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
                 }
             }
         }
