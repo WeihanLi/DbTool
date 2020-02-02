@@ -30,5 +30,10 @@
   "Prefix": "前缀",
   "Suffix": "后缀",
   "ChooseTables": "选择要操作的表",
-  "ExportModel": "导出Model"
+  "ExportModel": "导出Model",
+  "ChooseDirTip": "选择要保存的文件夹",
+  "UnsupportedFileType": "不支持的文件类型,{0}",
+  "ConnectionStringCannotBeEmpty": "连接字符串不能为空",
+  "NoModelFound": "找不到Model",
+  "SqlCopiedToClipboard": "sql语句已复制至粘贴板"
 }

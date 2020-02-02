@@ -84,7 +84,7 @@ namespace DbTool
         {
             if (CheckedTables.SelectedItems.Count == 0)
             {
-                MessageBox.Show("请选择要导出的表", _localizer["Tip"]);
+                MessageBox.Show(_localizer["ChooseTables"], _localizer["Tip"]);
                 return;
             }
 
@@ -144,6 +144,7 @@ namespace DbTool
                 _settings.DefaultCulture = culture.Name;
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
+
                 updated = true;
             }
             if (updated)
@@ -164,7 +165,7 @@ namespace DbTool
             {
                 if (ofg.FileNames.Any(f => !f.EndsWith(".cs")))
                 {
-                    MessageBox.Show("不支持所选文件类型，只可以选择C#文件(*.cs)");
+                    MessageBox.Show(_localizer["UnsupportedFileType", ofg.FileNames.First(f => !f.EndsWith(".cs"))]);
                     return;
                 }
 
@@ -174,7 +175,7 @@ namespace DbTool
                     var tables = dbProvider.GetTableEntityFromSourceCode(ofg.FileNames);
                     if (tables == null)
                     {
-                        MessageBox.Show("没有找到 Model");
+                        MessageBox.Show(_localizer["NoModelFound"]);
                     }
                     else
                     {
@@ -256,7 +257,7 @@ namespace DbTool
                     }
                     TxtModelFirstGeneratedSql.Text = sql;
                     Clipboard.SetText(sql);
-                    MessageBox.Show("生成成功，sql语句已赋值至粘贴板", _localizer["Tip"]);
+                    MessageBox.Show(_localizer["SqlCopiedToClipboard"], _localizer["Tip"]);
                 }
                 catch (Exception ex)
                 {
@@ -334,7 +335,7 @@ namespace DbTool
         {
             if (string.IsNullOrEmpty(TxtConnectionString.Text))
             {
-                MessageBox.Show("连接字符串不能为空");
+                MessageBox.Show(_localizer["ConnectionStringCannotBeEmpty"]);
                 return;
             }
             try
@@ -358,7 +359,7 @@ namespace DbTool
         {
             if (CheckedTables.SelectedItems.Count == 0)
             {
-                MessageBox.Show("请选择要导出的表");
+                MessageBox.Show(_localizer["ChooseTables"]);
                 return;
             }
             var options = new ModelCodeGenerateOptions()
@@ -391,7 +392,7 @@ namespace DbTool
         {
             var dialog = new System.Windows.Forms.FolderBrowserDialog
             {
-                Description = "请选择要保存的文件夹",
+                Description = _localizer["ChooseDirTip"],
                 ShowNewFolderButton = true
             };
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
