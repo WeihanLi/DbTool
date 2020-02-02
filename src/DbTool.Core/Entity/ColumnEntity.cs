@@ -9,11 +9,12 @@ namespace DbTool.Core.Entity
     {
         private string _columnDescription;
         private string _dataType;
+        private string columnName;
 
         /// <summary>
         /// 列名称
         /// </summary>
-        public string ColumnName { get; set; }
+        public string ColumnName { get => columnName; set => columnName = value?.Trim(); }
 
         /// <summary>
         /// 列描述

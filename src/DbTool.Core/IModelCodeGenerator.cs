@@ -22,7 +22,7 @@ namespace DbTool.Core
         /// <summary>
         /// 是否生成 Description Attribute 描述
         /// </summary>
-        public bool GenerateDescriptionAttribute { get; set; } = true;
+        public bool GenerateDataAnnotation { get; set; } = true;
 
         /// <summary>
         /// 是否生成私有字段

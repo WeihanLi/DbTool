@@ -14,9 +14,11 @@ namespace DbTool.Core.Entity
         /// 表名称
         /// </summary>
         [Required]
-        public string TableName { get; set; }
+        public string TableName { get => tableName; set => tableName = value?.Trim(); }
 
         private string tableDescription;
+        private string tableName;
+
         /// <summary>
         /// 表描述
         /// </summary>

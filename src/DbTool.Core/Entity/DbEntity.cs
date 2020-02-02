@@ -9,11 +9,12 @@ namespace DbTool.Core.Entity
     public class DbEntity
     {
         private string databaseDescription;
+        private string databaseName;
 
         /// <summary>
         /// 数据库名称
         /// </summary>
-        public string DatabaseName { get; set; }
+        public string DatabaseName { get => databaseName; set => databaseName = value?.Trim(); }
 
         /// <summary>
         /// 数据库描述

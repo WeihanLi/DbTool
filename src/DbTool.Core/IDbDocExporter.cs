@@ -10,11 +10,16 @@ namespace DbTool.Core
         string ExportType { get; }
 
         /// <summary>
+        /// 导出文件后缀
+        /// </summary>
+        string Suffix { get; }
+
+        /// <summary>
         /// 导出数据库文档
         /// </summary>
         /// <param name="tableInfo">表信息</param>
         /// <param name="path">要保存的路径</param>
         /// <returns>whether success</returns>
-        bool Export(TableEntity[] tableInfo, string path);
+        byte[] Export(TableEntity[] tableInfo);
     }
 }
