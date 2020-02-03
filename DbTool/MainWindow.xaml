@@ -18,7 +18,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Margin="0,0,4,0" Text="{loc:Localizer DbConnectionString}"></TextBlock>
-                        <TextBox Name="TxtConnectionString" Margin="4,0,4,0" MinWidth="200" Text="{Binding Path=ConnectionString}"></TextBox>
+                        <TextBox Name="TxtConnectionString" Margin="4,0,4,0" MinWidth="200" MaxWidth="400" Text="{Binding Path=ConnectionString}"></TextBox>
                         <Button Name="BtnConnectDb" Margin="4,0,0,0" Click="BtnConnectDb_OnClick" MinWidth="80" Content="{loc:Localizer Connect}"></Button>
                     </StackPanel>
                     <Grid Grid.Row="1">
@@ -31,8 +31,8 @@
                             <TextBlock Text="{loc:Localizer Namespace}"></TextBlock>
                             <TextBox Name="TxtNamespace" Text="Models" Margin="8,0,6,0" Width="200"></TextBox>
                             <TextBlock Text="{loc:Localizer Prefix}" Margin="2,0,6,0"></TextBlock>
-                            <TextBox Name="TxtPrefix" Text="" Width="200" Margin="2,0,6,0"></TextBox>
-                            <TextBlock Text="{loc:Localizer Suffix}" Margin="2,0,6,0"></TextBlock>
+                            <TextBox Name="TxtPrefix" Text="" Width="200" Margin="2,0,6,0" MaxWidth="200"></TextBox>
+                            <TextBlock Text="{loc:Localizer Suffix}" Margin="2,0,6,0" MaxWidth="200"></TextBlock>
                             <TextBox Name="TxtSuffix" Text="" Width="200" Margin="2,0,6,0"></TextBox>
                         </StackPanel>
                     </Grid>
