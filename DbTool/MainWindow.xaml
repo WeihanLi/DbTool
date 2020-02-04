@@ -62,16 +62,21 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="4">
+                        <Grid Grid.Row="1" Grid.Column="1" Margin="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
                             <TextBlock LineHeight="20" FontSize="16" MinHeight="30" VerticalAlignment="Center" Name="CurrentCheckedTableName" Text="CurrentCheckedTable"></TextBlock>
-                            <ListView MinHeight="100" Name="ColumnListView">
+                            <ListView Grid.Row="1" MinHeight="100" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="ColumnListView">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding ColumnName}" ToolTip="{Binding ColumnDescription}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -88,7 +93,7 @@
                         <TextBlock Margin="4,0,4,0" Text="{loc:Localizer TableDescription}"></TextBlock>
                         <TextBox Name="TxtModelFirstTableDesc" Width="120" Margin="4,0,4,0"></TextBox>
                         <CheckBox Name="ModelFirstGenDesc" Margin="4,0,4,0" VerticalContentAlignment="Center" Content="{loc:Localizer GenerateDbDesc}"></CheckBox>
-                        <Button Name="BtnGenerateSql" Visibility="Collapsed" Margin="4,0,4,0" Click="BtnGenerateSql_OnClick" Content="{loc:Localizer GenerateSqlScript}"></Button>
+                        <Button Name="BtnGenerateSql" Margin="4,0,4,0" Click="BtnGenerateSql_OnClick" Content="{loc:Localizer GenerateSqlScript}"></Button>
                         <Button Name="BtnImportModelExcel" Margin="4,0,4,0" Click="BtnImportModelExcel_OnClick" Content="{loc:Localizer ImportExcelFile}"></Button>
                         <TextBlock Margin="4,0,0,0">
                             <Hyperlink Name="DownloadExcelTemplateLink" Click="DownloadExcelTemplateLink_OnClick">
@@ -97,20 +102,17 @@
                             <TextBlock Text="{loc:Localizer ExcelTemplate}"></TextBlock>
                         </TextBlock>
                     </StackPanel>
-                    <StackPanel Margin="0,4,0,4" Grid.Row="1" Orientation="Vertical">
-                        <DataGrid Name="ModelDataGrid" AutoGenerateColumns="True">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer ColumnName}" Width="SizeToCells" Binding="{Binding Path=ColumnName}"></DataGridTextColumn>
-                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer ColumnDescription}" Binding="{Binding Path=ColumnDescription}"></DataGridTextColumn>
-                                <DataGridCheckBoxColumn MinWidth="30" Header="{loc:Localizer IsPrimaryKey}" Binding="{Binding Path=IsPrimaryKey}"></DataGridCheckBoxColumn>
-                                <DataGridCheckBoxColumn MinWidth="30" Header="{loc:Localizer IsNullable}" Binding="{Binding Path=IsNullable}"></DataGridCheckBoxColumn>
-                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DataType}" Binding="{Binding Path=DataType}"></DataGridTextColumn>
-                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DataLength}" Binding="{Binding Path=DataLength}"></DataGridTextColumn>
-                                <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DefaultValue}" Binding="{Binding Path=DefaultValue}"></DataGridTextColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <Button Visibility="Collapsed" Name="BtnAddNewCol" Click="BtnAddNewCol_OnClick" Width="30" Height="20" HorizontalAlignment="Left">+</Button>
-                    </StackPanel>
+                    <DataGrid Name="ModelDataGrid" Margin="0,4,0,4" Grid.Row="1" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn MinWidth="60" Header="{loc:Localizer ColumnName}" Width="SizeToCells" Binding="{Binding Path=ColumnName}"></DataGridTextColumn>
+                            <DataGridTextColumn MinWidth="60" Header="{loc:Localizer ColumnDescription}" Binding="{Binding Path=ColumnDescription}"></DataGridTextColumn>
+                            <DataGridCheckBoxColumn MinWidth="30" Header="{loc:Localizer IsPrimaryKey}" Binding="{Binding Path=IsPrimaryKey}"></DataGridCheckBoxColumn>
+                            <DataGridCheckBoxColumn MinWidth="30" Header="{loc:Localizer IsNullable}" Binding="{Binding Path=IsNullable}"></DataGridCheckBoxColumn>
+                            <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DataType}" Binding="{Binding Path=DataType}"></DataGridTextColumn>
+                            <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DataLength}" Binding="{Binding Path=Size}"></DataGridTextColumn>
+                            <DataGridTextColumn MinWidth="60" Header="{loc:Localizer DefaultValue}" Binding="{Binding Path=DefaultValue}"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <TextBox Margin="0,4,0,0" Grid.Row="2" Name="TxtModelFirstGeneratedSql"></TextBox>
                 </Grid>
             </TabItem>

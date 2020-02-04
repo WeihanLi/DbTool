@@ -199,6 +199,31 @@ namespace DbTool
 
         private void BtnGenerateSql_OnClick(object sender, RoutedEventArgs e)
         {
+            if (ModelDataGrid.Items.Count > 0)
+            {
+                if (string.IsNullOrEmpty(TxtModelFirstTableName.Text))
+                {
+                    return;
+                }
+
+                var table = new TableEntity()
+                {
+                    TableName = TxtModelFirstTableName.Text,
+                    TableDescription = TxtModelFirstTableDesc.Text,
+                };
+                foreach (var item in ModelDataGrid.Items)
+                {
+                    if (item is ColumnEntity column && !string.IsNullOrEmpty(column.ColumnName))
+                    {
+                        table.Columns.Add(column);
+                    }
+                }
+                var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
+                var sql = dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true);
+                TxtModelFirstGeneratedSql.Text = sql;
+                Clipboard.SetText(sql);
+                MessageBox.Show(_localizer["SqlCopiedToClipboard"], _localizer["Tip"]);
+            }
         }
 
         private void BtnImportModelExcel_OnClick(object sender, RoutedEventArgs e)
@@ -228,7 +253,6 @@ namespace DbTool
 
                         TxtModelFirstTableName.Text = table.TableName;
                         TxtModelFirstTableDesc.Text = table.TableDescription;
-                        ModelDataGrid.Items.Clear();
                         ModelDataGrid.ItemsSource = table.Columns;
 
                         sql = dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true);
@@ -248,7 +272,6 @@ namespace DbTool
                             {
                                 TxtModelFirstTableName.Text = table.TableName;
                                 TxtModelFirstTableDesc.Text = table.TableDescription;
-                                ModelDataGrid.Items.Clear();
                                 ModelDataGrid.ItemsSource = table.Columns;
                             }
                             sbSqlText.AppendLine(dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true));
@@ -322,11 +345,6 @@ namespace DbTool
             {
                 UseShellExecute = true
             });
-        }
-
-        private void BtnAddNewCol_OnClick(object sender, RoutedEventArgs e)
-        {
-            ModelDataGrid.Items.Add(new ColumnEntity());
         }
 
         private DbHelper _dbHelper;

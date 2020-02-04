@@ -10,11 +10,11 @@ namespace DbTool
     {
         public string ExportType => "Excel";
 
-        public string Suffix => ".xls";
+        public string Suffix => ".xlsx";
 
         public byte[] Export(TableEntity[] tableInfo)
         {
-            var workbook = ExcelHelper.PrepareWorkbook(ExcelFormat.Xls);
+            var workbook = ExcelHelper.PrepareWorkbook(ExcelFormat.Xlsx);
             foreach (var tableEntity in tableInfo)
             {
                 //Create Sheet
