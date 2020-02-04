@@ -63,7 +63,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel Grid.Row="1" Grid.Column="1" Margin="4">
-                            <TextBlock MinHeight="30" VerticalAlignment="Center" Name="CurrentCheckedTableName" Text="CurrentCheckedTable"></TextBlock>
+                            <TextBlock LineHeight="20" FontSize="16" MinHeight="30" VerticalAlignment="Center" Name="CurrentCheckedTableName" Text="CurrentCheckedTable"></TextBlock>
                             <ListView MinHeight="100" Name="ColumnListView">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>

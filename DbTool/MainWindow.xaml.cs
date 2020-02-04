@@ -422,7 +422,10 @@ namespace DbTool
                     if (table.TableName != CurrentCheckedTableName.Text)
                     {
                         CurrentCheckedTableName.Text = table.TableName;
-                        table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
+                        if (table.Columns.Count == 0)
+                        {
+                            table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
+                        }
                         ColumnListView.ItemsSource = table.Columns;
                     }
                 }
