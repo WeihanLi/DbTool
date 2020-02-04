@@ -16,6 +16,7 @@ localBuild/
 *.userprefs
 
 # Build results
+[Oo]ut/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

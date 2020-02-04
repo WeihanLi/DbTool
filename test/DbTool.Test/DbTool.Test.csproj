@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DbTool.MySql\DbTool.DbProvider.MySql.csproj" />
-    <ProjectReference Include="..\..\src\DbTool.SqlServer\DbTool.DbProvider.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\DbTool\DbTool.csproj" />
   </ItemGroup>
 
   <ItemGroup>
