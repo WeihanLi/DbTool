@@ -407,5 +407,33 @@ namespace DbTool
             _dbHelper?.Dispose();
             base.OnClosed(e);
         }
+
+        private void CheckTableToggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox && checkBox.DataContext is TableEntity table)
+            {
+                if (checkBox.IsChecked == true)
+                {
+                    if (CheckedTables.SelectedItems.Contains(table) == false)
+                    {
+                        CheckedTables.SelectedItems.Add(table);
+                    }
+
+                    if (table.TableName != CurrentCheckedTableName.Text)
+                    {
+                        CurrentCheckedTableName.Text = table.TableName;
+                        table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
+                        ColumnListView.ItemsSource = table.Columns;
+                    }
+                }
+                else
+                {
+                    if (CheckedTables.SelectedItems.Contains(table))
+                    {
+                        CheckedTables.SelectedItems.Remove(table);
+                    }
+                }
+            }
+        }
     }
 }
