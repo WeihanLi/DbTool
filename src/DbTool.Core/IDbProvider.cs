@@ -13,14 +13,14 @@ namespace DbTool.Core
 
         /// <summary>
         /// 查询数据库表 Sql
-        /// 0:DbName
+        /// 0:dbName
         /// </summary>
         string QueryDbTablesSqlFormat { get; }
 
         /// <summary>
         /// 查询数据库表中的列信息 sql
-        /// 0:DbName
-        /// 1:TableName
+        /// 0:dbName
+        /// 1:tableName
         /// </summary>
         string QueryTableColumnsSqlFormat { get; }
 
