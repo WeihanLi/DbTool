@@ -1,5 +1,4 @@
-﻿using DbTool.Core.Entity;
-using WeihanLi.Common;
+﻿using WeihanLi.Common;
 using WeihanLi.Extensions;
 
 namespace DbTool.Core
@@ -9,23 +8,6 @@ namespace DbTool.Core
     /// </summary>
     public static class Utility
     {
-        /// <summary>
-        /// 根据表信息生成sql语句
-        /// </summary>
-        /// <param name="tableEntity"> 表信息 </param>
-        /// <param name="genDescription">生成描述信息</param>
-        /// <param name="dbType">数据库类型</param>
-        /// <returns></returns>
-        public static string GenerateSqlStatement(this TableEntity tableEntity, bool genDescription = true, string dbType = "SqlServer")
-        {
-            if (string.IsNullOrEmpty(tableEntity?.TableName))
-            {
-                return "";
-            }
-            return DependencyResolver.Current.ResolveService<DbProviderFactory>().GetDbProvider(dbType)?
-                .GenerateSqlStatement(tableEntity, genDescription);
-        }
-
         /// <summary>
         /// TrimTableName
         /// </summary>

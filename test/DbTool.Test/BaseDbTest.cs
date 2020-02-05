@@ -13,7 +13,8 @@ namespace DbTool.Test
     public abstract class BaseDbTest : IDbOperTest
     {
         public abstract string ConnStringKey { get; }
-        private readonly string _dbType;
+       
+        protected readonly IDbProvider DbProvider;
 
         static BaseDbTest()
         {
@@ -37,7 +38,9 @@ namespace DbTool.Test
 
         protected BaseDbTest()
         {
-            _dbType = ConnStringKey.Substring(0, ConnStringKey.Length - 4);
+            var dbType = ConnStringKey.Substring(0, ConnStringKey.Length - 4);
+            DbProvider = DependencyResolver.Current.GetRequiredService<DbProviderFactory>()
+                            .GetDbProvider(dbType);
         }
 
         protected TableEntity TableEntity = new TableEntity()
@@ -99,7 +102,7 @@ namespace DbTool.Test
         {
             var connString = DependencyResolver.Current.GetService<IConfiguration>()
                 .GetConnectionString(ConnStringKey);
-            var dbHelper = new DbHelper(connString, _dbType);
+            var dbHelper = new DbHelper(connString, DbProvider.DbType);
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = dbHelper.GetTablesInfo();
             Assert.NotNull(tables);
@@ -114,9 +117,9 @@ namespace DbTool.Test
 
         public virtual void CreateTest()
         {
-            var sql = TableEntity.GenerateSqlStatement(dbType: _dbType);
+            var sql = DbProvider.GenerateSqlStatement(TableEntity);
             Assert.NotEmpty(sql);
-            sql = TableEntity.GenerateSqlStatement(false, _dbType);
+            sql = DbProvider.GenerateSqlStatement(TableEntity, false);
             Assert.NotEmpty(sql);
         }
     }

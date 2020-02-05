@@ -10,6 +10,7 @@ namespace DbTool.Core.Entity
     {
         private string databaseDescription;
         private string databaseName;
+        private List<TableEntity> tables;
 
         /// <summary>
         /// 数据库名称
@@ -24,11 +25,21 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 表信息
         /// </summary>
-        public List<TableEntity> Tables { get; set; }
+        public List<TableEntity> Tables
+        {
+            get => tables; 
+            set
+            {
+                if(value != null)
+                { 
+                    tables = value;
+                }
+            }
+        }
 
         public DbEntity()
         {
-            Tables = new List<TableEntity>();
+            tables = new List<TableEntity>();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace DbTool.Core
         /// <summary>
         /// 导出文件后缀
         /// </summary>
-        string Suffix { get; }
+        string FileExtension { get; }
 
         /// <summary>
         /// 导出数据库文档

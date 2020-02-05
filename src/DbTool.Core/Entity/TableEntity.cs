@@ -18,6 +18,7 @@ namespace DbTool.Core.Entity
 
         private string tableDescription;
         private string tableName;
+        private List<ColumnEntity> columns;
 
         /// <summary>
         /// 表描述
@@ -32,7 +33,17 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 列信息
         /// </summary>
-        public List<ColumnEntity> Columns { get; set; }
+        public List<ColumnEntity> Columns
+        {
+            get => columns; 
+            set
+            {
+                if(value != null)
+                {
+                    columns = value;
+                }
+            }
+        }
 
         public TableEntity()
         {
