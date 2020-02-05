@@ -10,7 +10,7 @@ namespace DbTool
     {
         public string ExportType => "Excel";
 
-        public string Suffix => ".xlsx";
+        public string FileExtension => ".xlsx";
 
         public byte[] Export(TableEntity[] tableInfo)
         {

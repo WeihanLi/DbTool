@@ -113,7 +113,7 @@ namespace DbTool
                         var fileName = tables.Count > 1
                             ? _dbHelper.DatabaseName
                             : tables[0].TableName.TrimTableName();
-                        fileName = $"{fileName}.{exporter.Suffix.TrimStart('.')}";
+                        fileName = $"{fileName}.{exporter.FileExtension.TrimStart('.')}";
                         var path = Path.Combine(dir, fileName);
                         File.WriteAllBytes(path, exportBytes);
                     }
