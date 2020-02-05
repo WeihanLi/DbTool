@@ -118,7 +118,7 @@ namespace DbTool
 
                         var columnInfo = new ColumnEntity
                         {
-                            ColumnName = property.Name ,
+                            ColumnName = property.Name,
                             ColumnDescription = property.GetCustomAttribute<DescriptionAttribute>()?.Description,
                         };
                         var defaultPropertyValue = property.PropertyType.GetDefaultValue();
