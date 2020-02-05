@@ -82,34 +82,47 @@ END";
 
         public string DbType => "SqlServer";
 
-        public string QueryDbTablesSqlFormat => @"SELECT  IT.TABLE_NAME AS TableName ,
-                                                IT.TABLE_CATALOG AS DatabaseName ,
-                                                IT.TABLE_TYPE AS TableType ,
-                                                IT.TABLE_SCHEMA AS TableScheme ,
-                                                [EP].[value] AS TableDescription
-                                        FROM    INFORMATION_SCHEMA.TABLES AS IT
-                                                LEFT JOIN sys.extended_properties AS EP ON EP.major_id = OBJECT_ID([IT].[TABLE_NAME])
-                                                                                           AND [EP].[minor_id] = 0;";
+        public string QueryDbTablesSqlFormat => @"
+SELECT IT.TABLE_NAME AS TableName,
+       IT.TABLE_CATALOG AS DatabaseName,
+       IT.TABLE_TYPE AS TableType,
+       IT.TABLE_SCHEMA AS TableScheme,
+       [EP].[value] AS TableDescription
+FROM INFORMATION_SCHEMA.TABLES AS IT
+    LEFT JOIN sys.extended_properties AS EP
+        ON EP.major_id = OBJECT_ID([IT].[TABLE_NAME])
+           AND [EP].[minor_id] = 0
+WHERE IT.TABLE_TYPE = 'BASE TABLE';
+";
 
-        public string QueryTableColumnsSqlFormat => @"SELECT  t.[name] AS TableName ,
-                                                                                        c.[name] AS ColumnName ,
-                                                                                        p.[value] AS ColumnDescription ,
-                                                                                        c.[is_nullable] AS IsNullable ,
-                                                                                        ty.[name] AS DataType ,
-                                                                                        [ty].[max_length] AS Size ,
-                                                                                        c.[is_identity] AS IsPrimaryKey ,
-                                                                                        SUBSTRING(dc.[definition], 2, LEN([dc].[definition]) - 2) AS DefaultValue
-                                                                                FROM    sys.columns c
-                                                                                        JOIN sys.tables t ON c.object_id = t.object_id
-                                                                                        JOIN sys.[types] ty ON ty.[system_type_id] = c.[system_type_id]
-                                                                                                               AND ty.[name] != 'sysname'
-                                                                                        LEFT JOIN sys.extended_properties p ON p.minor_id = c.column_id
-                                                                                                                               AND p.major_id = c.object_id
-                                                                                        LEFT JOIN [sys].[default_constraints] dc ON dc.[parent_object_id] = c.[object_id]
-                                                                                                                                    AND dc.[parent_column_id] = c.[column_id]
-                                                                                                                                    AND dc.[type] = 'D'
-                                                                                WHERE   t.name = @tableName
-                                                                                ORDER BY c.[column_id];";
+        public string QueryTableColumnsSqlFormat => @"
+SELECT t.[name] AS TableName,
+       c.[name] AS ColumnName,
+       p.[value] AS ColumnDescription,
+       c.[is_nullable] AS IsNullable,
+       IIF(k.COLUMN_NAME IS NOT NULL, 1, 0) AS IsPrimaryKey,
+       ty.[name] AS DataType,
+       [ty].[max_length] AS Size,
+       SUBSTRING(dc.[definition], 2, LEN([dc].[definition]) - 2) AS DefaultValue
+FROM sys.columns c
+    JOIN sys.tables t
+        ON c.object_id = t.object_id
+    JOIN sys.[types] ty
+        ON ty.[system_type_id] = c.[system_type_id]
+           AND ty.[name] != 'sysname'
+    LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS k
+        ON k.TABLE_NAME = @tableName
+           AND k.COLUMN_NAME = c.[name]
+    LEFT JOIN sys.extended_properties p
+        ON p.minor_id = c.column_id
+           AND p.major_id = c.object_id
+    LEFT JOIN [sys].[default_constraints] dc
+        ON dc.[parent_object_id] = c.[object_id]
+           AND dc.[parent_column_id] = c.[column_id]
+           AND dc.[type] = 'D'
+WHERE t.name = @tableName
+ORDER BY c.[column_id];
+";
 
         public string DbType2ClrType(string dbType, bool isNullable)
         {
@@ -366,7 +379,7 @@ END";
             var sbSqlDescText = new StringBuilder();
             //create table
             sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Sql -----------");
-            sbSqlText.Append($"CREATE TABLE [{(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "dbo" : tableEntity.TableSchema)}].[{tableEntity.TableName.Trim()}](");
+            sbSqlText.Append($"CREATE TABLE [{(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "dbo" : tableEntity.TableSchema)}].[{tableEntity.TableName}](");
             //create description
             if (generateDescription && !string.IsNullOrEmpty(tableEntity.TableDescription))
             {
@@ -391,7 +404,7 @@ END";
                         }
                     }
                     //Nullable
-                    if (!col.IsNullable)
+                    if (!col.IsNullable && !col.IsPrimaryKey)
                     {
                         sbSqlText.Append(" NOT NULL");
                     }
