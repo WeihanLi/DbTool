@@ -2,7 +2,7 @@
 
 一个支持 DbFirst、ModelFirst 和 CodeFirst 的数据库工具。
 
-[![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/WeihanLi.DbTool?branchName=wfdev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=18&branchName=wfdev)
+[![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/WeihanLi.DbTool?branchName=wpf-dev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=18&branchName=wpf-dev)
 
 [![GitHub release](https://img.shields.io/github/release/WeihanLi/DbTool.svg?style=plastic)](https://github.com/WeihanLi/DbTool/releases/latest)
 
@@ -53,7 +53,7 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
     > Model 设置选项说明：
     > - model的命名空间：生成的 model 所在的命名空间，默认为 Models，不可为空，为空则使用默认值Models
     > - model前缀：表名的基础上加的前缀，默认为空
-    > - model后缀：表名的基础上加的后缀，默认为Model，可以为空
+    > - model后缀：表名的基础上加的后缀，默认为空
     > - 生成私有字段，默认为 `false`，如果为`false`则使用自动属性的代码风格，反之，使用传统 `get;set;` 风格代码，如：
     >     ``` csharp
     >     public int Id { get; set; } //自动属性风格代码
@@ -67,7 +67,7 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
     >   [Description("用户名")]
     >   public string UserName { get;set; }
     >   ```
-    > - 生成 Model 名称的规则说明：生成的Model的名称由前缀和表名称及后缀拼接而成，如果表名以 `tab`或`tab_`或`tbl`或`tbl_`这些开头，则会先把这些移除掉再拼接
+    > - 生成 Model 名称的规则说明：生成的Model的名称由前缀和表名称及后缀拼接而成，如果表名以 `tab`或`tab_`或`tbl`或`tbl_`这些开头，则会先把这些移除掉再拼接，可以通过自定义插件扩展
 
     1. 导出数据库表到Excel
 
