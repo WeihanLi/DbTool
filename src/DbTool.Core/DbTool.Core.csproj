@@ -6,7 +6,7 @@
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/7604648</PackageIconUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/WeihanLi/DbTool</PackageProjectUrl>
-    <PackageTags>DbTool, code-generator,tools</PackageTags>
+    <PackageTags>DbTool,code-generator,tools</PackageTags>
     <Description>
       DbTool core defined interface for extensions
     </Description>
