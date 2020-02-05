@@ -3,6 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 var target = Argument("target", "Default");
+var stable = Argument("stable", "false");
 var configuration = Argument("configuration", "Release");
 
 var srcProjects  = GetFiles("./src/**/*.csproj");
@@ -109,7 +110,7 @@ Task("pack")
          NoRestore = true,
          NoBuild = true
       };
-      if(branchName != "master"){
+      if(branchName != "master" && stable != "true"){
          settings.VersionSuffix = $"preview-{DateTime.UtcNow:yyyyMMdd-HHmmss}";
       }
       foreach (var project in srcProjects)
