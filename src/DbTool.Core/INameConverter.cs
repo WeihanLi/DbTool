@@ -11,7 +11,7 @@ namespace DbTool.Core
 
     public class DefaultModelNameConverter : IModelNameConverter
     {
-        public string ConvertTableToModel(string tableName)
+        public virtual string ConvertTableToModel(string tableName)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -31,7 +31,7 @@ namespace DbTool.Core
             return tableName;
         }
 
-        public string ConvertModelToTable(string modelName)
+        public virtual string ConvertModelToTable(string modelName)
         {
             if (string.IsNullOrEmpty(modelName))
             {
