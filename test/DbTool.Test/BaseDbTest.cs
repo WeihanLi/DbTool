@@ -102,7 +102,7 @@ namespace DbTool.Test
         {
             var connString = DependencyResolver.Current.GetService<IConfiguration>()
                 .GetConnectionString(ConnStringKey);
-            var dbHelper = new DbHelper(connString, DbProvider.DbType);
+            var dbHelper = new DbHelper(connString, DbProvider);
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = dbHelper.GetTablesInfo();
             Assert.NotNull(tables);
