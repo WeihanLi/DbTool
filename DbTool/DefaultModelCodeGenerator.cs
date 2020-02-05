@@ -38,15 +38,12 @@ namespace DbTool
             sbText.AppendLine();
             sbText.AppendLine($"namespace {options.Namespace}");
             sbText.AppendLine("{");
-            if (!string.IsNullOrEmpty(tableEntity.TableDescription))
+            if (options.GenerateDataAnnotation && !string.IsNullOrEmpty(tableEntity.TableDescription))
             {
                 sbText.AppendLine(
                     $"\t/// <summary>{Environment.NewLine}\t/// {tableEntity.TableDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t/// </summary>");
-                if (options.GenerateDataAnnotation)
-                {
-                    sbText.AppendLine($"\t[Table(\"{tableEntity.TableName}\")]");
-                    sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
-                }
+                sbText.AppendLine($"\t[Table(\"{tableEntity.TableName}\")]");
+                sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
             }
             sbText.AppendLine($"\tpublic class {options.Prefix}{tableEntity.TableName.TrimTableName()}{options.Suffix}");
             sbText.AppendLine("\t{");
@@ -67,28 +64,34 @@ namespace DbTool
 
                     var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
-
-                    if (!string.IsNullOrEmpty(item.ColumnDescription))
+                    if (options.GenerateDataAnnotation)
                     {
-                        sbText.AppendLine(
-                            $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (options.GenerateDataAnnotation)
+                        if (!string.IsNullOrEmpty(item.ColumnDescription))
                         {
-                            sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
+                            sbText.AppendLine(
+                                $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
+                            if (options.GenerateDataAnnotation)
+                            {
+                                sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (item.IsPrimaryKey && options.GenerateDataAnnotation)
+                        else
                         {
-                            sbText.AppendLine($"\t\t[Description(\"主键\")]");
+                            if (item.IsPrimaryKey)
+                            {
+                                sbText.AppendLine($"\t\t[Description(\"主键\")]");
+                            }
                         }
+                        if (item.IsPrimaryKey)
+                        {
+                            sbText.AppendLine($"\t\t[Key]");
+                        }
+                        if (fclType == "string" && item.Size > 0)
+                        {
+                            sbText.AppendLine($"\t\t[StringLength({item.Size})]");
+                        }
+                        sbText.AppendLine($"\t\t[Column(\"{item.ColumnName}\")]");
                     }
-                    if (item.IsPrimaryKey)
-                    {
-                        sbText.AppendLine($"\t\t[Key]");
-                    }
-                    sbText.AppendLine($"\t\t[Column(\"{item.ColumnName}\")]");
                     sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName}");
                     sbText.AppendLine("\t\t{");
                     sbText.AppendLine($"\t\t\tget {{ return {tmpColName}; }}");
@@ -111,20 +114,27 @@ namespace DbTool
                     }
                     var fclType = dbProvider.DbType2ClrType(item.DataType, item.IsNullable);
 
-                    if (!string.IsNullOrEmpty(item.ColumnDescription))
+                    if (options.GenerateDataAnnotation)
                     {
-                        sbText.AppendLine(
-                            $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
-                        if (options.GenerateDataAnnotation)
+                        if (!string.IsNullOrEmpty(item.ColumnDescription))
                         {
-                            sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
+                            sbText.AppendLine(
+                                $"\t\t/// <summary>{Environment.NewLine}\t\t/// {item.ColumnDescription.Replace(Environment.NewLine, " ")}{Environment.NewLine}\t\t/// </summary>");
+                            if (options.GenerateDataAnnotation)
+                            {
+                                sbText.AppendLine($"\t\t[Description(\"{item.ColumnDescription.Replace(Environment.NewLine, " ")}\")]");
+                            }
                         }
+                        if (item.IsPrimaryKey)
+                        {
+                            sbText.AppendLine($"\t\t[Key]");
+                        }
+                        if (fclType == "string" && item.Size > 0)
+                        {
+                            sbText.AppendLine($"\t\t[StringLength({item.Size})]");
+                        }
+                        sbText.AppendLine($"\t\t[Column(\"{item.ColumnName}\")]");
                     }
-                    if (item.IsPrimaryKey)
-                    {
-                        sbText.AppendLine($"\t\t[Key]");
-                    }
-                    sbText.AppendLine($"\t\t[Column(\"{item.ColumnName}\")]");
                     sbText.AppendLine($"\t\tpublic {fclType} {item.ColumnName} {{ get; set; }}");
                 }
             }
