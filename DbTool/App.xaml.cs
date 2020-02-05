@@ -64,6 +64,8 @@ namespace DbTool
             builder.RegisterInstance(settings);
 
             builder.RegisterType<DbProviderFactory>().AsSelf().SingleInstance();
+            builder.RegisterType<DefaultModelNameConverter>().AsImplementedInterfaces().SingleInstance();
+
             var interfaces = typeof(IDbProvider).Assembly
                 .GetExportedTypes()
                 .Where(x => x.IsInterface)
@@ -75,7 +77,7 @@ namespace DbTool
                 .ToArray();
             foreach (var type in types)
             {
-                builder.RegisterType(type).AsImplementedInterfaces();
+                builder.RegisterType(type).AsImplementedInterfaces().SingleInstance();
             }
 
             var pluginDir = ApplicationHelper.MapPath("plugins");
@@ -87,7 +89,8 @@ namespace DbTool
                     .ToArray();
                 if (plugins.Length > 0)
                 {
-                    var pluginTypes = plugins.Select(Assembly.LoadFrom)
+                    var assemblies = plugins.Select(Assembly.LoadFrom).ToArray();
+                    var pluginTypes = assemblies
                         .Select(x => x.GetTypes())
                         .SelectMany(t => t)
                         .Where(t => !t.IsInterface && !t.IsAbstract && interfaces.Any(i => i.IsAssignableFrom(t)))
@@ -96,6 +99,7 @@ namespace DbTool
                     {
                         builder.RegisterType(type).AsImplementedInterfaces();
                     }
+                    builder.RegisterAssemblyModules(assemblies);
                 }
             }
 
