@@ -64,7 +64,7 @@ namespace DbTool
             builder.RegisterInstance(settings);
 
             builder.RegisterType<DbProviderFactory>().AsSelf().SingleInstance();
-            builder.RegisterType<DefaultModelNameConverter>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<DefaultModelNameConverter>().As<IModelNameConverter>().SingleInstance();
 
             var interfaces = typeof(IDbProvider).Assembly
                 .GetExportedTypes()
