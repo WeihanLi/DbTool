@@ -28,50 +28,23 @@ namespace DbTool.Core
 
         /// <summary>
         /// TrimTableName
-        /// TODO: 提供用户可以自定义的方式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>normalized model name</returns>
         public static string TrimTableName(this string tableName)
         {
-            if (string.IsNullOrEmpty(tableName))
-            {
-                return "";
-            }
-            tableName = tableName.Trim();
-            if (tableName.Substring(0, 4).EqualsIgnoreCase("tab_")
-                || tableName.Substring(0, 4).EqualsIgnoreCase("tbl_"))
-            {
-                return tableName.Substring(4);
-            }
-            if (tableName.Substring(0, 3).EqualsIgnoreCase("tab")
-                || tableName.Substring(0, 3).EqualsIgnoreCase("tbl"))
-            {
-                return tableName.Substring(3);
-            }
-            return tableName;
+            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
+                .ConvertTableToModel(tableName);
         }
 
         /// <summary>
         /// TrimModelName
         /// </summary>
         /// <param name="modelName">modelName</param>
-        /// <returns></returns>
+        /// <returns>normalized table name</returns>
         public static string TrimModelName(this string modelName)
         {
-            if (string.IsNullOrEmpty(modelName))
-            {
-                return "";
-            }
-            modelName = modelName.Trim();
-            if (modelName.EndsWith("Model"))
-            {
-                return modelName.Substring(0, modelName.Length - 5);
-            }
-            if (modelName.EndsWith("Entity"))
-            {
-                return modelName.Substring(0, modelName.Length - 6);
-            }
-            return modelName;
+            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
+                .ConvertModelToTable(modelName);
         }
 
         public static string GetDefaultFromDbDefaultValue(string dataType, object defaultValue)
@@ -83,9 +56,16 @@ namespace DbTool.Core
 
             dataType = dataType.Trim().ToUpper();
             var str = defaultValue.ToString().ToUpper();
-            if ((str.Contains("GETDATE") || str.Contains("NOW") || str.Contains("CURRENT_TIMESTAMP")) && (dataType.Contains("DATE") || dataType.Contains("TIME")))
+            if (dataType.Contains("DATE") || dataType.Contains("TIME"))
             {
-                return "DateTime.Now";
+                if (str.Contains("GETDATE") || str.Contains("NOW") || str.Contains("CURRENT_TIMESTAMP"))
+                {
+                    return "DateTime.Now";
+                }
+                if (str.Contains("GETUTCDATE") || str.Contains("UTCNOW"))
+                {
+                    return "DateTime.UtcNow";
+                }
             }
 
             if (dataType.Equals("BIT"))
@@ -120,14 +100,12 @@ namespace DbTool.Core
             {
                 return propertyName.ToLowerInvariant();
             }
-            if (char.IsUpper(propertyName[0]))//首字母大写，首字母转换为小写
+            if (char.IsUpper(propertyName[0]))
             {
                 return char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1);
             }
-            else
-            {
-                return "_" + propertyName;
-            }
+
+            return "_" + propertyName;
         }
     }
 }

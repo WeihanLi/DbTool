@@ -287,7 +287,7 @@ AND table_name = @tableName;";
             }
             var sbSqlText = new StringBuilder();
             sbSqlText.AppendLine($"# ---------- Create Table 【{tableEntity.TableName.Trim()}】 Sql -----------");
-            sbSqlText.Append($"CREATE TABLE {tableEntity.TableName.Trim()}(");
+            sbSqlText.Append($"CREATE TABLE {tableEntity.TableName}(");
 
             if (tableEntity.Columns.Count > 0)
             {
