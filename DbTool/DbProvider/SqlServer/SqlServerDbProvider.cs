@@ -379,7 +379,7 @@ ORDER BY c.[column_id];
             var sbSqlDescText = new StringBuilder();
             //create table
             sbSqlText.AppendLine($"---------- Create Table 【{tableEntity.TableName}】 Sql -----------");
-            sbSqlText.Append($"CREATE TABLE [{(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "dbo" : tableEntity.TableSchema)}].[{tableEntity.TableName.Trim()}](");
+            sbSqlText.Append($"CREATE TABLE [{(string.IsNullOrWhiteSpace(tableEntity.TableSchema) ? "dbo" : tableEntity.TableSchema)}].[{tableEntity.TableName}](");
             //create description
             if (generateDescription && !string.IsNullOrEmpty(tableEntity.TableDescription))
             {
