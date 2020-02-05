@@ -398,7 +398,7 @@ namespace DbTool
                 if (item is TableEntity table)
                 {
                     var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _settings.DefaultDbType);
-                    var path = Path.Combine(dir, $"{table.TableName}.cs");
+                    var path = Path.Combine(dir, $"{table.TableName.TrimTableName()}.cs");
                     File.WriteAllText(path, modelCode, Encoding.UTF8);
                 }
             }
