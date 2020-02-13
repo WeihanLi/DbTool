@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A25CAA32-BFE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTool.Core", "src\DbTool.Core\DbTool.Core.csproj", "{BE1F31D7-4107-481E-B2A1-0112604EA4BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTool.DbProvider.MySql", "src\DbTool.MySql\DbTool.DbProvider.MySql.csproj", "{C71EF57F-731D-48E2-9532-6667A2E8E237}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTool.DbProvider.MySql", "src\DbTool.MySql\DbTool.MySql.csproj", "{C71EF57F-731D-48E2-9532-6667A2E8E237}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbTool.SqlServer", "src\DbTool.SqlServer\DbTool.SqlServer.csproj", "{BBFD8D04-437B-44C0-8F9B-D249A4065068}"
 EndProject

@@ -1,0 +1,19 @@
+<Project>
+  <!-- <Import Project="sign.props" /> -->
+  <PropertyGroup>
+    <PackageIcon>icon.jpg</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/WeihanLi/DbTool/tree/packages</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/WeihanLi/DbTool</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Product>DbTool</Product>
+    <Authors>WeihanLi</Authors>
+    <PackageReleaseNotes>https://github.com/WeihanLi/DbTool/tree/packages/docs/ReleaseNotes.md</PackageReleaseNotes>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)icon.jpg" Pack="true" PackagePath=""/>
+  </ItemGroup>
+</Project>

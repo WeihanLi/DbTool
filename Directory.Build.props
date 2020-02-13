@@ -1,4 +1,6 @@
 <Project>
+  <Import Project="./build/packageInfo.props" />
+
   <PropertyGroup>
 		<VersionMajor>1</VersionMajor>
 		<VersionMinor>1</VersionMinor>
@@ -12,18 +14,8 @@
   
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/WeihanLi/DbTool</RepositoryUrl>
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Product>DbTool</Product>
-    <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2017-2029 (c) WeihanLi</Copyright>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Condition="'$(OS)' == 'Windows_NT'" Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" PrivateAssets="All" />

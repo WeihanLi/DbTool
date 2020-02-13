@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DbTool.MySql\DbTool.DbProvider.MySql.csproj" />
+    <ProjectReference Include="..\..\src\DbTool.MySql\DbTool.MySql.csproj" />
     <ProjectReference Include="..\..\src\DbTool.SqlServer\DbTool.SqlServer.csproj" />
   </ItemGroup>
 

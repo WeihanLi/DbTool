@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>DbTool.DbProvider.MySql</RootNamespace>
+    <AssemblyName>DbTool.DbProvider.MySql</AssemblyName>
+    <Description>
+      DbTool MySql DbProvider
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

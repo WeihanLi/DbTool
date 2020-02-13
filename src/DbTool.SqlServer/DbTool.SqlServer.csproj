@@ -3,7 +3,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>DbTool.DbProvider.SqlServer</RootNamespace>
     <AssemblyName>DbTool.DbProvider.SqlServer</AssemblyName>
-    <Authors>WeihanLi</Authors>
+    <Description>
+      DbTool MsSqlServer DbProvider
+    </Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
