@@ -1,5 +1,4 @@
-﻿using WeihanLi.Common;
-using WeihanLi.Extensions;
+﻿using WeihanLi.Extensions;
 
 namespace DbTool.Core
 {
@@ -8,27 +7,6 @@ namespace DbTool.Core
     /// </summary>
     public static class Utility
     {
-        /// <summary>
-        /// TrimTableName
-        /// </summary>
-        /// <returns>normalized model name</returns>
-        public static string TrimTableName(this string tableName)
-        {
-            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
-                .ConvertTableToModel(tableName);
-        }
-
-        /// <summary>
-        /// TrimModelName
-        /// </summary>
-        /// <param name="modelName">modelName</param>
-        /// <returns>normalized table name</returns>
-        public static string TrimModelName(this string modelName)
-        {
-            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
-                .ConvertModelToTable(modelName);
-        }
-
         public static string GetDefaultFromDbDefaultValue(string dataType, object defaultValue)
         {
             if (null == defaultValue)
@@ -74,20 +52,22 @@ namespace DbTool.Core
         /// <returns> 私有字段名称 </returns>
         public static string ToPrivateFieldName(this string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
-                return "";
+                return string.Empty;
             }
+            // 全部大写的专有名词
             if (propertyName.Equals(propertyName.ToUpperInvariant()))
             {
                 return propertyName.ToLowerInvariant();
             }
+            // 首字母大写转成小写
             if (char.IsUpper(propertyName[0]))
             {
                 return char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1);
             }
 
-            return "_" + propertyName;
+            return $"_{propertyName}";
         }
     }
 }

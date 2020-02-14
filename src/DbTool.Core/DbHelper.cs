@@ -39,7 +39,10 @@ namespace DbTool.Core
         /// <returns></returns>
         public List<TableEntity> GetTablesInfo()
         {
-            return _conn.Query<TableEntity>(_dbProvider.QueryDbTablesSqlFormat, new { dbName = DatabaseName }).ToList();
+            return _conn.Query<TableEntity>(
+                    _dbProvider.QueryDbTablesSqlFormat,
+                    new { dbName = DatabaseName })
+                .ToList();
         }
 
         /// <summary>
@@ -55,7 +58,8 @@ namespace DbTool.Core
             }
             return _conn.Query<ColumnEntity>(
                     _dbProvider.QueryTableColumnsSqlFormat,
-                new { dbName = DatabaseName, tableName }).ToList();
+                new { dbName = DatabaseName, tableName })
+                .ToList();
         }
 
         private bool _disposed;

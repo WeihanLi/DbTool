@@ -8,10 +8,14 @@ namespace DbTool.Core
     {
         private readonly IReadOnlyCollection<IDbProvider> _dbProviders;
 
-        public DbProviderFactory(IEnumerable<IDbProvider> dbProviders) => _dbProviders = dbProviders.ToArray();
+        public DbProviderFactory(IEnumerable<IDbProvider> dbProviders)
+        {
+            _dbProviders = dbProviders.ToArray();
+            SupportedDbTypes = _dbProviders.Select(_ => _.DbType).ToArray();
+        }
 
         public IDbProvider GetDbProvider(string dbType) => _dbProviders.FirstOrDefault(p => p.DbType.EqualsIgnoreCase(dbType));
 
-        public IReadOnlyList<string> SupportedDbTypes => _dbProviders.Select(_ => _.DbType).ToArray();
+        public IReadOnlyList<string> SupportedDbTypes { get; }
     }
 }
