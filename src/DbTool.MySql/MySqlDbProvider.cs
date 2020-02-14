@@ -286,7 +286,7 @@ AND table_name = @tableName;";
                 return "";
             }
             var sbSqlText = new StringBuilder();
-            sbSqlText.AppendLine($"# ---------- Create Table 【{tableEntity.TableName.Trim()}】 Sql -----------");
+            sbSqlText.AppendLine($"# ---------- Create Table 【{tableEntity.TableName}】 Sql -----------");
             sbSqlText.Append($"CREATE TABLE {tableEntity.TableName}(");
 
             if (tableEntity.Columns.Count > 0)
