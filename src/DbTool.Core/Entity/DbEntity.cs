@@ -24,7 +24,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
         /// </summary>
-        public string GetNotEmptyDescription() => DatabaseDescription.GetValueOrDefault(_databaseName);
+        public string NotEmptyDescription => DatabaseDescription.GetValueOrDefault(_databaseName);
 
         /// <summary>
         /// 表信息

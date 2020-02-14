@@ -23,7 +23,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
         /// </summary>
-        public string GetNotEmptyDescription() => ColumnDescription.GetValueOrDefault(_columnName);
+        public string NotEmptyDescription => ColumnDescription.GetValueOrDefault(_columnName);
 
         /// <summary>
         /// 是否可以为空
