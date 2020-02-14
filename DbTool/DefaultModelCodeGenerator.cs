@@ -62,7 +62,7 @@ namespace DbTool
                     }
                     var fclType = dbProvider.DbType2ClrType(item.DataType, item.IsNullable);
 
-                    var tmpColName = item.ColumnName.Trim().ToPrivateFieldName();
+                    var tmpColName = item.ColumnName.ToPrivateFieldName();
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
                     if (options.GenerateDataAnnotation)
                     {

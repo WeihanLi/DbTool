@@ -43,6 +43,8 @@ namespace DbTool
                 .AddDbProvider<SqlServerDbProvider>()
                 .AddDbProvider<MySqlDbProvider>()
                 ;
+
+            services.AddDbDocExporter<ExcelDbDocExporter>();
         }
 
         private void Init()

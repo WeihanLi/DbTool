@@ -23,6 +23,52 @@ namespace DbTool
     public static class DbProviderExtensions
     {
         /// <summary>
+        /// TrimTableName
+        /// </summary>
+        /// <returns>normalized model name</returns>
+        public static string TrimTableName(this string tableName)
+        {
+            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
+                .ConvertTableToModel(tableName);
+        }
+
+        /// <summary>
+        /// TrimModelName
+        /// </summary>
+        /// <param name="modelName">modelName</param>
+        /// <returns>normalized table name</returns>
+        public static string TrimModelName(this string modelName)
+        {
+            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
+                .ConvertModelToTable(modelName);
+        }
+
+        /// <summary>
+        /// 将属性名称转换为私有字段名称
+        /// </summary>
+        /// <param name="propertyName"> 属性名称 </param>
+        /// <returns> 私有字段名称 </returns>
+        public static string ToPrivateFieldName(this string propertyName)
+        {
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                return string.Empty;
+            }
+            // 全部大写的专有名词
+            if (propertyName.Equals(propertyName.ToUpperInvariant()))
+            {
+                return propertyName.ToLowerInvariant();
+            }
+            // 首字母大写转成小写
+            if (char.IsUpper(propertyName[0]))
+            {
+                return char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1);
+            }
+
+            return $"_{propertyName}";
+        }
+
+        /// <summary>
         /// Register TDbProvider service
         /// </summary>
         /// <typeparam name="TDbProvider">DbProvider type</typeparam>
@@ -31,6 +77,18 @@ namespace DbTool
         public static IServiceCollection AddDbProvider<TDbProvider>(this IServiceCollection serviceCollection) where TDbProvider : IDbProvider
         {
             serviceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IDbProvider), typeof(TDbProvider), ServiceLifetime.Singleton));
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// Register TDbProvider service
+        /// </summary>
+        /// <typeparam name="TDbDocExporter">DbDocExporter type</typeparam>
+        /// <param name="serviceCollection">services</param>
+        /// <returns>services</returns>
+        public static IServiceCollection AddDbDocExporter<TDbDocExporter>(this IServiceCollection serviceCollection) where TDbDocExporter : IDbDocExporter
+        {
+            serviceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IDbDocExporter), typeof(TDbDocExporter), ServiceLifetime.Singleton));
             return serviceCollection;
         }
 

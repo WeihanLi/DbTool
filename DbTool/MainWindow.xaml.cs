@@ -295,7 +295,7 @@ namespace DbTool
 
             var table = new TableEntity
             {
-                TableName = sheet.SheetName.Trim()
+                TableName = sheet.SheetName
             };
 
             foreach (var row in sheet.GetRowCollection())
@@ -359,7 +359,7 @@ namespace DbTool
             {
                 _dbHelper?.Dispose();
 
-                _dbHelper = new DbHelper(TxtConnectionString.Text, _settings.DefaultDbType);
+                _dbHelper = new DbHelper(TxtConnectionString.Text, _dbProviderFactory.GetDbProvider(_settings.DefaultDbType));
 
                 var tables = _dbHelper.GetTablesInfo();
                 CheckedTables.ItemsSource = tables
