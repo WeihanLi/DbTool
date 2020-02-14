@@ -9,21 +9,20 @@ namespace DbTool.Core.Entity
     /// </summary>
     public class TableEntity
     {
-
         /// <summary>
         /// 表名称
         /// </summary>
         [Required]
-        public string TableName { get => tableName; set => tableName = value?.Trim(); }
+        public string TableName { get => _tableName; set => _tableName = value?.Trim(); }
 
-        private string tableDescription;
-        private string tableName;
-        private List<ColumnEntity> columns;
+        private string _description;
+        private string _tableName;
+        private List<ColumnEntity> _columns;
 
         /// <summary>
         /// 表描述
         /// </summary>
-        public string TableDescription { get => tableDescription.GetValueOrDefault(TableName); set => tableDescription = value; }
+        public string TableDescription { get => _description.GetValueOrDefault(TableName); set => _description = value; }
 
         /// <summary>
         /// 表架构 scheme
@@ -35,12 +34,12 @@ namespace DbTool.Core.Entity
         /// </summary>
         public List<ColumnEntity> Columns
         {
-            get => columns; 
+            get => _columns;
             set
             {
-                if(value != null)
+                if (value != null)
                 {
-                    columns = value;
+                    _columns = value;
                 }
             }
         }

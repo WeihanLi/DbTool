@@ -13,8 +13,8 @@ namespace DbTool.DbProvider.MySql
     {
         public string DbType => "MySql";
 
-        public string QueryDbTablesSqlFormat => @"SELECT
-	@dbName AS DatabaseName,
+        public string QueryDbTablesSqlFormat => @"
+SELECT @dbName AS DatabaseName,
     `ENGINE` AS TableSchema,
 	TABLE_NAME AS TableName,
 	TABLE_COMMENT AS TableDescription
@@ -23,13 +23,13 @@ FROM
 WHERE
 	table_schema = @dbName";
 
-        public string QueryTableColumnsSqlFormat => @"SELECT
-	TABLE_NAME AS TableName,
+        public string QueryTableColumnsSqlFormat => @"
+SELECT TABLE_NAME AS TableName,
 	COLUMN_NAME AS ColumnName,
 	COLUMN_Comment AS ColumnDescription,
 	IF(IS_NULLABLE='YES','True','False') AS IsNullable,
 	DATA_TYPE AS DataType,
-	CHARACTER_MAXIMUM_LENGTH AS Size,
+	IF(CHARACTER_MAXIMUM_LENGTH IS NULL, 0, CHARACTER_MAXIMUM_LENGTH) AS Size,
 	IF(COLUMN_KEY != '','True','False') AS IsPrimaryKey,
 	COLUMN_DEFAULT AS DefaultValue
 FROM

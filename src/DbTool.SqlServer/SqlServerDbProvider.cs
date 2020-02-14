@@ -100,9 +100,9 @@ SELECT t.[name] AS TableName,
        c.[name] AS ColumnName,
        p.[value] AS ColumnDescription,
        c.[is_nullable] AS IsNullable,
-       IIF(k.COLUMN_NAME IS NOT NULL, 1, 0) AS IsPrimaryKey,
+       IIF(k.COLUMN_NAME IS NULL, 0, 1) AS IsPrimaryKey,
        ty.[name] AS DataType,
-       [ty].[max_length] AS Size,
+       IIF([ty].[max_length] IS NULL, 0, [ty].[max_length]) AS Size,
        SUBSTRING(dc.[definition], 2, LEN([dc].[definition]) - 2) AS DefaultValue
 FROM sys.columns c
     JOIN sys.tables t

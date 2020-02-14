@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using Dapper;
-using WeihanLi.Common;
-using WeihanLi.Extensions;
 using DbTool.Core.Entity;
+using WeihanLi.Extensions;
 
 namespace DbTool.Core
 {
@@ -23,22 +22,6 @@ namespace DbTool.Core
         /// </summary>
         public string DatabaseName => _conn.Database;
 
-        public DbHelper(string connString, string dbType)
-        {
-            if (connString.IsNullOrWhiteSpace())
-            {
-                throw new ArgumentNullException(nameof(connString));
-            }
-
-            var dbProviderFactory = DependencyResolver.Current.ResolveService<DbProviderFactory>();
-            if (!dbProviderFactory.SupportedDbTypes.Any(_ => _.EqualsIgnoreCase(dbType)))
-            {
-                throw new ArgumentException(Resources.UnsupportedDbType.FormatWith(dbType), nameof(dbType));
-            }
-            _dbProvider = dbProviderFactory.GetDbProvider(dbType);
-            _conn = _dbProvider.GetDbConnection(connString);
-        }
-
         public DbHelper(string connString, IDbProvider dbProvider)
         {
             if (connString.IsNullOrWhiteSpace())
@@ -49,7 +32,6 @@ namespace DbTool.Core
             _dbProvider = dbProvider;
             _conn = _dbProvider.GetDbConnection(connString);
         }
-
 
         /// <summary>
         /// 获取数据库表信息
@@ -76,8 +58,8 @@ namespace DbTool.Core
                 new { dbName = DatabaseName, tableName }).ToList();
         }
 
-    
-        private bool _disposed; 
+        private bool _disposed;
+
         public void Dispose()
         {
             if (!_disposed)

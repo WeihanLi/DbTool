@@ -9,12 +9,12 @@ namespace DbTool.Core.Entity
     {
         private string _columnDescription;
         private string _dataType;
-        private string columnName;
+        private string _columnName;
 
         /// <summary>
         /// 列名称
         /// </summary>
-        public string ColumnName { get => columnName; set => columnName = value?.Trim(); }
+        public string ColumnName { get => _columnName; set => _columnName = value?.Trim(); }
 
         /// <summary>
         /// 列描述
@@ -38,7 +38,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 字段长度
         /// </summary>
-        public uint Size { get; set; }
+        public long Size { get; set; }
 
         /// <summary>
         /// 数据类型
