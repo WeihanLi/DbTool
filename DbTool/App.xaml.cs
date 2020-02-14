@@ -8,6 +8,8 @@ using System.Windows;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DbTool.Core;
+using DbTool.DbProvider.MySql;
+using DbTool.DbProvider.SqlServer;
 using DbTool.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -32,6 +34,15 @@ namespace DbTool
         {
             services.TryAddTransient<MainWindow>();
             services.AddJsonLocalization(options => options.ResourcesPathType = ResourcesPathType.CultureBased);
+
+            services.TryAddSingleton<IModelNameConverter, DefaultModelNameConverter>();
+            services.TryAddSingleton<IModelCodeGenerator, DefaultModelCodeGenerator>();
+            services.TryAddSingleton<DbProviderFactory>();
+
+            services
+                .AddDbProvider<SqlServerDbProvider>()
+                .AddDbProvider<MySqlDbProvider>()
+                ;
         }
 
         private void Init()
@@ -60,26 +71,18 @@ namespace DbTool
 
             #region Init Services and plugins
 
+            IServiceCollection services = new ServiceCollection();
+            ConfigureServices(services);
+
             var builder = new ContainerBuilder();
+            builder.Populate(services);
             builder.RegisterInstance(settings);
 
-            builder.RegisterType<DbProviderFactory>().AsSelf().SingleInstance();
-            builder.RegisterType<DefaultModelNameConverter>().As<IModelNameConverter>().SingleInstance();
-
+            // load plugins
             var interfaces = typeof(IDbProvider).Assembly
                 .GetExportedTypes()
                 .Where(x => x.IsInterface)
                 .ToArray();
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-                .Select(x => x.GetTypes())
-                .SelectMany(t => t)
-                .Where(t => !t.IsInterface && !t.IsAbstract && interfaces.Any(i => i.IsAssignableFrom(t)))
-                .ToArray();
-            foreach (var type in types)
-            {
-                builder.RegisterType(type).AsImplementedInterfaces().SingleInstance();
-            }
-
             var pluginDir = ApplicationHelper.MapPath("plugins");
             if (Directory.Exists(pluginDir))
             {
@@ -102,10 +105,6 @@ namespace DbTool
                     builder.RegisterAssemblyModules(assemblies);
                 }
             }
-
-            IServiceCollection services = new ServiceCollection();
-            ConfigureServices(services);
-            builder.Populate(services);
 
             var container = builder.Build();
             DependencyResolver.SetDependencyResolver(container.Resolve);
