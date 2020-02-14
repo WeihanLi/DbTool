@@ -68,7 +68,7 @@
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
 
-                            <TextBlock LineHeight="20" FontSize="16" MinHeight="30" VerticalAlignment="Center" Name="CurrentCheckedTableName" Text="CurrentCheckedTable"></TextBlock>
+                            <TextBlock LineHeight="20" FontSize="16" MinHeight="30" VerticalAlignment="Center" Name="CurrentCheckedTableName" Text="{loc:Localizer CurrentCheckedTable}"></TextBlock>
                             <ListView Grid.Row="1" MinHeight="100" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="ColumnListView">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>

@@ -35,5 +35,6 @@
   "UnsupportedFileType": "UnsupportedFileType,{0}",
   "ConnectionStringCannotBeEmpty": "ConnectionStringCannotBeEmpty",
   "NoModelFound": "NoModelFound",
-  "SqlCopiedToClipboard": "sql script had copied to the clipboard"
+  "SqlCopiedToClipboard": "sql script had copied to the clipboard",
+  "CurrentCheckedTable": "CurrentCheckedTable"
 }

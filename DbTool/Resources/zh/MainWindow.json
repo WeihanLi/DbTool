@@ -35,5 +35,6 @@
   "UnsupportedFileType": "不支持的文件类型,{0}",
   "ConnectionStringCannotBeEmpty": "连接字符串不能为空",
   "NoModelFound": "找不到Model",
-  "SqlCopiedToClipboard": "sql语句已复制至粘贴板"
+  "SqlCopiedToClipboard": "sql语句已复制至粘贴板",
+  "CurrentCheckedTable": "当前选择的表"
 }
