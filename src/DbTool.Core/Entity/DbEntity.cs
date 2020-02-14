@@ -8,7 +8,6 @@ namespace DbTool.Core.Entity
     /// </summary>
     public class DbEntity
     {
-        private string _description;
         private string _databaseName;
         private List<TableEntity> _tables;
 
@@ -20,7 +19,12 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 数据库描述
         /// </summary>
-        public string DatabaseDescription { get => _description.GetValueOrDefault(DatabaseName); set => _description = value; }
+        public string DatabaseDescription { get; set; }
+
+        /// <summary>
+        /// 获取描述信息，如果描述信息为空则返回列名
+        /// </summary>
+        public string GetNotEmptyDescription() => DatabaseDescription.GetValueOrDefault(_databaseName);
 
         /// <summary>
         /// 表信息

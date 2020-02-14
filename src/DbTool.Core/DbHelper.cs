@@ -22,6 +22,11 @@ namespace DbTool.Core
         /// </summary>
         public string DatabaseName => _conn.Database;
 
+        /// <summary>
+        /// 数据库类型
+        /// </summary>
+        public string DbType => _dbProvider.DbType;
+
         public DbHelper(string connString, IDbProvider dbProvider)
         {
             if (connString.IsNullOrWhiteSpace())

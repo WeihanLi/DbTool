@@ -15,14 +15,18 @@ namespace DbTool.Core.Entity
         [Required]
         public string TableName { get => _tableName; set => _tableName = value?.Trim(); }
 
-        private string _description;
         private string _tableName;
         private List<ColumnEntity> _columns;
 
         /// <summary>
         /// 表描述
         /// </summary>
-        public string TableDescription { get => _description.GetValueOrDefault(TableName); set => _description = value; }
+        public string TableDescription { get; set; }
+
+        /// <summary>
+        /// 获取描述信息，如果描述信息为空则返回列名
+        /// </summary>
+        public string GetNotEmptyDescription() => TableDescription.GetValueOrDefault(_tableName);
 
         /// <summary>
         /// 表架构 scheme

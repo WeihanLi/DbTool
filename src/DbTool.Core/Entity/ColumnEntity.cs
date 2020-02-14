@@ -7,7 +7,6 @@ namespace DbTool.Core.Entity
     /// </summary>
     public class ColumnEntity
     {
-        private string _columnDescription;
         private string _dataType;
         private string _columnName;
 
@@ -19,11 +18,12 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 列描述
         /// </summary>
-        public string ColumnDescription
-        {
-            get => _columnDescription.GetValueOrDefault(ColumnName);
-            set => _columnDescription = !string.IsNullOrEmpty(value) ? value : string.Empty;
-        }
+        public string ColumnDescription { get; set; }
+
+        /// <summary>
+        /// 获取描述信息，如果描述信息为空则返回列名
+        /// </summary>
+        public string GetNotEmptyDescription() => ColumnDescription.GetValueOrDefault(_columnName);
 
         /// <summary>
         /// 是否可以为空
