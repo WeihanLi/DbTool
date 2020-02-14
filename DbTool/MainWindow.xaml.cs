@@ -107,7 +107,7 @@ namespace DbTool
                 }
                 try
                 {
-                    var exportBytes = exporter.Export(tables.ToArray(), _settings.DefaultDbType);
+                    var exportBytes = exporter.Export(tables.ToArray(), _dbHelper.DbType);
                     if (null != exportBytes && exportBytes.Length > 0)
                     {
                         var fileName = tables.Count > 1
@@ -116,6 +116,8 @@ namespace DbTool
                         fileName = $"{fileName}.{exporter.FileExtension.TrimStart('.')}";
                         var path = Path.Combine(dir, fileName);
                         File.WriteAllBytes(path, exportBytes);
+                        // open dir
+                        Process.Start("Explorer.exe", dir);
                     }
                 }
                 catch (Exception exception)
@@ -127,29 +129,21 @@ namespace DbTool
 
         private void BtnSaveSettings_OnClick(object sender, RoutedEventArgs e)
         {
-            var updated = false;
             if (null != DefaultDbType.SelectedItem && _settings.DefaultDbType != DefaultDbType.SelectedItem.ToString())
             {
                 _settings.DefaultDbType = DefaultDbType.SelectedItem?.ToString();
-                updated = true;
-            }
-            if (_settings.DefaultConnectionString != TxtDefaultConnStr.Text)
-            {
-                _settings.DefaultConnectionString = TxtDefaultConnStr.Text.Trim();
-                updated = true;
             }
             if (DefaultCulture.SelectedItem is CultureInfo culture && culture.Name != _settings.DefaultCulture)
             {
                 _settings.DefaultCulture = culture.Name;
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
-
-                updated = true;
             }
-            if (updated)
+            if (_settings.DefaultConnectionString != TxtDefaultConnStr.Text.Trim())
             {
-                MessageBox.Show(_localizer["Success"], _localizer["Tip"]);
+                _settings.DefaultConnectionString = TxtDefaultConnStr.Text.Trim();
             }
+            MessageBox.Show(_localizer["Success"], _localizer["Tip"]);
         }
 
         private void BtnChooseModel_OnClick(object sender, RoutedEventArgs e)
@@ -396,7 +390,7 @@ namespace DbTool
             {
                 if (item is TableEntity table)
                 {
-                    var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _settings.DefaultDbType);
+                    var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper.DbType);
                     var path = Path.Combine(dir, $"{table.TableName.TrimTableName()}.cs");
                     File.WriteAllText(path, modelCode, Encoding.UTF8);
                 }
