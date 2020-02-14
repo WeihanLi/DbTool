@@ -18,7 +18,8 @@ namespace DbTool.Core
         /// 导出数据库文档
         /// </summary>
         /// <param name="tableInfo">表信息</param>
+        /// <param name="dbType">数据库类型</param>
         /// <returns>whether success</returns>
-        byte[] Export(TableEntity[] tableInfo);
+        byte[] Export(TableEntity[] tableInfo, string dbType);
     }
 }
