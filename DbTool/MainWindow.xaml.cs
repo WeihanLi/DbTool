@@ -441,7 +441,14 @@ namespace DbTool
                         CurrentCheckedTableName.Text = table.TableName;
                         if (table.Columns.Count == 0)
                         {
-                            table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
+                            try
+                            {
+                                table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Get Table [{table.TableName}] Columns exception: {ex}", "Error");
+                            }
                         }
                         ColumnListView.ItemsSource = table.Columns;
                     }
