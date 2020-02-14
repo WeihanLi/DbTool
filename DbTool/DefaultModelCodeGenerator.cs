@@ -129,7 +129,7 @@ namespace DbTool
                         {
                             sbText.AppendLine($"\t\t[Key]");
                         }
-                        if (fclType == "string" && item.Size > 0)
+                        if (fclType == "string" && item.Size > 0 && item.Size < int.MaxValue)
                         {
                             sbText.AppendLine($"\t\t[StringLength({item.Size})]");
                         }
