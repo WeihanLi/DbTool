@@ -8,11 +8,18 @@ namespace DbTool
 {
     public class ExcelDbDocExporter : IDbDocExporter
     {
+        private readonly DbProviderFactory _dbProviderFactory;
+
+        public ExcelDbDocExporter(DbProviderFactory dbProviderFactory)
+        {
+            _dbProviderFactory = dbProviderFactory;
+        }
+
         public string ExportType => "Excel";
 
         public string FileExtension => ".xlsx";
 
-        public byte[] Export(TableEntity[] tableInfo)
+        public byte[] Export(TableEntity[] tableInfo, string dbType)
         {
             var workbook = ExcelHelper.PrepareWorkbook(ExcelFormat.Xlsx);
             foreach (var tableEntity in tableInfo)
@@ -72,6 +79,8 @@ namespace DbTool
                 //exist any column
                 if (tableEntity.Columns.Any())
                 {
+                    var dbProvider = _dbProviderFactory.GetDbProvider(dbType);
+
                     IRow tempRow;
                     ICell tempCell;
                     for (var i = 1; i <= tableEntity.Columns.Count; i++)
@@ -88,7 +97,7 @@ namespace DbTool
                         tempCell = tempRow.CreateCell(4);
                         tempCell.SetCellValue(tableEntity.Columns[i - 1].DataType.ToUpper());
                         tempCell = tempRow.CreateCell(5);
-                        tempCell.SetCellValue(tableEntity.Columns[i - 1].Size > 0 ? tableEntity.Columns[i - 1].Size.ToString() : "");
+                        tempCell.SetCellValue(tableEntity.Columns[i - 1].Size > 0 ? tableEntity.Columns[i - 1].Size.ToString() : dbProvider?.GetDefaultSizeForDbType(dbType).ToString() ?? string.Empty);
                         tempCell = tempRow.CreateCell(6);
                         if (tableEntity.Columns[i - 1].DefaultValue != null)
                         {

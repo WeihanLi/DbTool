@@ -107,7 +107,7 @@ namespace DbTool
                 }
                 try
                 {
-                    var exportBytes = exporter.Export(tables.ToArray());
+                    var exportBytes = exporter.Export(tables.ToArray(), _settings.DefaultDbType);
                     if (null != exportBytes && exportBytes.Length > 0)
                     {
                         var fileName = tables.Count > 1
@@ -443,7 +443,9 @@ namespace DbTool
                         {
                             try
                             {
-                                table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
+                                table.Columns = _dbHelper.GetColumnsInfo(table.TableName)
+                                    .OrderBy(c => c.ColumnName)
+                                    .ToList();
                             }
                             catch (Exception ex)
                             {

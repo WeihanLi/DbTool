@@ -246,8 +246,15 @@ namespace DbTool
                         columnInfo.DataType = "VARCHAR";
                     }
 
-                    columnInfo.Size = (uint?)property.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength
-                                      ?? dbProvider.GetDefaultSizeForDbType(columnInfo.DataType);
+                    if (property.IsAttributeDefined<StringLengthAttribute>())
+                    {
+                        columnInfo.Size = property.GetCustomAttribute<StringLengthAttribute>().MaximumLength;
+                    }
+                    else
+                    {
+                        columnInfo.Size = Convert.ToInt64(dbProvider.GetDefaultSizeForDbType(columnInfo.DataType).ToString());
+                    }
+
                     table.Columns.Add(columnInfo);
                 }
                 tables.Add(table);

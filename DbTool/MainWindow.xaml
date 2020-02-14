@@ -58,7 +58,7 @@
                         <ListBox Name="CheckedTables" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectionMode="Multiple" Margin="4" Grid.Row="1" Grid.Column="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox DataContext="{Binding}" Checked="CheckTableToggled" Unchecked="CheckTableToggled" Content="{Binding TableName}" />
+                                    <CheckBox DataContext="{Binding}" Checked="CheckTableToggled" Unchecked="CheckTableToggled" Content="{Binding TableName}" ToolTip="{Binding NotEmptyDescription}" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -72,7 +72,7 @@
                             <ListView Grid.Row="1" MinHeight="100" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="ColumnListView">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ColumnName}" ToolTip="{Binding ColumnDescription}" />
+                                        <TextBlock Text="{Binding ColumnName}" ToolTip="{Binding NotEmptyDescription}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -133,10 +133,10 @@
                     <TreeView Name="CodeGenTableTreeView" Grid.Row="1" Grid.Column="0" Margin="0" Padding="0">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate>
-                                <TreeViewItem IsExpanded="True" Header="{Binding Path=TableName}" ToolTip="{Binding Path=TableDescription}" ItemsSource="{Binding Path=Columns}">
+                                <TreeViewItem IsExpanded="True" Header="{Binding Path=TableName}" ToolTip="{Binding Path=NotEmptyDescription}" ItemsSource="{Binding Path=Columns}">
                                     <TreeViewItem.ItemTemplate>
                                         <HierarchicalDataTemplate>
-                                            <TreeViewItem Header="{Binding Path=ColumnName}" ToolTip="{Binding Path=ColumnDescription}"></TreeViewItem>
+                                            <TreeViewItem Header="{Binding Path=ColumnName}" ToolTip="{Binding Path=NotEmptyDescription}"></TreeViewItem>
                                         </HierarchicalDataTemplate>
                                     </TreeViewItem.ItemTemplate>
                                 </TreeViewItem>
