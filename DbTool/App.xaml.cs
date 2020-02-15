@@ -74,11 +74,11 @@ namespace DbTool
             #region Init Services and plugins
 
             IServiceCollection services = new ServiceCollection();
+            services.AddSingleton(settings);
             ConfigureServices(services);
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.RegisterInstance(settings);
 
             // load plugins
             var interfaces = typeof(IDbProvider).Assembly
