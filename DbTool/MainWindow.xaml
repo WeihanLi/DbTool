@@ -52,7 +52,7 @@
                         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
                             <TextBlock Margin="8,4,4,4" Text="{loc:Localizer ChooseTables}"></TextBlock>
                             <Button Name="BtnExportModel" Click="BtnExportModel_OnClick" Margin="4" MaxWidth="300" Content="{loc:Localizer ExportModel}"></Button>
-                            <StackPanel Name="DbDocExportersPanel" HorizontalAlignment="Left" Orientation="Vertical">
+                            <StackPanel Name="DbDocExportersPanel" HorizontalAlignment="Left" Orientation="Horizontal">
                             </StackPanel>
                         </StackPanel>
                         <ListBox Name="CheckedTables" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectionMode="Multiple" Margin="4" Grid.Row="1" Grid.Column="0">
