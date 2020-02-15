@@ -24,3 +24,21 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 1. 扩展 Model 代码生成方式，实现 `IModelCodeGenerator`，根据数据库表信息生成 Model
 1. 扩展 Model 名称表名称转化，实现 `IModelNameConverter`，也可以继承 `DefaultModelNameConverter`，改写某一个实现
 
+## 自定义扩展使用方式
+
+新建一个类库项目,引用 `DbTool.Core`，并实现相应的接口，实现对应的逻辑，将生成的 `dll` 放在 `DbTool` 的 `plugins` 目录下即可
+
+举个例子，自定义一个 Markdown Exporter 插件
+
+1. 新建一个项目 `DbTool.DbDocExporter.Markdown`，并引用 `DbTool.Core`
+
+2. 添加 `MarkdownDbDocExporter` 类并实现 `IDbDocExporter` 接口
+
+3. `dotnet build` 生成 dll，并将生成的 dll 放在 `plugins` 目录下
+
+![](./resources/plugin0.png)
+
+![](./resources/plugin1.png)
+
+![](./resources/plugin2.png)
+
