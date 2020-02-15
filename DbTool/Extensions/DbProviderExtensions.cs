@@ -23,52 +23,6 @@ namespace DbTool
     public static class DbProviderExtensions
     {
         /// <summary>
-        /// TrimTableName
-        /// </summary>
-        /// <returns>normalized model name</returns>
-        public static string TrimTableName(this string tableName)
-        {
-            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
-                .ConvertTableToModel(tableName);
-        }
-
-        /// <summary>
-        /// TrimModelName
-        /// </summary>
-        /// <param name="modelName">modelName</param>
-        /// <returns>normalized table name</returns>
-        public static string TrimModelName(this string modelName)
-        {
-            return DependencyResolver.Current.ResolveService<IModelNameConverter>()
-                .ConvertModelToTable(modelName);
-        }
-
-        /// <summary>
-        /// 将属性名称转换为私有字段名称
-        /// </summary>
-        /// <param name="propertyName"> 属性名称 </param>
-        /// <returns> 私有字段名称 </returns>
-        public static string ToPrivateFieldName(this string propertyName)
-        {
-            if (string.IsNullOrWhiteSpace(propertyName))
-            {
-                return string.Empty;
-            }
-            // 全部大写的专有名词
-            if (propertyName.Equals(propertyName.ToUpperInvariant()))
-            {
-                return propertyName.ToLowerInvariant();
-            }
-            // 首字母大写转成小写
-            if (char.IsUpper(propertyName[0]))
-            {
-                return char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1);
-            }
-
-            return $"_{propertyName}";
-        }
-
-        /// <summary>
         /// Register TDbProvider service
         /// </summary>
         /// <typeparam name="TDbProvider">DbProvider type</typeparam>
@@ -183,11 +137,12 @@ namespace DbTool
             {
                 var table = new TableEntity
                 {
-                    TableName = type.Name.TrimModelName(),
+                    TableName = DependencyResolver.Current.ResolveService<IModelNameConverter>()
+                        .ConvertModelToTable(type.Name),
                     TableDescription = type.GetCustomAttribute<DescriptionAttribute>()?.Description
                 };
                 var tableAttr = type.GetCustomAttribute<TableAttribute>();
-                if (tableAttr != null)
+                if (!string.IsNullOrEmpty(tableAttr?.Name))
                 {
                     table.TableName = tableAttr.Name;
                     table.TableSchema = tableAttr.Schema;

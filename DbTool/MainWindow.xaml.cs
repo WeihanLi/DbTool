@@ -30,12 +30,14 @@ namespace DbTool
         private readonly SettingsViewModel _settings;
 
         private readonly IModelCodeGenerator _modelCodeGenerator;
+        private readonly IModelNameConverter _modelNameConverter;
 
         public MainWindow(
             IStringLocalizer<MainWindow> localizer,
             DbProviderFactory dbProviderFactory,
             SettingsViewModel settings,
-            IModelCodeGenerator modelCodeGenerator)
+            IModelCodeGenerator modelCodeGenerator,
+            IModelNameConverter modelNameConverter)
         {
             InitializeComponent();
 
@@ -43,6 +45,7 @@ namespace DbTool
             _settings = settings;
             _dbProviderFactory = dbProviderFactory;
             _modelCodeGenerator = modelCodeGenerator;
+            _modelNameConverter = modelNameConverter;
 
             InitDataBinding();
         }
@@ -112,7 +115,7 @@ namespace DbTool
                     {
                         var fileName = tables.Count > 1
                             ? _dbHelper.DatabaseName
-                            : tables[0].TableName.TrimTableName();
+                            : _modelNameConverter.ConvertTableToModel(tables[0].TableName);
                         fileName = $"{fileName}.{exporter.FileExtension.TrimStart('.')}";
                         var path = Path.Combine(dir, fileName);
                         File.WriteAllBytes(path, exportBytes);
@@ -391,7 +394,7 @@ namespace DbTool
                 if (item is TableEntity table)
                 {
                     var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper.DbType);
-                    var path = Path.Combine(dir, $"{table.TableName.TrimTableName()}.cs");
+                    var path = Path.Combine(dir, $"{_modelNameConverter.ConvertTableToModel(table.TableName)}.cs");
                     File.WriteAllText(path, modelCode, Encoding.UTF8);
                 }
             }

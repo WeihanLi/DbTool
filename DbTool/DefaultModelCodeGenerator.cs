@@ -8,10 +8,12 @@ namespace DbTool
     public class DefaultModelCodeGenerator : IModelCodeGenerator
     {
         private readonly DbProviderFactory _dbProviderFactory;
+        private readonly IModelNameConverter _modelNameConverter;
 
-        public DefaultModelCodeGenerator(DbProviderFactory dbProviderFactory)
+        public DefaultModelCodeGenerator(DbProviderFactory dbProviderFactory, IModelNameConverter modelNameConverter)
         {
             _dbProviderFactory = dbProviderFactory;
+            _modelNameConverter = modelNameConverter;
         }
 
         public string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options, string databaseType)
@@ -45,7 +47,7 @@ namespace DbTool
                 sbText.AppendLine($"\t[Table(\"{tableEntity.TableName}\")]");
                 sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
             }
-            sbText.AppendLine($"\tpublic class {options.Prefix}{tableEntity.TableName.TrimTableName()}{options.Suffix}");
+            sbText.AppendLine($"\tpublic class {options.Prefix}{_modelNameConverter.ConvertTableToModel(tableEntity.TableName)}{options.Suffix}");
             sbText.AppendLine("\t{");
             var index = 0;
             if (options.GeneratePrivateFields)
@@ -62,7 +64,7 @@ namespace DbTool
                     }
                     var fclType = dbProvider.DbType2ClrType(item.DataType, item.IsNullable);
 
-                    var tmpColName = item.ColumnName.ToPrivateFieldName();
+                    var tmpColName = ToPrivateFieldName(item.ColumnName);
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
                     if (options.GenerateDataAnnotation)
                     {
@@ -141,6 +143,31 @@ namespace DbTool
             sbText.AppendLine("\t}");
             sbText.AppendLine("}");
             return sbText.ToString();
+        }
+
+        /// <summary>
+        /// 将属性名称转换为私有字段名称
+        /// </summary>
+        /// <param name="propertyName"> 属性名称 </param>
+        /// <returns> 私有字段名称 </returns>
+        private static string ToPrivateFieldName(string propertyName)
+        {
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                return string.Empty;
+            }
+            // 全部大写的专有名词
+            if (propertyName.Equals(propertyName.ToUpperInvariant()))
+            {
+                return propertyName.ToLowerInvariant();
+            }
+            // 首字母大写转成小写
+            if (char.IsUpper(propertyName[0]))
+            {
+                return char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1);
+            }
+
+            return $"_{propertyName}";
         }
     }
 }
