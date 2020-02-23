@@ -20,8 +20,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.2" />
+    <PackageReference Include="WeihanLi.Common" Version="1.0.29-preview-20200223-191143" />
     <PackageReference Include="WeihanLi.Npoi" Version="1.8.2" />
-    <PackageReference Include="DbTool.Core" Version="1.2.0-preview-20200223-082020" />
+    <PackageReference Include="DbTool.Core" Version="1.2.0-preview-20200223-184150" />
     <PackageReference Include="DbTool.DbProvider.MySql" Version="1.1.0" />
     <PackageReference Include="DbTool.DbProvider.SqlServer" Version="1.1.0" />
   </ItemGroup>

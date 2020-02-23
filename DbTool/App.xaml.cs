@@ -89,21 +89,11 @@ namespace DbTool
                         .ToArray();
                     foreach (var type in pluginTypes)
                     {
-                        foreach (var interfaceType in type.GetImplementedInterfaces())
-                        {
-                            services.AddSingleton(interfaceType, type);
-                        }
+                        services.RegisterTypeAsImplementedInterfaces(type);
                     }
 
                     // load service modules
-                    var serviceModuleType = typeof(IServiceModule);
-                    var moduleMethodName = "ConfigureServices";
-                    foreach (var type in exportedTypes.Where(t => t.IsAssignableFrom(serviceModuleType)))
-                    {
-                        type.GetMethod(moduleMethodName)?.
-                            Invoke(Activator.CreateInstance(type),
-                                new object[] { services });
-                    }
+                    services.RegisterAssemblyModules(assemblies);
                 }
             }
 
