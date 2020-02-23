@@ -388,6 +388,7 @@ namespace DbTool
                 Suffix = TxtSuffix.Text,
                 GenerateDataAnnotation = CbGenDataAnnotation.IsChecked == true,
                 GeneratePrivateFields = CbGenPrivateFields.IsChecked == true,
+                ApplyNameConverter = CbApplyNameConverter.IsChecked == true,
             };
             var dir = ChooseFolder();
             if (string.IsNullOrEmpty(dir))
