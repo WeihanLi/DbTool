@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using DbTool.Core;
 using DbTool.DbProvider.MySql;
 using DbTool.DbProvider.SqlServer;
@@ -15,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
 
 namespace DbTool
@@ -77,9 +76,6 @@ namespace DbTool
             services.AddSingleton(settings);
             ConfigureServices(services);
 
-            var builder = new ContainerBuilder();
-            builder.Populate(services);
-
             // load plugins
             var interfaces = typeof(IDbProvider).Assembly
                 .GetExportedTypes()
@@ -95,25 +91,39 @@ namespace DbTool
                 if (plugins.Length > 0)
                 {
                     var assemblies = plugins.Select(Assembly.LoadFrom).ToArray();
-                    var pluginTypes = assemblies
-                        .Select(x => x.GetTypes())
+                    var exportedTypes = assemblies
+                        .Select(x => x.GetExportedTypes())
                         .SelectMany(t => t)
-                        .Where(t => !t.IsInterface && !t.IsAbstract && interfaces.Any(i => i.IsAssignableFrom(t)))
+                        .Where(t => !t.IsInterface && !t.IsAbstract)
+                        .ToArray();
+                    var pluginTypes = exportedTypes
+                        .Where(t => interfaces.Any(i => i.IsAssignableFrom(t)))
                         .ToArray();
                     foreach (var type in pluginTypes)
                     {
-                        builder.RegisterType(type).AsImplementedInterfaces();
+                        foreach (var interfaceType in type.GetImplementedInterfaces())
+                        {
+                            services.AddSingleton(interfaceType, type);
+                        }
                     }
-                    builder.RegisterAssemblyModules(assemblies);
+
+                    // load service modules
+                    var serviceModuleType = typeof(IServiceModule);
+                    var moduleMethodName = "ConfigureServices";
+                    foreach (var type in exportedTypes.Where(t => t.IsAssignableFrom(serviceModuleType)))
+                    {
+                        type.GetMethod(moduleMethodName)?.
+                            Invoke(Activator.CreateInstance(type),
+                                new object[] { services });
+                    }
                 }
             }
 
-            var container = builder.Build();
-            DependencyResolver.SetDependencyResolver(container.Resolve);
+            DependencyResolver.SetDependencyResolver(services);
 
             #endregion Init Services and plugins
 
-            container.Resolve<MainWindow>().Show();
+            DependencyResolver.Current.ResolveService<MainWindow>().Show();
         }
     }
 }
