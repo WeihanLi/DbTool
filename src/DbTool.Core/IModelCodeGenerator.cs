@@ -28,6 +28,11 @@ namespace DbTool.Core
         /// 是否生成私有字段
         /// </summary>
         public bool GeneratePrivateFields { get; set; }
+
+        /// <summary>
+        /// 是否使用 NameConverter 将 TableName 转换成 Model class 名称
+        /// </summary>
+        public bool ApplyNameConverter { get; set; }
     }
 
     public interface IModelCodeGenerator
