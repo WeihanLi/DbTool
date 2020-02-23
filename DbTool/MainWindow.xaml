@@ -39,6 +39,7 @@
                     <StackPanel Margin="4" Grid.Row="2" Orientation="Horizontal">
                         <CheckBox Name="CbGenPrivateFields" Margin="8,0,4,0"  Content="{loc:Localizer GeneratePrivateFields}"></CheckBox>
                         <CheckBox Name="CbGenDataAnnotation" Margin="4,0,4,0" Content="{loc:Localizer GenerateDataAnnotation}"></CheckBox>
+                        <CheckBox Name="CbApplyNameConverter" Margin="4,0,4,0" Content="{loc:Localizer ApplyNameConverter}"></CheckBox>
                     </StackPanel>
                     <Grid Grid.Row="3">
                         <Grid.RowDefinitions>

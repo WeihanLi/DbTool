@@ -1,4 +1,6 @@
-﻿namespace DbTool.ViewModels
+﻿using System;
+
+namespace DbTool.ViewModels
 {
     public class SettingsViewModel
     {
@@ -9,6 +11,24 @@
         private string _excelTemplateDownloadLink;
         private string _defaultCulture;
         private bool _generateDbDescription;
+        private bool _applyNameConverter;
+
+        public SettingsViewModel()
+        {
+            _excelTemplateDownloadLink =
+                ConfigurationHelper.AppSetting(ConfigurationConstants.ExcelTemplateDownloadLink);
+            _defaultConnectionString = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString);
+            _defaultDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType);
+            _generateDataAnnotation =
+                ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDataAnnotation);
+            _generatePrivateField = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GeneratePrivateField);
+            _generateDbDescription = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDbDescription);
+            _applyNameConverter = ConfigurationHelper.AppSetting<bool>(nameof(ApplyNameConverter));
+
+            _defaultCulture = ConfigurationHelper.AppSetting(nameof(DefaultCulture));
+            SupportedCultures = ConfigurationHelper.AppSetting(nameof(SupportedCultures))
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+        }
 
         public string DefaultDbType
         {
@@ -59,6 +79,16 @@
             {
                 _generateDbDescription = value;
                 ConfigurationHelper.UpdateAppSetting(nameof(GenerateDbDescription), value);
+            }
+        }
+
+        public bool ApplyNameConverter
+        {
+            get => _applyNameConverter;
+            set
+            {
+                _applyNameConverter = value;
+                ConfigurationHelper.UpdateAppSetting(nameof(ApplyNameConverter), value);
             }
         }
 

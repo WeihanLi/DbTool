@@ -65,6 +65,7 @@ namespace DbTool
 
             CbGenPrivateFields.IsChecked = _settings.GeneratePrivateField;
             CbGenDataAnnotation.IsChecked = _settings.GenerateDataAnnotation;
+            CbApplyNameConverter.IsChecked = _settings.ApplyNameConverter;
             CodeGenDbDescCheckBox.IsChecked = _settings.GenerateDbDescription;
             ModelFirstGenDesc.IsChecked = _settings.GenerateDbDescription;
 
@@ -115,7 +116,11 @@ namespace DbTool
                     {
                         var fileName = tables.Count > 1
                             ? _dbHelper.DatabaseName
-                            : _modelNameConverter.ConvertTableToModel(tables[0].TableName);
+                            :
+                                (_settings.ApplyNameConverter
+                                    ? _modelNameConverter.ConvertTableToModel(tables[0].TableName)
+                                    : tables[0].TableName)
+                            ;
                         fileName = $"{fileName}.{exporter.FileExtension.TrimStart('.')}";
                         var path = Path.Combine(dir, fileName);
                         File.WriteAllBytes(path, exportBytes);
@@ -394,7 +399,7 @@ namespace DbTool
                 if (item is TableEntity table)
                 {
                     var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper.DbType);
-                    var path = Path.Combine(dir, $"{_modelNameConverter.ConvertTableToModel(table.TableName)}.cs");
+                    var path = Path.Combine(dir, $"{(_settings.ApplyNameConverter ? _modelNameConverter.ConvertTableToModel(table.TableName) : table.TableName)}.cs");
                     File.WriteAllText(path, modelCode, Encoding.UTF8);
                 }
             }

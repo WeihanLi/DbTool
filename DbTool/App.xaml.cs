@@ -50,21 +50,9 @@ namespace DbTool
         {
             #region Init Settings
 
-            var settings = new SettingsViewModel
-            {
-                ExcelTemplateDownloadLink =
-                    ConfigurationHelper.AppSetting(ConfigurationConstants.ExcelTemplateDownloadLink),
-                DefaultConnectionString = ConfigurationHelper.AppSetting(ConfigurationConstants.DefaultConnectionString),
-                DefaultDbType = ConfigurationHelper.AppSetting(ConfigurationConstants.DbType),
-                GenerateDataAnnotation = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDataAnnotation),
-                GeneratePrivateField = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GeneratePrivateField),
-                GenerateDbDescription = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDbDescription),
-            };
-            settings.DefaultCulture = ConfigurationHelper.AppSetting(nameof(settings.DefaultCulture));
-            settings.SupportedCultures = ConfigurationHelper.AppSetting(nameof(settings.SupportedCultures))
-                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var settings = new SettingsViewModel();
             settings.ConnectionString = settings.DefaultConnectionString;
-
+            // set current culture
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(settings.DefaultCulture);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(settings.DefaultCulture);
 
@@ -123,7 +111,9 @@ namespace DbTool
 
             #endregion Init Services and plugins
 
-            DependencyResolver.Current.ResolveService<MainWindow>().Show();
+            DependencyResolver.Current
+                .ResolveService<MainWindow>()
+                .Show();
         }
     }
 }

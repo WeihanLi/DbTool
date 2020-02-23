@@ -36,5 +36,6 @@
   "ConnectionStringCannotBeEmpty": "ConnectionStringCannotBeEmpty",
   "NoModelFound": "NoModelFound",
   "SqlCopiedToClipboard": "sql script had copied to the clipboard",
-  "CurrentCheckedTable": "CurrentCheckedTable"
+  "CurrentCheckedTable": "CurrentCheckedTable",
+  "ApplyNameConverter": "ApplyNameConverter(TableName <=> ModelName)"
 }
