@@ -98,10 +98,9 @@ namespace DbTool
                         tempCell.SetCellValue(tableEntity.Columns[i - 1].DataType.ToUpper());
                         tempCell = tempRow.CreateCell(5);
                         tempCell.SetCellValue(
-                            tableEntity.Columns[i - 1].Size > 0
+                            tableEntity.Columns[i - 1].Size > 0 && tableEntity.Columns[i - 1].Size < int.MaxValue
                             ? tableEntity.Columns[i - 1].Size.ToString()
-                            : dbProvider?.GetDefaultSizeForDbType(tableEntity.Columns[i - 1].DataType.ToUpper()).ToString()
-                            );
+                            : string.Empty);
                         tempCell = tempRow.CreateCell(6);
                         if (tableEntity.Columns[i - 1].DefaultValue != null)
                         {
