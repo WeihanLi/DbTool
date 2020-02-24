@@ -102,7 +102,7 @@ SELECT t.[name] AS TableName,
        c.[is_nullable] AS IsNullable,
        IIF(k.COLUMN_NAME IS NULL, 0, 1) AS IsPrimaryKey,
        ty.[name] AS DataType,
-       IIF([ty].[max_length] IS NULL, 0, [ty].[max_length]) AS Size,
+       IIF([col].[CHARACTER_MAXIMUM_LENGTH] IS NULL, [c].[max_length], [col].[CHARACTER_MAXIMUM_LENGTH]) AS Size,
        SUBSTRING(dc.[definition], 2, LEN([dc].[definition]) - 2) AS DefaultValue
 FROM sys.columns c
     JOIN sys.tables t
@@ -110,6 +110,7 @@ FROM sys.columns c
     JOIN sys.[types] ty
         ON ty.[system_type_id] = c.[system_type_id]
            AND ty.[name] != 'sysname'
+	join INFORMATION_SCHEMA.COLUMNS col on c.name=col.COLUMN_NAME
     LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS k
         ON k.TABLE_NAME = @tableName
            AND k.COLUMN_NAME = c.[name]
