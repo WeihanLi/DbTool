@@ -233,7 +233,7 @@ namespace DbTool
             {
                 Multiselect = false,
                 CheckFileExists = true,
-                Filter = "Excel file(*.xlsx)|*.xlsx|Excel97-2003(*.xls)|*.xls"
+                Filter = "Excel file(*.xls)|*.xls|Excel file(*.xlsx)|*.xlsx"
             };
             if (ofg.ShowDialog() == true)
             {

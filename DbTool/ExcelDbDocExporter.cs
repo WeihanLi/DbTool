@@ -17,11 +17,11 @@ namespace DbTool
 
         public string ExportType => "Excel";
 
-        public string FileExtension => ".xlsx";
+        public string FileExtension => ".xls";
 
         public byte[] Export(TableEntity[] tableInfo, string dbType)
         {
-            var workbook = ExcelHelper.PrepareWorkbook(ExcelFormat.Xlsx);
+            var workbook = ExcelHelper.PrepareWorkbook(!FileExtension.EndsWith(".xls"));
             foreach (var tableEntity in tableInfo)
             {
                 //Create Sheet
