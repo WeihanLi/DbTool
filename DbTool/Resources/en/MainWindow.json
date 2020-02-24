@@ -37,5 +37,5 @@
   "NoModelFound": "NoModelFound",
   "SqlCopiedToClipboard": "sql script had copied to the clipboard",
   "CurrentCheckedTable": "CurrentCheckedTable",
-  "ApplyNameConverter": "ApplyNameConverter(TableName <=> ModelName)"
+  "ApplyNameConverter": "ApplyNameConverter(TableName => ModelName)"
 }
