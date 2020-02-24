@@ -110,7 +110,7 @@ FROM sys.columns c
     JOIN sys.[types] ty
         ON ty.[system_type_id] = c.[system_type_id]
            AND ty.[name] != 'sysname'
-	join INFORMATION_SCHEMA.COLUMNS col on c.name=col.COLUMN_NAME
+	join INFORMATION_SCHEMA.COLUMNS col on c.name=col.COLUMN_NAME AND t.[name]=col.TABLE_NAME
     LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS k
         ON k.TABLE_NAME = @tableName
            AND k.COLUMN_NAME = c.[name]
