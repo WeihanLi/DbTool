@@ -27,7 +27,7 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 
 ## 后续功能
 
-- [ ] 丰富插件
+- [ ] 丰富插件(插件开发指南：<https://github.com/WeihanLi/DbTool/blob/packages/README.md>)
 
 ## 功能一览
 
