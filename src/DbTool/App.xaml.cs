@@ -34,7 +34,7 @@ namespace DbTool
             services.TryAddTransient<MainWindow>();
             services.AddJsonLocalization(options => options.ResourcesPathType = ResourcesPathType.CultureBased);
 
-            services.TryAddSingleton<IModelNameConverter, DefaultModelNameConverter>();
+            services.TryAddSingleton<IModelNameConverter, ModelNameConverter>();
             services.TryAddSingleton<IModelCodeGenerator, DefaultModelCodeGenerator>();
             services.TryAddSingleton<DbProviderFactory>();
 

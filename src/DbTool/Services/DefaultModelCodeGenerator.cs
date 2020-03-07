@@ -3,6 +3,7 @@ using System.Text;
 using DbTool.Core;
 using DbTool.Core.Entity;
 
+// ReSharper disable once CheckNamespace
 namespace DbTool
 {
     public class DefaultModelCodeGenerator : IModelCodeGenerator
