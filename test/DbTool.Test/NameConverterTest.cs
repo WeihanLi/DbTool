@@ -21,6 +21,8 @@ namespace DbTool.Test
         [InlineData("tab-notice", "Notice")]
         [InlineData("project", "Project")]
         [InlineData("user-profile", "UserProfile")]
+        [InlineData("userProfile", "UserProfile")]
+        [InlineData("user_profile", "UserProfile")]
         public void TableToModelTest(string tableName, string expectedModelName)
         {
             Assert.Equal(expectedModelName, _converter.ConvertTableToModel(tableName));
