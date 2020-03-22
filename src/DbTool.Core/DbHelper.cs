@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using DbTool.Core.Entity;
 using WeihanLi.Extensions;
@@ -34,7 +35,7 @@ namespace DbTool.Core
                 throw new ArgumentNullException(nameof(connString));
             }
 
-            _dbProvider = dbProvider;
+            _dbProvider = dbProvider ?? throw new ArgumentNullException(nameof(dbProvider));
             _conn = _dbProvider.GetDbConnection(connString);
         }
 
@@ -64,6 +65,35 @@ namespace DbTool.Core
             return _conn.Query<ColumnEntity>(
                     _dbProvider.QueryTableColumnsSqlFormat,
                 new { dbName = DatabaseName, tableName })
+                .ToList();
+        }
+
+        /// <summary>
+        /// 获取数据库表信息
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<TableEntity>> GetTablesInfoAsync()
+        {
+            return (await _conn.QueryAsync<TableEntity>(
+                    _dbProvider.QueryDbTablesSqlFormat,
+                    new { dbName = DatabaseName }))
+                .ToList();
+        }
+
+        /// <summary>
+        /// 获取数据库表的列信息
+        /// </summary>
+        /// <param name="tableName">表名称</param>
+        /// <returns></returns>
+        public async Task<List<ColumnEntity>> GetColumnsInfoAsync(string tableName)
+        {
+            if (string.IsNullOrEmpty(tableName))
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+            return (await _conn.QueryAsync<ColumnEntity>(
+                    _dbProvider.QueryTableColumnsSqlFormat,
+                    new { dbName = DatabaseName, tableName }))
                 .ToList();
         }
 
