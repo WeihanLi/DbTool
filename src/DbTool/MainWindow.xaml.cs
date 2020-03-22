@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using DbTool.Core;
@@ -350,7 +351,7 @@ namespace DbTool
 
         private DbHelper _dbHelper;
 
-        private void BtnConnectDb_OnClick(object sender, RoutedEventArgs e)
+        private async void BtnConnectDb_OnClick(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(TxtConnectionString.Text))
             {
@@ -361,12 +362,19 @@ namespace DbTool
             {
                 _dbHelper?.Dispose();
 
-                _dbHelper = new DbHelper(TxtConnectionString.Text, _dbProviderFactory.GetDbProvider(_settings.DefaultDbType));
+                var connStr = TxtConnectionString.Text;
+                await Task.Run(() =>
+                {
+                    _dbHelper = new DbHelper(connStr, _dbProviderFactory.GetDbProvider(_settings.DefaultDbType));
 
-                var tables = _dbHelper.GetTablesInfo();
-                CheckedTables.ItemsSource = tables
-                    .OrderBy(x => x.TableName)
-                    .ToArray();
+                    var tables = _dbHelper.GetTablesInfo();
+                    CheckedTables.Dispatcher.Invoke(() =>
+                    {
+                        CheckedTables.ItemsSource = tables
+                            .OrderBy(x => x.TableName)
+                            .ToArray();
+                    });
+                });
             }
             catch (Exception exception)
             {
@@ -428,7 +436,7 @@ namespace DbTool
             base.OnClosed(e);
         }
 
-        private void CheckTableToggled(object sender, RoutedEventArgs e)
+        private async void CheckTableToggled(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox checkBox && checkBox.DataContext is TableEntity table)
             {
@@ -444,18 +452,19 @@ namespace DbTool
                         CurrentCheckedTableName.Text = table.TableName;
                         if (table.Columns.Count == 0)
                         {
-                            try
+                            await Task.Run(() =>
                             {
-                                table.Columns = _dbHelper.GetColumnsInfo(table.TableName)
-                                    .OrderBy(c => c.ColumnName)
-                                    .ToList();
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show($"Get Table [{table.TableName}] Columns exception: {ex}", "Error");
-                            }
+                                table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
+                                ColumnListView.Dispatcher.Invoke(() =>
+                                {
+                                    ColumnListView.ItemsSource = table.Columns;
+                                });
+                            });
                         }
-                        ColumnListView.ItemsSource = table.Columns;
+                        else
+                        {
+                            ColumnListView.ItemsSource = table.Columns;
+                        }
                     }
                 }
                 else
