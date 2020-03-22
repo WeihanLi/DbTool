@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows.Markup;
 using Microsoft.Extensions.Localization;
 using WeihanLi.Common;
@@ -14,21 +13,22 @@ namespace DbTool.Localization
         public LocalizerExtension(string key)
         {
             Key = key;
-            _localizerFactory = DependencyResolver.Current.
+            _localizerFactory = DependencyResolver.
                 ResolveService<IStringLocalizerFactory>();
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            var type = serviceProvider.GetType();
-            var targetRootType = type.GetProperty("System.Xaml.IRootObjectProvider.RootObject", BindingFlags.Instance | BindingFlags.NonPublic)
-                ?.GetValue(serviceProvider)
-                ?.GetType();
-            if (null == targetRootType)
-            {
-                targetRootType = typeof(MainWindow);
-            }
+            //var type = serviceProvider.GetType();
+            //var targetRootType = type.GetProperty("System.Xaml.IRootObjectProvider.RootObject", BindingFlags.Instance | BindingFlags.NonPublic)
+            //    ?.GetValue(serviceProvider)
+            //    ?.GetType();
+            //if (null == targetRootType)
+            //{
+            //    targetRootType = typeof(MainWindow);
+            //}
 
+            var targetRootType = typeof(MainWindow);
             var localizer = _localizerFactory.Create(targetRootType);
             var value = localizer[Key];
             return (string)value;
