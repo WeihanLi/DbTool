@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Windows;
 using DbTool.Core;
@@ -78,7 +78,7 @@ namespace DbTool
                     .ToArray();
                 if (plugins.Length > 0)
                 {
-                    var assemblies = plugins.Select(Assembly.LoadFrom).ToArray();
+                    var assemblies = plugins.Select(AssemblyLoadContext.Default.LoadFromAssemblyPath).ToArray();
                     var exportedTypes = assemblies
                         .Select(x => x.GetExportedTypes())
                         .SelectMany(t => t)
