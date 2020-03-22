@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using DbTool.Core;
@@ -363,17 +362,14 @@ namespace DbTool
                 _dbHelper?.Dispose();
 
                 var connStr = TxtConnectionString.Text;
-                await Task.Run(() =>
-                {
-                    _dbHelper = new DbHelper(connStr, _dbProviderFactory.GetDbProvider(_settings.DefaultDbType));
+                _dbHelper = new DbHelper(connStr, _dbProviderFactory.GetDbProvider(_settings.DefaultDbType));
 
-                    var tables = _dbHelper.GetTablesInfo();
-                    CheckedTables.Dispatcher.Invoke(() =>
-                    {
-                        CheckedTables.ItemsSource = tables
-                            .OrderBy(x => x.TableName)
-                            .ToArray();
-                    });
+                var tables = await _dbHelper.GetTablesInfoAsync();
+                CheckedTables.Dispatcher.Invoke(() =>
+                {
+                    CheckedTables.ItemsSource = tables
+                        .OrderBy(x => x.TableName)
+                        .ToArray();
                 });
             }
             catch (Exception exception)
@@ -452,13 +448,10 @@ namespace DbTool
                         CurrentCheckedTableName.Text = table.TableName;
                         if (table.Columns.Count == 0)
                         {
-                            await Task.Run(() =>
+                            table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName);
+                            ColumnListView.Dispatcher.Invoke(() =>
                             {
-                                table.Columns = _dbHelper.GetColumnsInfo(table.TableName);
-                                ColumnListView.Dispatcher.Invoke(() =>
-                                {
-                                    ColumnListView.ItemsSource = table.Columns;
-                                });
+                                ColumnListView.ItemsSource = table.Columns;
                             });
                         }
                         else
