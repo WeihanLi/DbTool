@@ -19,6 +19,8 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Margin="0,0,4,0" Text="{loc:Localizer DbConnectionString}"></TextBlock>
                         <TextBox Name="TxtConnectionString" Margin="4,0,4,0" MinWidth="200" MaxWidth="400" Text="{Binding Path=ConnectionString}"></TextBox>
+                        <TextBlock Margin="0,0,4,0" Text="{loc:Localizer DbType}"></TextBlock>
+                        <ComboBox Name="DbFirst_DbType"></ComboBox>
                         <Button Name="BtnConnectDb" Margin="4,0,0,0" Click="BtnConnectDb_OnClick" MinWidth="80" Content="{loc:Localizer Connect}"></Button>
                     </StackPanel>
                     <Grid Grid.Row="1">

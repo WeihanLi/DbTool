@@ -54,6 +54,9 @@ namespace DbTool
         {
             DataContext = _settings;
 
+            DbFirst_DbType.ItemsSource = _dbProviderFactory.SupportedDbTypes;
+            DbFirst_DbType.SelectedItem = _settings.DefaultDbType;
+
             DefaultDbType.ItemsSource = _dbProviderFactory.SupportedDbTypes;
             DefaultDbType.SelectedItem = _settings.DefaultDbType;
 
@@ -362,7 +365,8 @@ namespace DbTool
                 _dbHelper?.Dispose();
 
                 var connStr = TxtConnectionString.Text;
-                _dbHelper = new DbHelper(connStr, _dbProviderFactory.GetDbProvider(_settings.DefaultDbType));
+                var currentDbProvider = _dbProviderFactory.GetDbProvider(DbFirst_DbType.SelectedItem.ToString());
+                _dbHelper = new DbHelper(connStr, currentDbProvider);
 
                 var tables = await _dbHelper.GetTablesInfoAsync();
                 CheckedTables.Dispatcher.Invoke(() =>

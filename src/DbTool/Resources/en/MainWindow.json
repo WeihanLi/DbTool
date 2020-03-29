@@ -25,6 +25,7 @@
   "DataLength": "DataLength",
   "DefaultValue": "DefaultValue",
   "DbConnectionString": "DbConnectionString",
+  "DbType": "DatabaseType",
   "Connect": "Connect",
   "Namespace": "Namespace",
   "Prefix": "Prefix",
