@@ -14,6 +14,6 @@
     <PackageReleaseNotes>https://github.com/WeihanLi/DbTool/tree/packages/docs/ReleaseNotes.md</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)icon.jpg" Pack="true" PackagePath=""/>
+    <None Include="$(MSBuildThisFileDirectory)icon.jpg" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
 </Project>
