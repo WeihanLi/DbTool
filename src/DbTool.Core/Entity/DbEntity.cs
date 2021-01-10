@@ -8,42 +8,31 @@ namespace DbTool.Core.Entity
     /// </summary>
     public class DbEntity
     {
-        private string _databaseName;
-        private List<TableEntity> _tables;
+        private string? _databaseName;
 
         /// <summary>
         /// 数据库名称
         /// </summary>
-        public string DatabaseName { get => _databaseName; set => _databaseName = value?.Trim(); }
+        public string? DatabaseName { get => _databaseName; set => _databaseName = value?.Trim(); }
 
         /// <summary>
         /// 数据库描述
         /// </summary>
-        public string DatabaseDescription { get; set; }
+        public string? DatabaseDescription { get; set; }
 
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
         /// </summary>
-        public string NotEmptyDescription => DatabaseDescription.GetValueOrDefault(_databaseName);
+        public string? NotEmptyDescription => DatabaseDescription.GetValueOrDefault(_databaseName);
 
         /// <summary>
         /// 表信息
         /// </summary>
-        public List<TableEntity> Tables
-        {
-            get => _tables;
-            set
-            {
-                if (value != null)
-                {
-                    _tables = value;
-                }
-            }
-        }
+        public List<TableEntity> Tables { get; set; }
 
         public DbEntity()
         {
-            _tables = new List<TableEntity>();
+            Tables = new List<TableEntity>();
         }
     }
 }

@@ -3,21 +3,21 @@
 
   <PropertyGroup>
 		<VersionMajor>1</VersionMajor>
-		<VersionMinor>3</VersionMinor>
+		<VersionMinor>4</VersionMinor>
 		<VersionPatch>0</VersionPatch>
 		<VersionRevision>0</VersionRevision>
 		<VersionPrefix Condition="'$(VersionRevision)'=='0'">$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
     <VersionPrefix Condition="'$(VersionRevision)'!='0'">$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionRevision)</VersionPrefix>
-		<VersionSuffix Condition="'$(Configuration)'=='DEBUG'">preview-$([System.DateTime]::Now.ToString("yyyyMMdd-HHmmss"))</VersionSuffix>
+		<VersionSuffix Condition="'$(Configuration)'=='DEBUG'">preview</VersionSuffix>
     <InformationalVersion>$(PackageVersion)</InformationalVersion>
 	</PropertyGroup>
   
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Condition="'$(OS)' == 'Windows_NT'" Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" PrivateAssets="All" />
   </ItemGroup>
 </Project>

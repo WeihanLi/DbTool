@@ -281,9 +281,9 @@ AND table_name = @tableName;";
 
         public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription = true)
         {
-            if (string.IsNullOrWhiteSpace(tableEntity?.TableName))
+            if (string.IsNullOrWhiteSpace(tableEntity.TableName))
             {
-                return "";
+                return string.Empty;
             }
             var sbSqlText = new StringBuilder();
             sbSqlText.AppendLine($"# ---------- Create Table 【{tableEntity.TableName}】 Sql -----------");
@@ -295,14 +295,14 @@ AND table_name = @tableName;";
                 {
                     sbSqlText.AppendLine();
                     sbSqlText.Append($"\t{col.ColumnName} {col.DataType}");
-                    if (col.DataType.Contains("CHAR"))
+                    if (col.DataType?.Contains("CHAR") == true)
                     {
                         sbSqlText.Append($"({(col.Size == 0 ? GetDefaultSizeForDbType(col.DataType, 2048) : col.Size)})");
                     }
                     if (col.IsPrimaryKey)
                     {
                         sbSqlText.Append(" PRIMARY KEY");
-                        if (col.DataType.Contains("INT"))
+                        if (col.DataType?.Contains("INT") == true)
                         {
                             sbSqlText.Append(" AUTO_INCREMENT");
                         }
@@ -313,18 +313,20 @@ AND table_name = @tableName;";
                         sbSqlText.Append(" NOT NULL");
                     }
                     //Default Value
-                    if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
+                    var defaultValueStr = col.DefaultValue?.ToString();
+                    if (defaultValueStr is not null)
                     {
                         if (!col.IsPrimaryKey)
                         {
-                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
-                                && !col.DefaultValue.ToString().StartsWith("'"))
+                            if ((col.DataType?.Contains("CHAR") == true
+                                 || col.DataType?.Contains("TEXT") == true)
+                                && !defaultValueStr.StartsWith("'"))
                             {
-                                sbSqlText.AppendFormat(" DEFAULT '{0}'", col.DefaultValue);
+                                sbSqlText.AppendFormat(" DEFAULT '{0}'", defaultValueStr);
                             }
                             else
                             {
-                                sbSqlText.AppendFormat(" DEFAULT {0}", col.DefaultValue);
+                                sbSqlText.AppendFormat(" DEFAULT {0}", defaultValueStr);
                             }
                         }
                     }

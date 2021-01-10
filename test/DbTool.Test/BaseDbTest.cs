@@ -1,55 +1,35 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DbTool.Core;
 using DbTool.Core.Entity;
-using DbTool.DbProvider.MySql;
-using DbTool.DbProvider.SqlServer;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using WeihanLi.Common;
 using Xunit;
 
 namespace DbTool.Test
 {
-    public abstract class BaseDbTest : IDbOperTest
+    public abstract class BaseDbTest
     {
         public abstract string ConnStringKey { get; }
-       
+
         protected readonly IDbProvider DbProvider;
 
-        static BaseDbTest()
+        public IConfiguration Configuration { get; }
+
+        protected BaseDbTest(IConfiguration configuration, DbProviderFactory dbProviderFactory)
         {
-            Init();
-        }
+            Configuration = configuration;
 
-        private static void Init()
-        {
-            IServiceCollection services = new ServiceCollection();
-            services.AddSingleton<IDbProvider, SqlServerDbProvider>();
-            services.AddSingleton<IDbProvider, MySqlDbProvider>();
-            services.AddSingleton<DbProviderFactory>();
-
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-            services.AddSingleton(configuration);
-
-            DependencyResolver.SetDependencyResolver(services);
-        }
-
-        protected BaseDbTest()
-        {
             var dbType = ConnStringKey.Substring(0, ConnStringKey.Length - 4);
-            DbProvider = DependencyResolver.Current.GetRequiredService<DbProviderFactory>()
-                            .GetDbProvider(dbType);
+            DbProvider = dbProviderFactory.GetDbProvider(dbType);
         }
 
-        protected TableEntity TableEntity = new TableEntity()
+        protected TableEntity TableEntity = new()
         {
             TableName = "tabUser111",
             TableDescription = "测试用户表",
             Columns = new List<ColumnEntity>
             {
-                new ColumnEntity
+                new ()
                 {
                     ColumnName = "Id",
                     ColumnDescription = "主键",
@@ -58,7 +38,7 @@ namespace DbTool.Test
                     IsNullable = false,
                     Size = 4
                 },
-                new ColumnEntity
+                new ()
                 {
                     ColumnName = "UserName",
                     ColumnDescription = "用户名",
@@ -67,7 +47,7 @@ namespace DbTool.Test
                     IsNullable = false,
                     Size = 50
                 },
-                new ColumnEntity
+                new ()
                 {
                     ColumnName = "NickName",
                     ColumnDescription = "昵称",
@@ -76,7 +56,7 @@ namespace DbTool.Test
                     IsNullable = true,
                     Size = 50
                 },
-                new ColumnEntity
+                new ()
                 {
                     ColumnName = "IsAdmin",
                     ColumnDescription = "是否是管理员",
@@ -86,7 +66,7 @@ namespace DbTool.Test
                     Size = 1,
                     DefaultValue = 0
                 },
-                new ColumnEntity
+                new ()
                 {
                     ColumnName = "CreatedTime",
                     ColumnDescription = "创建时间",
@@ -98,18 +78,18 @@ namespace DbTool.Test
             }
         };
 
-        public virtual void QueryTest()
+        public virtual async Task QueryTest()
         {
-            var connString = DependencyResolver.Current.GetService<IConfiguration>()
-                .GetConnectionString(ConnStringKey);
-            var dbHelper = new DbHelper(connString, DbProvider);
+            var connString = Configuration.GetConnectionString(ConnStringKey);
+            IDbHelper dbHelper = new DbHelper(connString, DbProvider);
             Assert.NotNull(dbHelper.DatabaseName);
-            var tables = dbHelper.GetTablesInfo();
+            var tables = await dbHelper.GetTablesInfoAsync();
             Assert.NotNull(tables);
             Assert.NotEmpty(tables);
             foreach (var table in tables)
             {
-                var columns = dbHelper.GetColumnsInfo(table.TableName);
+                Assert.NotNull(table.TableName);
+                var columns = await dbHelper.GetColumnsInfoAsync(table.TableName ?? string.Empty);
                 Assert.NotNull(columns);
                 Assert.NotEmpty(columns);
             }
@@ -119,8 +99,11 @@ namespace DbTool.Test
         {
             var sql = DbProvider.GenerateSqlStatement(TableEntity);
             Assert.NotEmpty(sql);
-            sql = DbProvider.GenerateSqlStatement(TableEntity, false);
+
+            var sql1 = DbProvider.GenerateSqlStatement(TableEntity, false);
             Assert.NotEmpty(sql);
+
+            Assert.Equal(sql1, sql);
         }
     }
 }

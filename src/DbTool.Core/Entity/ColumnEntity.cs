@@ -7,18 +7,18 @@ namespace DbTool.Core.Entity
     /// </summary>
     public class ColumnEntity
     {
-        private string _dataType;
-        private string _columnName;
+        private string? _dataType;
+        private string? _columnName;
 
         /// <summary>
         /// 列名称
         /// </summary>
-        public string ColumnName { get => _columnName; set => _columnName = value?.Trim(); }
+        public string? ColumnName { get => _columnName; set => _columnName = value?.Trim(); }
 
         /// <summary>
         /// 列描述
         /// </summary>
-        public string ColumnDescription { get; set; }
+        public string? ColumnDescription { get; set; }
 
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
@@ -43,7 +43,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 数据类型
         /// </summary>
-        public string DataType
+        public string? DataType
         {
             get => _dataType;
             set => _dataType = value?.ToUpper();
@@ -52,6 +52,6 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 默认值
         /// </summary>
-        public object DefaultValue { get; set; }
+        public object? DefaultValue { get; set; }
     }
 }

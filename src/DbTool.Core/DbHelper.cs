@@ -12,7 +12,7 @@ namespace DbTool.Core
     /// <summary>
     /// 数据库操作查询帮助类
     /// </summary>
-    public class DbHelper : IDisposable
+    public class DbHelper : IDbHelper, IDisposable
     {
         private readonly DbConnection _conn;
 
@@ -103,7 +103,7 @@ namespace DbTool.Core
         {
             if (!_disposed)
             {
-                _conn?.Dispose();
+                _conn.Dispose();
                 _disposed = true;
             }
         }

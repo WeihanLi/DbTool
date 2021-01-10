@@ -371,7 +371,7 @@ ORDER BY c.[column_id];
 
         public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription, bool addOrUpdateDesc)
         {
-            if (string.IsNullOrWhiteSpace(tableEntity?.TableName))
+            if (string.IsNullOrWhiteSpace(tableEntity.TableName))
             {
                 return "";
             }
@@ -384,7 +384,7 @@ ORDER BY c.[column_id];
             //create description
             if (generateDescription && !string.IsNullOrEmpty(tableEntity.TableDescription))
             {
-                sbSqlDescText.AppendFormat(CreateTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
+                sbSqlDescText.AppendFormat(addOrUpdateDesc ? CreateOrUpdateTableDescSqlFormat : CreateTableDescSqlFormat, tableEntity.TableName, tableEntity.TableDescription);
             }
             if (tableEntity.Columns.Count > 0)
             {
@@ -392,30 +392,31 @@ ORDER BY c.[column_id];
                 {
                     sbSqlText.AppendLine();
                     sbSqlText.AppendFormat("\t[{0}] {1}", col.ColumnName, col.DataType);
-                    if (col.DataType.ToUpperInvariant().Contains("CHAR"))
+                    if (col.DataType?.ToUpperInvariant().Contains("CHAR") == true)
                     {
                         sbSqlText.Append($"({col.Size})");
                     }
                     if (col.IsPrimaryKey)
                     {
                         sbSqlText.Append(" PRIMARY KEY");
-                        if (col.DataType.Contains("INT"))
+                        if (col.DataType?.Contains("INT") == true)
                         {
                             sbSqlText.Append(" IDENTITY(1,1) ");
                         }
                     }
                     //Nullable
-                    if (!col.IsNullable && !col.IsPrimaryKey)
+                    if (!col.IsNullable)
                     {
                         sbSqlText.Append(" NOT NULL");
                     }
                     //Default Value
-                    if (!string.IsNullOrEmpty(col.DefaultValue?.ToString()))
+                    var defaultValueStr = col.DefaultValue?.ToString();
+                    if (defaultValueStr is not null)
                     {
                         if (!col.IsPrimaryKey)
                         {
-                            if ((col.DataType.Contains("CHAR") || col.DataType.Contains("TEXT"))
-                                && !col.DefaultValue.ToString().StartsWith("N'") && !col.DefaultValue.ToString().StartsWith("'"))
+                            if ((col.DataType?.Contains("CHAR") == true || col.DataType?.Contains("TEXT") == true)
+                                && !defaultValueStr.StartsWith("N'") && !defaultValueStr.StartsWith("'") != true)
                             {
                                 sbSqlText.AppendFormat(" DEFAULT(N'{0}')", col.DefaultValue);
                             }

@@ -7,17 +7,17 @@ namespace DbTool.Core
         /// <summary>
         /// Model 命名空间
         /// </summary>
-        public string Namespace { get; set; }
+        public string? Namespace { get; set; }
 
         /// <summary>
         /// Model 前缀
         /// </summary>
-        public string Prefix { get; set; }
+        public string? Prefix { get; set; }
 
         /// <summary>
         /// Model 后缀
         /// </summary>
-        public string Suffix { get; set; }
+        public string? Suffix { get; set; }
 
         /// <summary>
         /// 是否生成 Description Attribute 描述
