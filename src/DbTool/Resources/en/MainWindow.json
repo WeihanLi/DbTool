@@ -25,6 +25,7 @@
   "DataLength": "DataLength",
   "DefaultValue": "DefaultValue",
   "DbConnectionString": "DbConnectionString",
+  "DbNotConnected": "db had not connected",
   "DbType": "DatabaseType",
   "Connect": "Connect",
   "Namespace": "Namespace",

@@ -22,10 +22,6 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2017-2020 (c) WeihanLi</Copyright>
+    <Copyright>Copyright 2017-2021 (c) WeihanLi</Copyright>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Condition="'$(OS)' == 'Windows_NT'" Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
-  </ItemGroup>
 </Project>

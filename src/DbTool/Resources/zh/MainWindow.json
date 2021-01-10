@@ -25,6 +25,7 @@
   "DataLength": "数据长度",
   "DefaultValue": "默认值",
   "DbConnectionString": "数据库连接字符串",
+  "DbNotConnected": "数据库未连接",
   "DbType": "数据库类型",
   "Connect": "连接",
   "Namespace": "命名空间",

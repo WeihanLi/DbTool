@@ -26,11 +26,11 @@ namespace DbTool
         /// <param name="sourceFilePaths">sourceCodeFiles</param>
         /// <param name="dbProvider">dbProvider</param>
         /// <returns></returns>
-        public static List<TableEntity> GetTableEntityFromSourceCode(this IDbProvider dbProvider, params string[] sourceFilePaths)
+        public static List<TableEntity> GetTableEntityFromSourceCode(this IDbProvider dbProvider, params string[]? sourceFilePaths)
         {
             if (sourceFilePaths == null || sourceFilePaths.Length <= 0)
             {
-                return null;
+                return new List<TableEntity>();
             }
             var usingList = new List<string>();
 
@@ -42,7 +42,6 @@ namespace DbTool
                 {
                     if (line.StartsWith("using ") && line.EndsWith(";"))
                     {
-                        //
                         usingList.AddIfNotContains(line);
                     }
                     else
@@ -128,7 +127,7 @@ namespace DbTool
                     {
                         continue; // not mapped or is navigationProperty
                     }
-                    if (property.GetGetMethod().IsVirtual)
+                    if (property.GetGetMethod()?.IsVirtual == true)
                     {
                         continue; // virtual navigationProperty
                     }
@@ -175,14 +174,8 @@ namespace DbTool
                         columnInfo.DataType = "VARCHAR";
                     }
 
-                    if (property.IsAttributeDefined<StringLengthAttribute>())
-                    {
-                        columnInfo.Size = property.GetCustomAttribute<StringLengthAttribute>().MaximumLength;
-                    }
-                    else
-                    {
-                        columnInfo.Size = Convert.ToInt64(dbProvider.GetDefaultSizeForDbType(columnInfo.DataType).ToString());
-                    }
+                    var stringLength = property.GetCustomAttribute<StringLengthAttribute>();
+                    columnInfo.Size = stringLength?.MaximumLength ?? Convert.ToInt64(dbProvider.GetDefaultSizeForDbType(columnInfo.DataType).ToString());
 
                     table.Columns.Add(columnInfo);
                 }

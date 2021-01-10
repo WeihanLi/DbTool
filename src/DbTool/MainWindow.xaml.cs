@@ -89,13 +89,18 @@ namespace DbTool
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_dbHelper is null)
+            {
+                MessageBox.Show(_localizer["DbNotConnected"]);
+                return;
+            }
             if (CheckedTables.SelectedItems.Count == 0)
             {
                 MessageBox.Show(_localizer["ChooseTables"], _localizer["Tip"]);
                 return;
             }
 
-            if (sender is Button btnExport && btnExport.Tag is IDbDocExporter exporter)
+            if (sender is Button { Tag: IDbDocExporter exporter })
             {
                 var tables = new List<TableEntity>();
                 foreach (var item in CheckedTables.SelectedItems)
@@ -106,7 +111,7 @@ namespace DbTool
                     }
                 }
                 if (tables.Count == 0) return;
-                //
+
                 var dir = ChooseFolder();
                 if (string.IsNullOrEmpty(dir))
                 {
@@ -142,7 +147,7 @@ namespace DbTool
         {
             if (null != DefaultDbType.SelectedItem && _settings.DefaultDbType != DefaultDbType.SelectedItem.ToString())
             {
-                _settings.DefaultDbType = DefaultDbType.SelectedItem?.ToString();
+                _settings.DefaultDbType = DefaultDbType.SelectedItem?.ToString() ?? string.Empty;
             }
             if (DefaultCulture.SelectedItem is CultureInfo culture && culture.Name != _settings.DefaultCulture)
             {
@@ -177,7 +182,7 @@ namespace DbTool
                 {
                     var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
                     var tables = dbProvider.GetTableEntityFromSourceCode(ofg.FileNames);
-                    if (tables == null)
+                    if (tables.Count == 0)
                     {
                         MessageBox.Show(_localizer["NoModelFound"]);
                     }
@@ -254,12 +259,14 @@ namespace DbTool
                     {
                         var sheet = workbook.GetSheetAt(0);
                         var table = ExactTableFromExcel(sheet, dbProvider);
+                        if (table is not null)
+                        {
+                            TxtModelFirstTableName.Text = table.TableName;
+                            TxtModelFirstTableDesc.Text = table.TableDescription;
+                            ModelDataGrid.ItemsSource = table.Columns;
 
-                        TxtModelFirstTableName.Text = table.TableName;
-                        TxtModelFirstTableDesc.Text = table.TableDescription;
-                        ModelDataGrid.ItemsSource = table.Columns;
-
-                        sql = dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true);
+                            sql = dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true);
+                        }
                     }
                     else
                     {
@@ -268,17 +275,20 @@ namespace DbTool
                         {
                             var sheet = workbook.GetSheetAt(i);
                             var table = ExactTableFromExcel(sheet, dbProvider);
-                            if (i > 0)
+                            if (table is not null)
                             {
-                                sbSqlText.AppendLine();
+                                if (i > 0)
+                                {
+                                    sbSqlText.AppendLine();
+                                }
+                                else
+                                {
+                                    TxtModelFirstTableName.Text = table.TableName;
+                                    TxtModelFirstTableDesc.Text = table.TableDescription;
+                                    ModelDataGrid.ItemsSource = table.Columns;
+                                }
+                                sbSqlText.AppendLine(dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true));
                             }
-                            else
-                            {
-                                TxtModelFirstTableName.Text = table.TableName;
-                                TxtModelFirstTableDesc.Text = table.TableDescription;
-                                ModelDataGrid.ItemsSource = table.Columns;
-                            }
-                            sbSqlText.AppendLine(dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true));
                         }
                         sql = sbSqlText.ToString();
                     }
@@ -293,9 +303,9 @@ namespace DbTool
             }
         }
 
-        private TableEntity ExactTableFromExcel(ISheet sheet, IDbProvider dbProvider)
+        private TableEntity? ExactTableFromExcel(ISheet? sheet, IDbProvider dbProvider)
         {
-            if (sheet == null)
+            if (sheet is null)
                 return null;
 
             var table = new TableEntity
@@ -351,7 +361,7 @@ namespace DbTool
             });
         }
 
-        private DbHelper _dbHelper;
+        private DbHelper? _dbHelper;
 
         private async void BtnConnectDb_OnClick(object sender, RoutedEventArgs e)
         {
@@ -407,7 +417,7 @@ namespace DbTool
             {
                 if (item is TableEntity table)
                 {
-                    var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper.DbType);
+                    var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper?.DbType.GetValueOrDefault(_settings.DefaultDbType));
                     var path = Path.Combine(dir, $"{(_settings.ApplyNameConverter ? _modelNameConverter.ConvertTableToModel(table.TableName) : table.TableName)}.cs");
                     File.WriteAllText(path, modelCode, Encoding.UTF8);
                 }
@@ -416,7 +426,7 @@ namespace DbTool
             Process.Start("Explorer.exe", dir);
         }
 
-        private string ChooseFolder()
+        private string? ChooseFolder()
         {
             var dialog = new System.Windows.Forms.FolderBrowserDialog
             {
@@ -438,6 +448,11 @@ namespace DbTool
 
         private async void CheckTableToggled(object sender, RoutedEventArgs e)
         {
+            if (_dbHelper is null)
+            {
+                MessageBox.Show(_localizer["DbNotConnected"]);
+                return;
+            }
             if (sender is CheckBox checkBox && checkBox.DataContext is TableEntity table)
             {
                 if (checkBox.IsChecked == true)
