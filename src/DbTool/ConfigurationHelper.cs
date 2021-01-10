@@ -23,7 +23,7 @@ namespace DbTool
         /// </summary>
         /// <param name="key">设置的键值</param>
         /// <returns>键值对应的值</returns>
-        public static string AppSetting(string key) => _appSettings[key];
+        public static string AppSetting(string key) => _appSettings[key] ?? throw new ArgumentNullException(nameof(key));
 
         /// <summary>
         /// 获取配置文件中AppSetting节点的值

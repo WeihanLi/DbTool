@@ -28,6 +28,8 @@ namespace DbTool.ViewModels
             _defaultCulture = ConfigurationHelper.AppSetting(nameof(DefaultCulture));
             SupportedCultures = ConfigurationHelper.AppSetting(nameof(SupportedCultures))
                 .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+            ConnectionString = _defaultConnectionString;
         }
 
         public string DefaultDbType
