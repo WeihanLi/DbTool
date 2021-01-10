@@ -8,13 +8,6 @@ namespace DbTool
 {
     public class ExcelDbDocExporter : IDbDocExporter
     {
-        private readonly DbProviderFactory _dbProviderFactory;
-
-        public ExcelDbDocExporter(DbProviderFactory dbProviderFactory)
-        {
-            _dbProviderFactory = dbProviderFactory;
-        }
-
         public string ExportType => "Excel";
 
         public string FileExtension => ".xls";
@@ -79,8 +72,6 @@ namespace DbTool
                 //exist any column
                 if (tableEntity.Columns.Any())
                 {
-                    var dbProvider = _dbProviderFactory.GetDbProvider(dbType);
-
                     IRow tempRow;
                     ICell tempCell;
                     for (var i = 1; i <= tableEntity.Columns.Count; i++)
@@ -95,20 +86,22 @@ namespace DbTool
                         tempCell = tempRow.CreateCell(3);
                         tempCell.SetCellValue(tableEntity.Columns[i - 1].IsNullable ? "Y" : "N");
                         tempCell = tempRow.CreateCell(4);
-                        tempCell.SetCellValue(tableEntity.Columns[i - 1].DataType.ToUpper());
+                        tempCell.SetCellValue(tableEntity.Columns[i - 1].DataType?.ToUpper());
                         tempCell = tempRow.CreateCell(5);
                         tempCell.SetCellValue(
                             tableEntity.Columns[i - 1].Size > 0 && tableEntity.Columns[i - 1].Size < int.MaxValue
                             ? tableEntity.Columns[i - 1].Size.ToString()
                             : string.Empty);
                         tempCell = tempRow.CreateCell(6);
-                        if (tableEntity.Columns[i - 1].DefaultValue != null)
+
+                        var defaultVal = tableEntity.Columns[i - 1].DefaultValue;
+                        if (defaultVal is not null)
                         {
-                            tempCell.SetCellValue(tableEntity.Columns[i - 1].DefaultValue.ToString());
+                            tempCell.SetCellValue(defaultVal.ToString());
                         }
                         else
                         {
-                            if (tableEntity.Columns[i - 1].DataType.ToUpper().Contains("INT") && tableEntity.Columns[i - 1].IsPrimaryKey)
+                            if (tableEntity.Columns[i - 1].DataType?.ToUpper().Contains("INT") == true && tableEntity.Columns[i - 1].IsPrimaryKey)
                             {
                                 tempCell.SetCellValue("IDENTITY(1,1)");
                             }

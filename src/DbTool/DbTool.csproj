@@ -9,6 +9,7 @@
     <AssemblyName>DbTool</AssemblyName>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ApplicationIcon>DbTool.ico</ApplicationIcon>
+    <DbToolPackageVersion>1.4.0-preview-20210110-073141</DbToolPackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +23,9 @@
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.3" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.43" />
     <PackageReference Include="WeihanLi.Npoi" Version="1.13.0" />
-    <PackageReference Include="DbTool.Core" Version="1.3.0" />
-    <PackageReference Include="DbTool.DbProvider.MySql" Version="1.3.0" />
-    <PackageReference Include="DbTool.DbProvider.SqlServer" Version="1.3.0" />
+    <PackageReference Include="DbTool.Core" Version="$(DbToolPackageVersion)" />
+    <PackageReference Include="DbTool.DbProvider.MySql" Version="$(DbToolPackageVersion)" />
+    <PackageReference Include="DbTool.DbProvider.SqlServer" Version="$(DbToolPackageVersion)" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Resources\**\*.json">

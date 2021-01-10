@@ -120,13 +120,13 @@ namespace DbTool
                 try
                 {
                     var exportBytes = exporter.Export(tables.ToArray(), _dbHelper.DbType);
-                    if (null != exportBytes && exportBytes.Length > 0)
+                    if (exportBytes.Length > 0)
                     {
                         var fileName = tables.Count > 1
                             ? _dbHelper.DatabaseName
                             :
                                 (_settings.ApplyNameConverter
-                                    ? _modelNameConverter.ConvertTableToModel(tables[0].TableName)
+                                    ? _modelNameConverter.ConvertTableToModel(tables[0].TableName ?? "")
                                     : tables[0].TableName)
                             ;
                         fileName = $"{fileName}.{exporter.FileExtension.TrimStart('.')}";
@@ -375,7 +375,7 @@ namespace DbTool
                 _dbHelper?.Dispose();
 
                 var connStr = TxtConnectionString.Text;
-                var currentDbProvider = _dbProviderFactory.GetDbProvider(DbFirst_DbType.SelectedItem.ToString());
+                var currentDbProvider = _dbProviderFactory.GetDbProvider(DbFirst_DbType.SelectedItem?.ToString() ?? _settings.DefaultDbType);
                 _dbHelper = new DbHelper(connStr, currentDbProvider);
 
                 var tables = await _dbHelper.GetTablesInfoAsync();
@@ -417,8 +417,8 @@ namespace DbTool
             {
                 if (item is TableEntity table)
                 {
-                    var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper?.DbType.GetValueOrDefault(_settings.DefaultDbType));
-                    var path = Path.Combine(dir, $"{(_settings.ApplyNameConverter ? _modelNameConverter.ConvertTableToModel(table.TableName) : table.TableName)}.cs");
+                    var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper?.DbType ?? _settings.DefaultDbType);
+                    var path = Path.Combine(dir, $"{(_settings.ApplyNameConverter ? _modelNameConverter.ConvertTableToModel(table.TableName ?? "") : table.TableName)}.cs");
                     File.WriteAllText(path, modelCode, Encoding.UTF8);
                 }
             }
@@ -467,7 +467,7 @@ namespace DbTool
                         CurrentCheckedTableName.Text = table.TableName;
                         if (table.Columns.Count == 0)
                         {
-                            table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName);
+                            table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName ?? "");
                             ColumnListView.Dispatcher.Invoke(() =>
                             {
                                 ColumnListView.ItemsSource = table.Columns;
