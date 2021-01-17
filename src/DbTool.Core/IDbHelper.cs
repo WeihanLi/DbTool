@@ -6,6 +6,8 @@ namespace DbTool.Core
 {
     public interface IDbHelper
     {
+        string DbType { get; }
+
         string DatabaseName { get; }
 
         Task<List<TableEntity>> GetTablesInfoAsync();
