@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using WeihanLi.Extensions;
 
 namespace DbTool.Core.Entity
@@ -11,12 +10,11 @@ namespace DbTool.Core.Entity
     public class TableEntity
     {
         private readonly string _tableName = null!;
-        private readonly List<ColumnEntity> _columns = new();
+        private List<ColumnEntity> _columns = new();
 
         /// <summary>
         /// 表名称
         /// </summary>
-        [Required]
         public string TableName
         {
             get => _tableName;
@@ -26,7 +24,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 表描述
         /// </summary>
-        public string? TableDescription { get; init; }
+        public string? TableDescription { get; set; }
 
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
@@ -36,7 +34,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 表架构 scheme
         /// </summary>
-        public string? TableSchema { get; init; }
+        public string? TableSchema { get; set; }
 
         /// <summary>
         /// 列信息
@@ -46,7 +44,7 @@ namespace DbTool.Core.Entity
         public List<ColumnEntity> Columns
         {
             get => _columns;
-            init => _columns = value ?? new();
+            set => _columns = value ?? new();
         }
 
 #nullable restore

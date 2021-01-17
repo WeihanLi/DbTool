@@ -10,7 +10,7 @@ namespace DbTool.Core.Entity
     public class DbEntity
     {
         private readonly string _databaseName = null!;
-        private readonly List<TableEntity> _tables = new();
+        private List<TableEntity> _tables = new();
 
         /// <summary>
         /// 数据库名称
@@ -24,7 +24,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 数据库描述
         /// </summary>
-        public string? DatabaseDescription { get; init; }
+        public string? DatabaseDescription { get; set; }
 
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
@@ -39,7 +39,7 @@ namespace DbTool.Core.Entity
         public List<TableEntity> Tables
         {
             get => _tables;
-            init => _tables = value ?? new();
+            set => _tables = value ?? new();
         }
 
 #nullable restore
