@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WeihanLi.Extensions;
 
 namespace DbTool.Core.Entity
@@ -8,31 +9,39 @@ namespace DbTool.Core.Entity
     /// </summary>
     public class DbEntity
     {
-        private string? _databaseName;
+        private readonly string _databaseName = null!;
+        private readonly List<TableEntity> _tables = new();
 
         /// <summary>
         /// 数据库名称
         /// </summary>
-        public string? DatabaseName { get => _databaseName; set => _databaseName = value?.Trim(); }
+        public string DatabaseName
+        {
+            get => _databaseName;
+            init => _databaseName = (value ?? throw new ArgumentNullException(nameof(value))).Trim();
+        }
 
         /// <summary>
         /// 数据库描述
         /// </summary>
-        public string? DatabaseDescription { get; set; }
+        public string? DatabaseDescription { get; init; }
 
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
         /// </summary>
-        public string? NotEmptyDescription => DatabaseDescription.GetValueOrDefault(_databaseName);
+        public string NotEmptyDescription => DatabaseDescription.GetValueOrDefault(DatabaseName);
 
         /// <summary>
         /// 表信息
         /// </summary>
-        public List<TableEntity> Tables { get; set; }
+#nullable disable
 
-        public DbEntity()
+        public List<TableEntity> Tables
         {
-            Tables = new List<TableEntity>();
+            get => _tables;
+            init => _tables = value ?? new();
         }
+
+#nullable restore
     }
 }

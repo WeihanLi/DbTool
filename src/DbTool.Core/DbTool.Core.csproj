@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Title>DbTool.Core</Title>
     <PackageId>DbTool.Core</PackageId>
     <PackageTags>DbTool,code-generator,tools</PackageTags>

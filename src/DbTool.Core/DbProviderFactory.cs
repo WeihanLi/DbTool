@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WeihanLi.Extensions;
 
 namespace DbTool.Core
 {
@@ -15,7 +14,14 @@ namespace DbTool.Core
             SupportedDbTypes = _dbProviders.Keys.ToArray();
         }
 
-        public IDbProvider GetDbProvider(string dbType) => _dbProviders[dbType];
+        public IDbProvider GetDbProvider(string dbType)
+        {
+            if (dbType is null)
+            {
+                throw new ArgumentNullException(nameof(dbType));
+            }
+            return _dbProviders[dbType];
+        }
 
         public IReadOnlyList<string> SupportedDbTypes { get; }
     }

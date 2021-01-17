@@ -1,19 +1,24 @@
-﻿using WeihanLi.Extensions;
+﻿using System;
+using WeihanLi.Extensions;
 
 namespace DbTool.Core.Entity
 {
     /// <summary>
     /// 列信息
     /// </summary>
-    public class ColumnEntity
+    public record ColumnEntity
     {
-        private string? _dataType;
-        private string? _columnName;
+        private readonly string _dataType = null!;
+        private readonly string _columnName = null!;
 
         /// <summary>
         /// 列名称
         /// </summary>
-        public string? ColumnName { get => _columnName; set => _columnName = value?.Trim(); }
+        public string ColumnName
+        {
+            get => _columnName;
+            init => _columnName = (value ?? throw new ArgumentNullException(nameof(value))).Trim();
+        }
 
         /// <summary>
         /// 列描述
@@ -23,7 +28,7 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 获取描述信息，如果描述信息为空则返回列名
         /// </summary>
-        public string NotEmptyDescription => ColumnDescription.GetValueOrDefault(_columnName);
+        public string NotEmptyDescription => ColumnDescription.GetValueOrDefault(ColumnName);
 
         /// <summary>
         /// 是否可以为空
@@ -43,10 +48,10 @@ namespace DbTool.Core.Entity
         /// <summary>
         /// 数据类型
         /// </summary>
-        public string? DataType
+        public string DataType
         {
             get => _dataType;
-            set => _dataType = value?.ToUpper();
+            init => _dataType = (value ?? throw new ArgumentNullException(nameof(value))).ToUpper();
         }
 
         /// <summary>

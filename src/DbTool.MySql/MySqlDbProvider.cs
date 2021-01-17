@@ -295,14 +295,14 @@ AND table_name = @tableName;";
                 {
                     sbSqlText.AppendLine();
                     sbSqlText.Append($"\t{col.ColumnName} {col.DataType}");
-                    if (col.DataType?.Contains("CHAR") == true)
+                    if (col.DataType.Contains("CHAR"))
                     {
                         sbSqlText.Append($"({(col.Size == 0 ? GetDefaultSizeForDbType(col.DataType, 2048) : col.Size)})");
                     }
                     if (col.IsPrimaryKey)
                     {
                         sbSqlText.Append(" PRIMARY KEY");
-                        if (col.DataType?.Contains("INT") == true)
+                        if (col.DataType.Contains("INT"))
                         {
                             sbSqlText.Append(" AUTO_INCREMENT");
                         }
@@ -318,8 +318,8 @@ AND table_name = @tableName;";
                     {
                         if (!col.IsPrimaryKey)
                         {
-                            if ((col.DataType?.Contains("CHAR") == true
-                                 || col.DataType?.Contains("TEXT") == true)
+                            if ((col.DataType.Contains("CHAR")
+                                 || col.DataType.Contains("TEXT"))
                                 && !defaultValueStr.StartsWith("'"))
                             {
                                 sbSqlText.AppendFormat(" DEFAULT '{0}'", defaultValueStr);
