@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
 
 namespace DbTool

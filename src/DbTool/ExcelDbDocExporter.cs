@@ -86,7 +86,7 @@ namespace DbTool
                         tempCell = tempRow.CreateCell(3);
                         tempCell.SetCellValue(tableEntity.Columns[i - 1].IsNullable ? "Y" : "N");
                         tempCell = tempRow.CreateCell(4);
-                        tempCell.SetCellValue(tableEntity.Columns[i - 1].DataType?.ToUpper());
+                        tempCell.SetCellValue(tableEntity.Columns[i - 1].DataType.ToUpper());
                         tempCell = tempRow.CreateCell(5);
                         tempCell.SetCellValue(
                             tableEntity.Columns[i - 1].Size > 0 && tableEntity.Columns[i - 1].Size < int.MaxValue
@@ -101,7 +101,7 @@ namespace DbTool
                         }
                         else
                         {
-                            if (tableEntity.Columns[i - 1].DataType?.ToUpper().Contains("INT") == true && tableEntity.Columns[i - 1].IsPrimaryKey)
+                            if (tableEntity.Columns[i - 1].DataType.ToUpper().Contains("INT") && tableEntity.Columns[i - 1].IsPrimaryKey)
                             {
                                 tempCell.SetCellValue("IDENTITY(1,1)");
                             }

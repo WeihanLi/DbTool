@@ -108,18 +108,14 @@ namespace DbTool
             var tables = new List<TableEntity>(4);
             foreach (var type in assembly.GetExportedTypes().Where(x => x.IsClass && !x.IsAbstract))
             {
+                var tableAttr = type.GetCustomAttribute<TableAttribute>();
                 var table = new TableEntity
                 {
-                    TableName = DependencyResolver.Current.ResolveService<IModelNameConverter>()
+                    TableName = tableAttr?.Name ?? DependencyResolver.Current.ResolveService<IModelNameConverter>()
                         .ConvertModelToTable(type.Name),
+                    TableSchema = tableAttr?.Schema,
                     TableDescription = type.GetCustomAttribute<DescriptionAttribute>()?.Description
                 };
-                var tableAttr = type.GetCustomAttribute<TableAttribute>();
-                if (!string.IsNullOrEmpty(tableAttr?.Name))
-                {
-                    table.TableName = tableAttr.Name;
-                    table.TableSchema = tableAttr.Schema;
-                }
                 var defaultVal = Activator.CreateInstance(type);
                 foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
@@ -140,6 +136,10 @@ namespace DbTool
                     {
                         ColumnName = property.GetCustomAttribute<ColumnAttribute>()?.Name ?? property.Name,
                         ColumnDescription = property.GetCustomAttribute<DescriptionAttribute>()?.Description,
+                        DataType = dbProvider.ClrType2DbType(
+                            property.PropertyType.IsEnum
+                                ? Enum.GetUnderlyingType(property.PropertyType)
+                                : property.PropertyType)
                     };
                     var defaultPropertyValue = property.PropertyType.GetDefaultValue();
                     if (null == defaultPropertyValue)
@@ -163,16 +163,6 @@ namespace DbTool
                     columnInfo.IsPrimaryKey = property.IsDefined(typeof(KeyAttribute))
                                               || property.Name == "Id"
                                               || columnInfo.ColumnDescription?.Contains("主键") == true;
-                    columnInfo.DataType = dbProvider.ClrType2DbType(
-                        property.PropertyType.IsEnum
-                            ? Enum.GetUnderlyingType(property.PropertyType)
-                            : property.PropertyType);
-
-                    // use VARCHAR for MySql
-                    if (!dbProvider.DbType.EqualsIgnoreCase("SqlServer") && columnInfo.DataType.Equals("NVARCHAR"))
-                    {
-                        columnInfo.DataType = "VARCHAR";
-                    }
 
                     var stringLength = property.GetCustomAttribute<StringLengthAttribute>();
                     columnInfo.Size = stringLength?.MaximumLength ?? Convert.ToInt64(dbProvider.GetDefaultSizeForDbType(columnInfo.DataType).ToString());

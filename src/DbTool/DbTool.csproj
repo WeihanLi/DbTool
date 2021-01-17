@@ -9,7 +9,7 @@
     <AssemblyName>DbTool</AssemblyName>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ApplicationIcon>DbTool.ico</ApplicationIcon>
-    <DbToolPackageVersion>1.4.0-preview-20210117-044151</DbToolPackageVersion>
+    <DbToolPackageVersion>1.4.0</DbToolPackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.3" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.43" />
-    <PackageReference Include="WeihanLi.Npoi" Version="1.14.0-preview-20210117-033710" />
+    <PackageReference Include="WeihanLi.Npoi" Version="1.14.0" />
     <PackageReference Include="DbTool.Core" Version="$(DbToolPackageVersion)" />
     <PackageReference Include="DbTool.DbProvider.MySql" Version="$(DbToolPackageVersion)" />
     <PackageReference Include="DbTool.DbProvider.SqlServer" Version="$(DbToolPackageVersion)" />

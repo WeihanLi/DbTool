@@ -125,9 +125,9 @@ namespace DbTool
                         var fileName = tables.Count > 1
                             ? _dbHelper.DatabaseName
                             :
-                                (_settings.ApplyNameConverter
-                                    ? _modelNameConverter.ConvertTableToModel(tables[0].TableName ?? "")
-                                    : tables[0].TableName)
+                                _settings.ApplyNameConverter
+                                    ? _modelNameConverter.ConvertTableToModel(tables[0].TableName)
+                                    : tables[0].TableName
                             ;
                         fileName = $"{fileName}.{exporter.FileExtension.TrimStart('.')}";
                         var path = Path.Combine(dir, fileName);
@@ -315,7 +315,7 @@ namespace DbTool
 
             foreach (var row in sheet.GetRowCollection())
             {
-                if (null == row)
+                if (row is null)
                 {
                     continue;
                 }
@@ -328,7 +328,8 @@ namespace DbTool
                 {
                     var column = new ColumnEntity
                     {
-                        ColumnName = row.GetCell(0)?.StringCellValue
+                        ColumnName = row.GetCell(0).StringCellValue,
+                        DataType = row.GetCell(4).StringCellValue,
                     };
                     if (string.IsNullOrWhiteSpace(column.ColumnName))
                     {
@@ -337,7 +338,6 @@ namespace DbTool
                     column.ColumnDescription = row.GetCell(1).StringCellValue;
                     column.IsPrimaryKey = row.GetCell(2).StringCellValue.Equals("Y");
                     column.IsNullable = row.GetCell(3).StringCellValue.Equals("Y");
-                    column.DataType = row.GetCell(4).StringCellValue;
 
                     column.Size = string.IsNullOrEmpty(row.GetCell(5).ToString()) ? dbProvider.GetDefaultSizeForDbType(column.DataType) : Convert.ToUInt32(row.GetCell(5).ToString());
 
@@ -372,8 +372,6 @@ namespace DbTool
             }
             try
             {
-                _dbHelper?.Dispose();
-
                 var connStr = TxtConnectionString.Text;
                 var currentDbProvider = _dbProviderFactory.GetDbProvider(DbFirst_DbType.SelectedItem?.ToString() ?? _settings.DefaultDbType);
                 _dbHelper = new DbHelper(connStr, currentDbProvider);
@@ -442,7 +440,10 @@ namespace DbTool
 
         protected override void OnClosed(EventArgs e)
         {
-            _dbHelper?.Dispose();
+            if (_dbHelper is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
             base.OnClosed(e);
         }
 
@@ -453,7 +454,7 @@ namespace DbTool
                 MessageBox.Show(_localizer["DbNotConnected"]);
                 return;
             }
-            if (sender is CheckBox checkBox && checkBox.DataContext is TableEntity table)
+            if (sender is CheckBox { DataContext: TableEntity table } checkBox)
             {
                 if (checkBox.IsChecked == true)
                 {
@@ -467,7 +468,7 @@ namespace DbTool
                         CurrentCheckedTableName.Text = table.TableName;
                         if (table.Columns.Count == 0)
                         {
-                            table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName ?? "");
+                            table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName);
                             ColumnListView.Dispatcher.Invoke(() =>
                             {
                                 ColumnListView.ItemsSource = table.Columns;

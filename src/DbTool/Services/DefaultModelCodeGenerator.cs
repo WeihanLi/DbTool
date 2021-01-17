@@ -48,7 +48,7 @@ namespace DbTool
                 sbText.AppendLine($"\t[Table(\"{tableEntity.TableName}\")]");
                 sbText.AppendLine($"\t[Description(\"{tableEntity.TableDescription.Replace(Environment.NewLine, " ")}\")]");
             }
-            sbText.AppendLine($"\tpublic class {options.Prefix}{_modelNameConverter.ConvertTableToModel(tableEntity.TableName ?? "")}{options.Suffix}");
+            sbText.AppendLine($"\tpublic class {options.Prefix}{_modelNameConverter.ConvertTableToModel(tableEntity.TableName)}{options.Suffix}");
             sbText.AppendLine("\t{");
             var index = 0;
             if (options.GeneratePrivateFields)
@@ -63,9 +63,9 @@ namespace DbTool
                     {
                         index++;
                     }
-                    var fclType = dbProvider.DbType2ClrType(item.DataType ?? "VARCHAR", item.IsNullable);
+                    var fclType = dbProvider.DbType2ClrType(item.DataType, item.IsNullable);
 
-                    var tmpColName = ToPrivateFieldName(item.ColumnName ?? string.Empty);
+                    var tmpColName = ToPrivateFieldName(item.ColumnName);
                     sbText.AppendLine($"\t\tprivate {fclType} {tmpColName};");
                     if (options.GenerateDataAnnotation)
                     {
@@ -115,7 +115,7 @@ namespace DbTool
                     {
                         index++;
                     }
-                    var fclType = dbProvider.DbType2ClrType(item.DataType ?? "VARCHAR", item.IsNullable);
+                    var fclType = dbProvider.DbType2ClrType(item.DataType, item.IsNullable);
 
                     if (options.GenerateDataAnnotation)
                     {
