@@ -13,9 +13,9 @@ namespace DbTool.Core
     {
         public virtual string ConvertTableToModel(string tableName)
         {
-            if (string.IsNullOrEmpty(tableName))
+            if (string.IsNullOrWhiteSpace(tableName))
             {
-                return "";
+                return string.Empty;
             }
             tableName = tableName.Trim();
             if (tableName.StartsWith("tab_", StringComparison.OrdinalIgnoreCase)
@@ -33,9 +33,9 @@ namespace DbTool.Core
 
         public virtual string ConvertModelToTable(string modelName)
         {
-            if (string.IsNullOrEmpty(modelName))
+            if (string.IsNullOrWhiteSpace(modelName))
             {
-                return "";
+                return string.Empty;
             }
             modelName = modelName.Trim();
             if (modelName.EndsWith("Model"))

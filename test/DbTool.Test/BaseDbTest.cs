@@ -9,14 +9,16 @@ namespace DbTool.Test
 {
     public abstract class BaseDbTest
     {
+        protected readonly IDbHelperFactory DbHelperFactory;
         public abstract string ConnStringKey { get; }
 
         protected readonly IDbProvider DbProvider;
 
         public IConfiguration Configuration { get; }
 
-        protected BaseDbTest(IConfiguration configuration, DbProviderFactory dbProviderFactory)
+        protected BaseDbTest(IConfiguration configuration, IDbHelperFactory dbHelperFactory, DbProviderFactory dbProviderFactory)
         {
+            DbHelperFactory = dbHelperFactory;
             Configuration = configuration;
 
             var dbType = ConnStringKey.Substring(0, ConnStringKey.Length - 4);
@@ -81,7 +83,7 @@ namespace DbTool.Test
         public virtual async Task QueryTest()
         {
             var connString = Configuration.GetConnectionString(ConnStringKey);
-            IDbHelper dbHelper = new DbHelper(connString, DbProvider);
+            var dbHelper = DbHelperFactory.GetDbHelper(DbProvider, connString);
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = await dbHelper.GetTablesInfoAsync();
             Assert.NotNull(tables);
@@ -89,7 +91,7 @@ namespace DbTool.Test
             foreach (var table in tables)
             {
                 Assert.NotNull(table.TableName);
-                var columns = await dbHelper.GetColumnsInfoAsync(table.TableName ?? string.Empty);
+                var columns = await dbHelper.GetColumnsInfoAsync(table.TableName);
                 Assert.NotNull(columns);
                 Assert.NotEmpty(columns);
             }
@@ -101,9 +103,9 @@ namespace DbTool.Test
             Assert.NotEmpty(sql);
 
             var sql1 = DbProvider.GenerateSqlStatement(TableEntity, false);
-            Assert.NotEmpty(sql);
+            Assert.NotEmpty(sql1);
 
-            Assert.Equal(sql1, sql);
+            Assert.NotEqual(sql1, sql);
         }
     }
 }

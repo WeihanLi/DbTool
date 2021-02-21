@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using DbTool.Core.Entity;
+using WeihanLi.Common;
 using WeihanLi.Extensions;
 
 namespace DbTool.Core
@@ -12,7 +13,7 @@ namespace DbTool.Core
     /// <summary>
     /// 数据库操作查询帮助类
     /// </summary>
-    public class DbHelper : IDbHelper, IDisposable
+    internal sealed class DbHelper : IDbHelper, IDisposable
     {
         private readonly DbConnection _conn;
 
@@ -28,7 +29,7 @@ namespace DbTool.Core
         /// </summary>
         public string DbType => _dbProvider.DbType;
 
-        public DbHelper(string connString, IDbProvider dbProvider)
+        public DbHelper(IDbProvider dbProvider, string connString)
         {
             if (connString.IsNullOrWhiteSpace())
             {
@@ -37,35 +38,6 @@ namespace DbTool.Core
 
             _dbProvider = dbProvider ?? throw new ArgumentNullException(nameof(dbProvider));
             _conn = _dbProvider.GetDbConnection(connString);
-        }
-
-        /// <summary>
-        /// 获取数据库表信息
-        /// </summary>
-        /// <returns></returns>
-        public List<TableEntity> GetTablesInfo()
-        {
-            return _conn.Query<TableEntity>(
-                    _dbProvider.QueryDbTablesSqlFormat,
-                    new { dbName = DatabaseName })
-                .ToList();
-        }
-
-        /// <summary>
-        /// 获取数据库表的列信息
-        /// </summary>
-        /// <param name="tableName">表名称</param>
-        /// <returns></returns>
-        public List<ColumnEntity> GetColumnsInfo(string tableName)
-        {
-            if (string.IsNullOrEmpty(tableName))
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
-            return _conn.Query<ColumnEntity>(
-                    _dbProvider.QueryTableColumnsSqlFormat,
-                new { dbName = DatabaseName, tableName })
-                .ToList();
         }
 
         /// <summary>
@@ -87,10 +59,7 @@ namespace DbTool.Core
         /// <returns></returns>
         public async Task<List<ColumnEntity>> GetColumnsInfoAsync(string tableName)
         {
-            if (string.IsNullOrEmpty(tableName))
-            {
-                throw new ArgumentNullException(nameof(tableName));
-            }
+            Guard.NotNullOrEmpty(tableName, nameof(tableName));
             return (await _conn.QueryAsync<ColumnEntity>(
                     _dbProvider.QueryTableColumnsSqlFormat,
                     new { dbName = DatabaseName, tableName }))

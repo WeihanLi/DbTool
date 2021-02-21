@@ -21,7 +21,7 @@ namespace DbTool.Test
             base.CreateTest();
         }
 
-        public MySqlTest(IConfiguration configuration, DbProviderFactory dbProviderFactory) : base(configuration, dbProviderFactory)
+        public MySqlTest(IConfiguration configuration, IDbHelperFactory dbHelperFactory, DbProviderFactory dbProviderFactory) : base(configuration, dbHelperFactory, dbProviderFactory)
         {
         }
     }

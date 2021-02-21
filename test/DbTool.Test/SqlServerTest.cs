@@ -21,7 +21,7 @@ namespace DbTool.Test
             base.CreateTest();
         }
 
-        public SqlServerTest(IConfiguration configuration, DbProviderFactory dbProviderFactory) : base(configuration, dbProviderFactory)
+        public SqlServerTest(IConfiguration configuration, IDbHelperFactory dbHelperFactory, DbProviderFactory dbProviderFactory) : base(configuration, dbHelperFactory, dbProviderFactory)
         {
         }
     }

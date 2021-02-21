@@ -19,6 +19,7 @@ namespace DbTool.Test
             services.AddSingleton<IDbProvider, SqlServerDbProvider>();
             services.AddSingleton<IDbProvider, MySqlDbProvider>();
             services.AddSingleton<DbProviderFactory>();
+            services.AddSingleton<IDbHelperFactory, MockDbHelperFactory>();
         }
     }
 }
