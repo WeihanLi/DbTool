@@ -4,7 +4,7 @@
 dotnet tool install --global cake.tool
 
 # Start Cake
-[string]$CAKE_ARGS = "-verbosity=diagnostic"
+[string]$CAKE_ARGS = "--verbosity=diagnostic"
 
 Write-Host "dotnet cake $SCRIPT $CAKE_ARGS $ARGS" -ForegroundColor GREEN
  
