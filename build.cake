@@ -132,7 +132,8 @@ bool PublishArtifacts(ICakeContext context)
       var pushSetting =new DotNetCoreNuGetPushSettings
       {
          Source = EnvironmentVariable("Nuget__SourceUrl") ?? "https://api.nuget.org/v3/index.json",
-         ApiKey = EnvironmentVariable("Nuget__ApiKey") ?? apiKey
+         ApiKey = EnvironmentVariable("Nuget__ApiKey") ?? apiKey,
+         SkipDuplicate = true
       };
       var packages = GetFiles($"{artifacts}/*.nupkg");
       foreach(var package in packages)
