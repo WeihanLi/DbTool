@@ -10,7 +10,7 @@ var configuration = Argument("configuration", "Release");
 var srcProjects  = GetFiles("./src/**/*.csproj");
 var testProjects  = GetFiles("./test/**/*.csproj");
 
-var artifacts = "./artifacts/packages";
+var artifacts = "./artifacts";
 var branchName = EnvironmentVariable("BUILD_SOURCEBRANCHNAME") ?? "local";
 
 void PrintBuildInfo(ICakeContext context){
