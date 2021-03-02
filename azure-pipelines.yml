@@ -1,3 +1,11 @@
+schedules:
+- cron: 0 10 * * *
+  displayName: Build every day at 10:00 UTC
+  branches:
+    include:
+    - master
+  always: true
+
 trigger:
   branches:
     include:
