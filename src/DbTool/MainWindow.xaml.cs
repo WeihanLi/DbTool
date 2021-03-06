@@ -27,6 +27,7 @@ namespace DbTool
     {
         private readonly IStringLocalizer<MainWindow> _localizer;
         private readonly DbProviderFactory _dbProviderFactory;
+        private readonly IDbHelperFactory _dbHelperFactory;
         private readonly SettingsViewModel _settings;
 
         private readonly IModelCodeGenerator _modelCodeGenerator;
@@ -35,6 +36,7 @@ namespace DbTool
         public MainWindow(
             IStringLocalizer<MainWindow> localizer,
             DbProviderFactory dbProviderFactory,
+            IDbHelperFactory dbHelperFactory,
             SettingsViewModel settings,
             IModelCodeGenerator modelCodeGenerator,
             IModelNameConverter modelNameConverter)
@@ -44,6 +46,7 @@ namespace DbTool
             _localizer = localizer;
             _settings = settings;
             _dbProviderFactory = dbProviderFactory;
+            _dbHelperFactory = dbHelperFactory;
             _modelCodeGenerator = modelCodeGenerator;
             _modelNameConverter = modelNameConverter;
 
@@ -361,7 +364,7 @@ namespace DbTool
             });
         }
 
-        private DbHelper? _dbHelper;
+        private IDbHelper? _dbHelper;
 
         private async void BtnConnectDb_OnClick(object sender, RoutedEventArgs e)
         {
@@ -374,7 +377,7 @@ namespace DbTool
             {
                 var connStr = TxtConnectionString.Text;
                 var currentDbProvider = _dbProviderFactory.GetDbProvider(DbFirst_DbType.SelectedItem?.ToString() ?? _settings.DefaultDbType);
-                _dbHelper = new DbHelper(connStr, currentDbProvider);
+                _dbHelper = _dbHelperFactory.GetDbHelper(currentDbProvider, connStr);
 
                 var tables = await _dbHelper.GetTablesInfoAsync();
                 CheckedTables.Dispatcher.Invoke(() =>

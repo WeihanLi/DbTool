@@ -5,6 +5,8 @@ using WeihanLi.Extensions;
 
 namespace DbTool
 {
+#nullable disable
+
     /// <summary>
     /// Helper for ConfigurationManager
     /// https://github.com/WeihanLi/WeihanLi.Common/blob/dev/src/WeihanLi.Common/Helpers/ConfigurationHelper.cs
@@ -70,4 +72,6 @@ namespace DbTool
         /// <returns>键值对应的连接字符串值</returns>
         public static string ConnectionString(string key) => ConfigurationManager.ConnectionStrings[key].ConnectionString;
     }
+
+#nullable restore
 }

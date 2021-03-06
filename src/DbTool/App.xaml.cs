@@ -35,6 +35,7 @@ namespace DbTool
 
             services.TryAddSingleton<IModelNameConverter, ModelNameConverter>();
             services.TryAddSingleton<IModelCodeGenerator, DefaultModelCodeGenerator>();
+            services.TryAddSingleton<IDbHelperFactory, DbHelperFactory>();
             services.TryAddSingleton<DbProviderFactory>();
 
             services
