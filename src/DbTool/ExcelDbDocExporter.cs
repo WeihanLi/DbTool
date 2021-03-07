@@ -45,8 +45,8 @@ namespace DbTool
                         font.FontName = "微软雅黑";
                         font.IsBold = true;
                         titleStyle.SetFont(font);
-                        titleStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Black.Index;
-                        titleStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.SeaGreen.Index;
+                        titleStyle.FillBackgroundColor = IndexedColors.Black.Index;
+                        titleStyle.FillForegroundColor = IndexedColors.SeaGreen.Index;
                         titleStyle.FillPattern = FillPattern.SolidForeground;
                         sheet.GetRow(0).GetCell(0).CellStyle = titleStyle;
                     };
@@ -88,7 +88,7 @@ namespace DbTool
                     {
                         return "IDENTITY(1,1)";
                     }
-                    return string.Empty;
+                    return null;
                 });
             settings.Property(x => x.NotEmptyDescription).Ignored();
         }
@@ -106,7 +106,7 @@ namespace DbTool
 
                 var titleRow = sheet.CreateRow(0);
                 var titleCell = titleRow.CreateCell(0);
-                titleCell.SetCellValue(tableEntity.TableDescription);
+                titleCell.SetCellValue(tableEntity.NotEmptyDescription);
 
                 sheet.ImportData(tableEntity.Columns);
             }
