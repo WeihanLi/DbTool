@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.3" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.45" />
-    <PackageReference Include="WeihanLi.Npoi" Version="1.16.0-preview-*" />
+    <PackageReference Include="WeihanLi.Npoi" Version="1.16.0" />
     <PackageReference Include="DbTool.Core" Version="$(DbToolPackageVersion)" />
     <PackageReference Include="DbTool.DbProvider.MySql" Version="$(DbToolPackageVersion)" />
     <PackageReference Include="DbTool.DbProvider.SqlServer" Version="$(DbToolPackageVersion)" />
