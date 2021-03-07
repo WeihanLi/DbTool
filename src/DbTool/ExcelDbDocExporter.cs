@@ -50,38 +50,31 @@ namespace DbTool
                         titleStyle.FillPattern = FillPattern.SolidForeground;
                         sheet.GetRow(0).GetCell(0).CellStyle = titleStyle;
                     };
-                })
-                ;
+                });
             settings.Property(x => x.ColumnName)
                 .HasColumnIndex(0)
-                .HasColumnTitle("列名称")
-                ;
+                .HasColumnTitle("列名称");
             settings.Property(x => x.ColumnDescription)
                 .HasColumnIndex(1)
-                .HasColumnTitle("列描述")
-                ;
+                .HasColumnTitle("列描述");
             settings.Property(x => x.IsPrimaryKey)
                 .HasColumnIndex(2)
                 .HasColumnTitle("是否主键")
                 .HasColumnOutputFormatter(x => x ? "Y" : "N")
-                .HasColumnInputFormatter(x => "Y".Equals(x))
-                ;
+                .HasColumnInputFormatter(x => "Y".Equals(x));
             settings.Property(x => x.IsNullable)
                 .HasColumnIndex(3)
                 .HasColumnTitle("是否可以为空")
                 .HasColumnOutputFormatter(x => x ? "Y" : "N")
-                .HasColumnInputFormatter(x => "Y".Equals(x))
-                ;
+                .HasColumnInputFormatter(x => "Y".Equals(x));
             settings.Property(x => x.DataType)
                 .HasColumnIndex(4)
                 .HasColumnTitle("数据类型")
-                .HasColumnOutputFormatter(x => x?.ToUpper())
-                ;
+                .HasColumnOutputFormatter(x => x?.ToUpper());
             settings.Property(x => x.Size)
                 .HasColumnIndex(5)
                 .HasColumnTitle("数据长度")
-                .HasColumnOutputFormatter(x => x > 0 && x < int.MaxValue ? x.ToString() : string.Empty)
-                ;
+                .HasColumnOutputFormatter(x => x > 0 && x < int.MaxValue ? x.ToString() : string.Empty);
             settings.Property(x => x.DefaultValue)
                 .HasColumnIndex(6)
                 .HasColumnTitle("默认值")
@@ -96,8 +89,7 @@ namespace DbTool
                         return "IDENTITY(1,1)";
                     }
                     return string.Empty;
-                })
-                ;
+                });
             settings.Property(x => x.NotEmptyDescription).Ignored();
         }
 
@@ -107,18 +99,16 @@ namespace DbTool
 
         public byte[] Export(TableEntity[] tableInfo, string dbType)
         {
-            var workbook = ExcelHelper.PrepareWorkbook(!FileExtension.EndsWith(".xls"));
+            var workbook = ExcelHelper.PrepareWorkbook(FileExtension.EndsWith(".xls") ? ExcelFormat.Xls : ExcelFormat.Xlsx);
             foreach (var tableEntity in tableInfo)
             {
-                //Create Sheet
-                var tempSheet = workbook.CreateSheet(tableEntity.TableName);
-                //create title
-                var titleRow = tempSheet.CreateRow(0);
+                var sheet = workbook.CreateSheet(tableEntity.TableName);
+
+                var titleRow = sheet.CreateRow(0);
                 var titleCell = titleRow.CreateCell(0);
                 titleCell.SetCellValue(tableEntity.TableDescription);
 
-                // export list data to excel
-                tempSheet.ImportData(tableEntity.Columns);
+                sheet.ImportData(tableEntity.Columns);
             }
             return workbook.ToExcelBytes();
         }
