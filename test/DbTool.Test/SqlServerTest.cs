@@ -7,7 +7,7 @@ namespace DbTool.Test
 {
     public class SqlServerTest : BaseDbTest
     {
-        public override string ConnStringKey => "SqlServerConn";
+        public override string DbType => "SqlServer";
 
         [Fact]
         public override Task QueryTest()

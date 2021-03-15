@@ -1,14 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>DbTool.DbProvider.SqlServer</RootNamespace>
-    <AssemblyName>DbTool.DbProvider.SqlServer</AssemblyName>
+    <RootNamespace>DbTool.DbProvider.PostgreSql</RootNamespace>
+    <AssemblyName>DbTool.DbProvider.PostgreSql</AssemblyName>
     <Description>
-      DbTool MsSqlServer DbProvider
+      DbTool PostgreSql DbProvider
     </Description>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <ProjectReference Include="..\DbTool.Core\DbTool.Core.csproj" />
+    <PackageReference Include="Npgsql" Version="5.0.3" />
   </ItemGroup>
+
 </Project>

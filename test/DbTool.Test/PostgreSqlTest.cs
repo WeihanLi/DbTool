@@ -5,9 +5,9 @@ using Xunit;
 
 namespace DbTool.Test
 {
-    public class MySqlTest : BaseDbTest
+    public class PostgreSqlTest : BaseDbTest
     {
-        public override string DbType => "MySql";
+        public override string DbType => "PostgreSql";
 
         [Fact]
         public override Task QueryTest()
@@ -21,7 +21,7 @@ namespace DbTool.Test
             base.CreateTest();
         }
 
-        public MySqlTest(IConfiguration configuration, IDbHelperFactory dbHelperFactory, DbProviderFactory dbProviderFactory) : base(configuration, dbHelperFactory, dbProviderFactory)
+        public PostgreSqlTest(IConfiguration configuration, IDbHelperFactory dbHelperFactory, DbProviderFactory dbProviderFactory) : base(configuration, dbHelperFactory, dbProviderFactory)
         {
         }
     }

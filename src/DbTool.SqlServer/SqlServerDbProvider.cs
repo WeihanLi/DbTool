@@ -82,7 +82,7 @@ END";
 
         public string DbType => "SqlServer";
 
-        public string QueryDbTablesSqlFormat => @"
+        public virtual string QueryDbTablesSqlFormat => @"
 SELECT IT.TABLE_NAME AS TableName,
        IT.TABLE_CATALOG AS DatabaseName,
        IT.TABLE_TYPE AS TableType,
@@ -95,7 +95,7 @@ FROM INFORMATION_SCHEMA.TABLES AS IT
 WHERE IT.TABLE_TYPE = 'BASE TABLE';
 ";
 
-        public string QueryTableColumnsSqlFormat => @"
+        public virtual string QueryTableColumnsSqlFormat => @"
 SELECT t.[name] AS TableName,
        c.[name] AS ColumnName,
        p.[value] AS ColumnDescription,
@@ -125,133 +125,68 @@ WHERE t.name = @tableName
 ORDER BY c.[column_id];
 ";
 
-        public string DbType2ClrType(string dbType, bool isNullable)
+        public virtual string DbType2ClrType(string dbType, bool isNullable)
         {
             var sqlDbType = (InternalDbType)Enum.Parse(typeof(InternalDbType), dbType, true);
-            string type;
-            switch (sqlDbType)
+            var type = sqlDbType switch
             {
-                case InternalDbType.Bit:
-                    type = isNullable ? "bool?" : "bool";
-                    break;
-
-                case InternalDbType.Float:
-                case InternalDbType.Real:
-                    type = isNullable ? "double?" : "double";
-                    break;
-
-                case InternalDbType.Binary:
-                case InternalDbType.VarBinary:
-                case InternalDbType.Image:
-                case InternalDbType.Timestamp:
-                case InternalDbType.RowVersion:
-                    type = "byte[]";
-                    break;
-
-                case InternalDbType.TinyInt:
-                    type = isNullable ? "byte?" : "byte";
-                    break;
-
-                case InternalDbType.SmallInt:
-                case InternalDbType.Int:
-                    type = isNullable ? "int?" : "int";
-                    break;
-
-                case InternalDbType.BigInt:
-                    type = isNullable ? "long?" : "long";
-                    break;
-
-                case InternalDbType.Char:
-                case InternalDbType.NChar:
-                case InternalDbType.NText:
-                case InternalDbType.NVarChar:
-                case InternalDbType.VarChar:
-                case InternalDbType.Text:
-                case InternalDbType.LongText:
-                    type = "string";
-                    break;
-
-                case InternalDbType.Numeric:
-                case InternalDbType.Money:
-                case InternalDbType.Decimal:
-                case InternalDbType.SmallMoney:
-                    type = isNullable ? "decimal?" : "decimal";
-                    break;
-
-                case InternalDbType.UniqueIdentifier:
-                    type = isNullable ? "Guid?" : "Guid";
-                    break;
-
-                case InternalDbType.Date:
-                case InternalDbType.SmallDateTime:
-                case InternalDbType.DateTime:
-                case InternalDbType.DateTime2:
-                    type = isNullable ? "DateTime?" : "DateTime";
-                    break;
-
-                case InternalDbType.Time:
-                    type = isNullable ? "TimeSpan?" : "TimeSpan";
-                    break;
-
-                case InternalDbType.DateTimeOffset:
-                    type = isNullable ? "DateTimeOffset?" : "DateTimeOffset";
-                    break;
-
-                default:
-                    type = "object";
-                    break;
-            }
+                InternalDbType.Bit => isNullable ? "bool?" : "bool",
+                InternalDbType.Float => isNullable ? "double?" : "double",
+                InternalDbType.Real => isNullable ? "double?" : "double",
+                InternalDbType.Binary => "byte[]",
+                InternalDbType.VarBinary => "byte[]",
+                InternalDbType.Image => "byte[]",
+                InternalDbType.Timestamp => "byte[]",
+                InternalDbType.RowVersion => "byte[]",
+                InternalDbType.TinyInt => isNullable ? "byte?" : "byte",
+                InternalDbType.SmallInt => isNullable ? "int?" : "int",
+                InternalDbType.Int => isNullable ? "int?" : "int",
+                InternalDbType.BigInt => isNullable ? "long?" : "long",
+                InternalDbType.Char => "string",
+                InternalDbType.NChar => "string",
+                InternalDbType.NText => "string",
+                InternalDbType.NVarChar => "string",
+                InternalDbType.VarChar => "string",
+                InternalDbType.Text => "string",
+                InternalDbType.LongText => "string",
+                InternalDbType.Numeric => isNullable ? "decimal?" : "decimal",
+                InternalDbType.Money => isNullable ? "decimal?" : "decimal",
+                InternalDbType.Decimal => isNullable ? "decimal?" : "decimal",
+                InternalDbType.SmallMoney => isNullable ? "decimal?" : "decimal",
+                InternalDbType.UniqueIdentifier => isNullable ? "Guid?" : "Guid",
+                InternalDbType.Date => isNullable ? "DateTime?" : "DateTime",
+                InternalDbType.SmallDateTime => isNullable ? "DateTime?" : "DateTime",
+                InternalDbType.DateTime => isNullable ? "DateTime?" : "DateTime",
+                InternalDbType.DateTime2 => isNullable ? "DateTime?" : "DateTime",
+                InternalDbType.Time => isNullable ? "TimeSpan?" : "TimeSpan",
+                InternalDbType.DateTimeOffset => isNullable ? "DateTimeOffset?" : "DateTimeOffset",
+                _ => "object"
+            };
             return type;
         }
 
-        public string ClrType2DbType(Type type)
+        public virtual string ClrType2DbType(Type type)
         {
             var typeFullName = type.Unwrap().FullName;
-
-            switch (typeFullName)
+            return typeFullName switch
             {
-                case "System.Boolean":
-                    return InternalDbType.Bit.ToString();
-
-                case "System.Byte":
-                    return InternalDbType.TinyInt.ToString();
-
-                case "System.Int16":
-                    return InternalDbType.SmallInt.ToString();
-
-                case "System.Int32":
-                    return InternalDbType.Int.ToString();
-
-                case "System.Int64":
-                    return InternalDbType.BigInt.ToString();
-
-                case "System.Single":
-                    return InternalDbType.Numeric.ToString();
-
-                case "System.Double":
-                    return InternalDbType.Float.ToString();
-
-                case "System.Decimal":
-                    return InternalDbType.Money.ToString();
-
-                case "System.DateTime":
-                    return InternalDbType.DateTime.ToString();
-
-                case "System.DateTimeOffset":
-                    return InternalDbType.DateTimeOffset.ToString();
-
-                case "System.Guid":
-                    return InternalDbType.UniqueIdentifier.ToString();
-
-                case "System.Object":
-                    return InternalDbType.Variant.ToString();
-
-                default:
-                    return InternalDbType.NVarChar.ToString();
-            }
+                "System.Boolean" => InternalDbType.Bit.ToString(),
+                "System.Byte" => InternalDbType.TinyInt.ToString(),
+                "System.Int16" => InternalDbType.SmallInt.ToString(),
+                "System.Int32" => InternalDbType.Int.ToString(),
+                "System.Int64" => InternalDbType.BigInt.ToString(),
+                "System.Single" => InternalDbType.Numeric.ToString(),
+                "System.Double" => InternalDbType.Float.ToString(),
+                "System.Decimal" => InternalDbType.Money.ToString(),
+                "System.DateTime" => InternalDbType.DateTime.ToString(),
+                "System.DateTimeOffset" => InternalDbType.DateTimeOffset.ToString(),
+                "System.Guid" => InternalDbType.UniqueIdentifier.ToString(),
+                "System.Object" => InternalDbType.Variant.ToString(),
+                _ => InternalDbType.NVarChar.ToString()
+            };
         }
 
-        public uint GetDefaultSizeForDbType(string dbType, uint defaultLength = 64)
+        public virtual uint GetDefaultSizeForDbType(string dbType, uint defaultLength = 64)
         {
             var sqlDbType = (InternalDbType)Enum.Parse(typeof(InternalDbType), dbType, true);
             var len = defaultLength;
@@ -364,16 +299,16 @@ ORDER BY c.[column_id];
             return len;
         }
 
-        public DbConnection GetDbConnection(string connectionString) => new SqlConnection(connectionString);
+        public virtual DbConnection GetDbConnection(string connectionString) => new SqlConnection(connectionString);
 
-        public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription = true) =>
+        public virtual string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription = true) =>
             GenerateSqlStatement(tableEntity, generateDescription, false);
 
-        public string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription, bool addOrUpdateDesc)
+        public virtual string GenerateSqlStatement(TableEntity tableEntity, bool generateDescription, bool addOrUpdateDesc)
         {
             if (string.IsNullOrWhiteSpace(tableEntity.TableName))
             {
-                return "";
+                return string.Empty;
             }
             var sbSqlText = new StringBuilder();
 

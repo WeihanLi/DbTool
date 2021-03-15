@@ -10,7 +10,7 @@ namespace DbTool.Test
     public abstract class BaseDbTest
     {
         protected readonly IDbHelperFactory DbHelperFactory;
-        public abstract string ConnStringKey { get; }
+        public abstract string DbType { get; }
 
         protected readonly IDbProvider DbProvider;
 
@@ -21,8 +21,7 @@ namespace DbTool.Test
             DbHelperFactory = dbHelperFactory;
             Configuration = configuration;
 
-            var dbType = ConnStringKey.Substring(0, ConnStringKey.Length - 4);
-            DbProvider = dbProviderFactory.GetDbProvider(dbType);
+            DbProvider = dbProviderFactory.GetDbProvider(DbType);
         }
 
         protected TableEntity TableEntity = new()
@@ -82,8 +81,7 @@ namespace DbTool.Test
 
         public virtual async Task QueryTest()
         {
-            var connString = Configuration.GetConnectionString(ConnStringKey);
-            var dbHelper = DbHelperFactory.GetDbHelper(DbProvider, connString);
+            var dbHelper = DbHelperFactory.GetDbHelper(DbProvider, "");
             Assert.NotNull(dbHelper.DatabaseName);
             var tables = await dbHelper.GetTablesInfoAsync();
             Assert.NotNull(tables);
