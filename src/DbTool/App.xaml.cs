@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using DbTool.Core;
 using DbTool.DbProvider.MySql;
+using DbTool.DbProvider.PostgreSql;
 using DbTool.DbProvider.SqlServer;
 using DbTool.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,7 @@ namespace DbTool
             services
                 .AddDbProvider<SqlServerDbProvider>()
                 .AddDbProvider<MySqlDbProvider>()
+                .AddDbProvider<PostgreSqlDbProvider>()
                 ;
 
             services.AddDbDocExporter<ExcelDbDocExporter>();
