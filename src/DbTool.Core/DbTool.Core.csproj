@@ -23,6 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.60.6" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.46-preview-20210313-212124" />
+    <PackageReference Include="WeihanLi.Common" Version="1.0.46" />
   </ItemGroup>
 </Project>

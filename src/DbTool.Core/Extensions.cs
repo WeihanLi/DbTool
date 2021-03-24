@@ -18,6 +18,18 @@ namespace DbTool.Core
         }
 
         /// <summary>
+        /// Register DbDocImporter service
+        /// </summary>
+        /// <typeparam name="TDbDocImporter">DbDocImporter type</typeparam>
+        /// <param name="serviceCollection">services</param>
+        /// <returns>services</returns>
+        public static IServiceCollection AddDbDocImporter<TDbDocImporter>(this IServiceCollection serviceCollection) where TDbDocImporter : IDbDocImporter
+        {
+            serviceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IDbDocImporter), typeof(TDbDocImporter), ServiceLifetime.Singleton));
+            return serviceCollection;
+        }
+
+        /// <summary>
         /// Register DbDocExporter service
         /// </summary>
         /// <typeparam name="TDbDocExporter">DbDocExporter type</typeparam>
