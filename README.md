@@ -23,9 +23,9 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 1. [x] 根据数据库表信息生成 Model 文件，支持数据列可空导出为可空数据类型/支持导出列描述信息（Db First）
 1. [x] 根据 Model 生成 sql 语句（Code First）
 1. [x] 支持一次导出多张数据表/支持一次选择多个 Model 文件
-1. [x] 支持 MySql
+1. [x] 支持 SqlServer、MySql、PostgreSql
 
-## 后续功能
+## 扩展开发
 
 - [ ] 丰富插件(插件开发指南：<https://github.com/WeihanLi/DbTool/blob/packages/README.md>)
 
