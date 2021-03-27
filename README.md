@@ -16,12 +16,15 @@ int? , DateTime? ，如果数据库中有列描述信息，也会生成在属性
 - `DbTool.Core` DbTool 用于扩展的接口定义，帮助类
 - `DbTool.DbProvider.MySql` DbTool 对于 MySql 的支持
 - `DbTool.DbProvider.SqlServer` DbTool 对于 SqlServer 的支持
+- `DbTool.DbProvider.PostgreSql` DbTool 对于 PostgreSql 的支持
 
 ## 扩展
 
-1. 扩展数据库支持，实现 `IDbProvider`
-1. 扩展导出方式，实现 `IDbDocExporter`
-1. 扩展 Model 代码生成方式，实现 `IModelCodeGenerator`，根据数据库表信息生成 Model
+1. 扩展数据库支持，实现 `IDbProvider`，
+1. 扩展文档导出支持，实现 `IDbDocExporter`，将数据库表信息导出到文档
+1. 扩展文档导入支持，实现 `IDbDocImporter` 从数据库文档中获取数据库表信息
+1. 扩展 Model 代码生成方式，实现 `IModelCodeGenerator`，根据数据库表信息生成代码 Model
+1. 扩展从 Model 代码中获取数据表信息，实现 `IModelCodeExtractor`
 1. 扩展 Model 名称表名称转化，实现 `IModelNameConverter`，也可以继承 `DefaultModelNameConverter`，改写某一个实现
 
 ## 自定义扩展使用方式
