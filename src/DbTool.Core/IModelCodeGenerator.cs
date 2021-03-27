@@ -37,13 +37,14 @@ namespace DbTool.Core
 
     public interface IModelCodeGenerator
     {
+        string FileExtension { get; }
+
         /// <summary>
-        /// 生成 Model 代码
+        /// CodeType
+        /// C#/TS ...
         /// </summary>
-        /// <param name="tableEntity">表信息</param>
-        /// <param name="options">options</param>
-        /// <param name="dbType">database type</param>
-        /// <returns></returns>
-        string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options, string dbType);
+        string CodeType { get; }
+
+        string GenerateModelCode(TableEntity tableEntity, ModelCodeGenerateOptions options, IDbProvider dbProvider);
     }
 }
