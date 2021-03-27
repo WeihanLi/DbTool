@@ -9,6 +9,7 @@
   "Success": "操作成功",
   "TableName": "表名称",
   "TableDescription": "表描述",
+  "ChooseFile": "选择文件",
   "ChooseModelFiles": "选择Model文件",
   "GenerateDbDesc": "生成数据库描述",
   "GenerateDataAnnotation": "生成 Table/Column/Key 等信息",

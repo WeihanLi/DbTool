@@ -35,7 +35,8 @@ namespace DbTool
             services.AddJsonLocalization(options => options.ResourcesPathType = ResourcesPathType.CultureBased);
 
             services.TryAddSingleton<IModelNameConverter, ModelNameConverter>();
-            services.TryAddSingleton<IModelCodeGenerator, DefaultModelCodeGenerator>();
+            services.TryAddSingleton<IModelCodeGenerator, DefaultCSharpModelCodeGenerator>();
+            services.TryAddSingleton<IModelCodeExtractor, DefaultCSharpModelCodeExactor>();
             services.TryAddSingleton<IDbHelperFactory, DbHelperFactory>();
             services.TryAddSingleton<DbProviderFactory>();
 
@@ -46,6 +47,7 @@ namespace DbTool
                 ;
 
             services.AddDbDocExporter<ExcelDbDocExporter>();
+            services.AddDbDocImporter<ExcelDbDocImporter>();
         }
 
         private void Init()

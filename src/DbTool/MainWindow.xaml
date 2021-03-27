@@ -1,7 +1,7 @@
 ﻿<Window x:Class="DbTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:loc="clr-namespace:DbTool.Localization"
         mc:Ignorable="d"
@@ -54,7 +54,8 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
                             <TextBlock Margin="8,4,4,4" Text="{loc:Localizer ChooseTables}"></TextBlock>
-                            <Button Name="BtnExportModel" Click="BtnExportModel_OnClick" Margin="4" MaxWidth="300" Content="{loc:Localizer ExportModel}"></Button>
+                            <StackPanel Name="ModelCodeGeneratorsPanel" HorizontalAlignment="Left" Orientation="Horizontal">
+                            </StackPanel>
                             <StackPanel Name="DbDocExportersPanel" HorizontalAlignment="Left" Orientation="Horizontal">
                             </StackPanel>
                         </StackPanel>
@@ -97,13 +98,13 @@
                         <TextBox Name="TxtModelFirstTableDesc" Width="120" Margin="4,0,4,0"></TextBox>
                         <CheckBox Name="ModelFirstGenDesc" Margin="4,0,4,0" VerticalContentAlignment="Center" Content="{loc:Localizer GenerateDbDesc}"></CheckBox>
                         <Button Name="BtnGenerateSql" Margin="4,0,4,0" Click="BtnGenerateSql_OnClick" Content="{loc:Localizer GenerateSqlScript}"></Button>
-                        <Button Name="BtnImportModelExcel" Margin="4,0,4,0" Click="BtnImportModelExcel_OnClick" Content="{loc:Localizer ImportExcelFile}"></Button>
                         <TextBlock Margin="4,0,0,0">
                             <Hyperlink Name="DownloadExcelTemplateLink" Click="DownloadExcelTemplateLink_OnClick">
                                 <TextBlock Text="{loc:Localizer Download}"></TextBlock>
                             </Hyperlink>
                             <TextBlock Text="{loc:Localizer ExcelTemplate}"></TextBlock>
                         </TextBlock>
+                        <StackPanel Name="DbDocImportersPannel" Orientation="Horizontal"></StackPanel>
                     </StackPanel>
                     <DataGrid Name="ModelDataGrid" Margin="0,4,0,4" Grid.Row="1" AutoGenerateColumns="False">
                         <DataGrid.Columns>
@@ -129,7 +130,8 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Button Margin="8" MaxWidth="300" Name="BtnChooseModel" Grid.Row="0" Grid.Column="0" Click="BtnChooseModel_OnClick" Content="{loc:Localizer ChooseModelFiles}"></Button>
+                    <StackPanel Name="CodeExtractorsPannel" Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+                    </StackPanel>
                     <StackPanel Margin="8" Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
                         <CheckBox Name="CodeGenDbDescCheckBox" VerticalContentAlignment="Center" Content="{loc:Localizer GenerateDbDesc}"></CheckBox>
                     </StackPanel>

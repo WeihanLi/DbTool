@@ -13,10 +13,8 @@ using DbTool.Core.Entity;
 using DbTool.ViewModels;
 using Microsoft.Extensions.Localization;
 using Microsoft.Win32;
-using NPOI.SS.UserModel;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
-using WeihanLi.Npoi;
 
 namespace DbTool
 {
@@ -30,7 +28,6 @@ namespace DbTool
         private readonly IDbHelperFactory _dbHelperFactory;
         private readonly SettingsViewModel _settings;
 
-        private readonly IModelCodeGenerator _modelCodeGenerator;
         private readonly IModelNameConverter _modelNameConverter;
 
         public MainWindow(
@@ -38,7 +35,6 @@ namespace DbTool
             DbProviderFactory dbProviderFactory,
             IDbHelperFactory dbHelperFactory,
             SettingsViewModel settings,
-            IModelCodeGenerator modelCodeGenerator,
             IModelNameConverter modelNameConverter)
         {
             InitializeComponent();
@@ -47,7 +43,6 @@ namespace DbTool
             _settings = settings;
             _dbProviderFactory = dbProviderFactory;
             _dbHelperFactory = dbHelperFactory;
-            _modelCodeGenerator = modelCodeGenerator;
             _modelNameConverter = modelNameConverter;
 
             InitDataBinding();
@@ -75,18 +70,94 @@ namespace DbTool
             CodeGenDbDescCheckBox.IsChecked = _settings.GenerateDbDescription;
             ModelFirstGenDesc.IsChecked = _settings.GenerateDbDescription;
 
-            var exporters = DependencyResolver.Current.ResolveServices<IDbDocExporter>();
+            var codeGenerators = DependencyResolver.ResolveServices<IModelCodeGenerator>();
+            foreach (var generator in codeGenerators)
+            {
+                var button = new Button()
+                {
+                    Content = $"{_localizer["Export"]} {generator.CodeType} Code",
+                    Tag = generator,
+                    MaxWidth = 180,
+                    Margin = new Thickness(4)
+                };
+                button.Click += ExportModel_Click;
+                ModelCodeGeneratorsPanel.Children.Add(button);
+            }
+            var exporters = DependencyResolver.ResolveServices<IDbDocExporter>();
             foreach (var exporter in exporters)
             {
                 var exportButton = new Button()
                 {
                     Content = $"{_localizer["Export"]}{exporter.ExportType}",
                     Tag = exporter,
-                    MaxWidth = 160,
+                    MaxWidth = 180,
                     Margin = new Thickness(4)
                 };
                 exportButton.Click += ExportButton_Click;
                 DbDocExportersPanel.Children.Add(exportButton);
+            }
+            var importers = DependencyResolver.ResolveServices<IDbDocImporter>();
+            foreach (var importer in importers)
+            {
+                var importButton = new Button()
+                {
+                    Content = $"{_localizer["ChooseFile"]}({importer.ImportType})",
+                    Tag = importer,
+                    MaxWidth = 160,
+                    Margin = new Thickness(4, 0, 4, 0)
+                };
+                importButton.Click += ImportButton_Click;
+                DbDocImportersPannel.Children.Add(importButton);
+            }
+            var codeExtractors = DependencyResolver.ResolveServices<IModelCodeExtractor>();
+            foreach (var extractor in codeExtractors)
+            {
+                var button = new Button()
+                {
+                    Content = $"{_localizer["ChooseModelFiles"]}({extractor.CodeType})",
+                    Margin = new Thickness(8),
+                    Tag = extractor,
+                    MaxWidth = 300
+                };
+                button.Click += ChooseModel_Click;
+                CodeExtractorsPannel.Children.Add(button);
+            }
+        }
+
+        private void ExportModel_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button { Tag: IModelCodeGenerator codeGenerator })
+            {
+                if (CheckedTables.SelectedItems.Count == 0)
+                {
+                    MessageBox.Show(_localizer["ChooseTables"]);
+                    return;
+                }
+                var options = new ModelCodeGenerateOptions()
+                {
+                    Namespace = TxtNamespace.Text.GetValueOrDefault("Models"),
+                    Prefix = TxtPrefix.Text,
+                    Suffix = TxtSuffix.Text,
+                    GenerateDataAnnotation = CbGenDataAnnotation.IsChecked == true,
+                    GeneratePrivateFields = CbGenPrivateFields.IsChecked == true,
+                    ApplyNameConverter = CbApplyNameConverter.IsChecked == true,
+                };
+                var dir = ChooseFolder();
+                if (string.IsNullOrEmpty(dir))
+                {
+                    return;
+                }
+                foreach (var item in CheckedTables.SelectedItems)
+                {
+                    if (item is TableEntity table)
+                    {
+                        var modelCode = codeGenerator.GenerateModelCode(table, options, _dbProviderFactory.GetDbProvider(_dbHelper?.DbType ?? _settings.DefaultDbType));
+                        var path = Path.Combine(dir, $"{(_settings.ApplyNameConverter ? _modelNameConverter.ConvertTableToModel(table.TableName ?? "") : table.TableName)}{codeGenerator.FileExtension}");
+                        File.WriteAllText(path, modelCode, Encoding.UTF8);
+                    }
+                }
+                // open dir
+                Process.Start("Explorer.exe", dir);
             }
         }
 
@@ -122,7 +193,7 @@ namespace DbTool
                 }
                 try
                 {
-                    var exportBytes = exporter.Export(tables.ToArray(), _dbHelper.DbType);
+                    var exportBytes = exporter.Export(tables.ToArray(), _dbProviderFactory.GetDbProvider(_dbHelper.DbType));
                     if (exportBytes.Length > 0)
                     {
                         var fileName = tables.Count > 1
@@ -146,6 +217,88 @@ namespace DbTool
             }
         }
 
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button { Tag: IDbDocImporter importer })
+            {
+                var ofg = new OpenFileDialog
+                {
+                    Multiselect = false,
+                    CheckFileExists = true,
+                    Filter = importer.SupportedFileExtensions.ToFileChooseFilter()
+                };
+                if (ofg.ShowDialog() == true)
+                {
+                    try
+                    {
+                        var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
+                        var tables = importer.Import(ofg.FileName, dbProvider);
+
+                        if (tables.Length > 0)
+                        {
+                            TxtModelFirstTableName.Text = tables[0].TableName;
+                            TxtModelFirstTableDesc.Text = tables[0].TableDescription;
+                            ModelDataGrid.ItemsSource = tables[0].Columns;
+
+                            var sbSqlText = new StringBuilder();
+                            foreach (var table in tables)
+                            {
+                                sbSqlText.AppendLine(dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true));
+                            }
+                            var sql = sbSqlText.ToString();
+                            TxtModelFirstGeneratedSql.Text = sql;
+                            Clipboard.SetText(sql);
+                            MessageBox.Show(_localizer["SqlCopiedToClipboard"], _localizer["Tip"]);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString(), "Error");
+                    }
+                }
+            }
+        }
+
+        private async void ChooseModel_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button { Tag: IModelCodeExtractor extractor })
+            {
+                var ofg = new OpenFileDialog
+                {
+                    CheckFileExists = true,
+                    Multiselect = true,
+                    Filter = extractor.SupportedFileExtensions.ToFileChooseFilter()
+                };
+                if (ofg.ShowDialog() == true)
+                {
+                    try
+                    {
+                        var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
+                        var tables = await extractor.GetTablesFromSourceFiles(dbProvider, ofg.FileNames);
+                        if (tables.Count == 0)
+                        {
+                            MessageBox.Show(_localizer["NoModelFound"]);
+                        }
+                        else
+                        {
+                            TxtCodeGenSql.Clear();
+                            foreach (var table in tables)
+                            {
+                                var tableSql = dbProvider.GenerateSqlStatement(table, CodeGenDbDescCheckBox.IsChecked == true);
+                                TxtCodeGenSql.AppendText(tableSql);
+                                TxtCodeGenSql.AppendText(Environment.NewLine);
+                            }
+                            CodeGenTableTreeView.ItemsSource = tables;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error");
+                    }
+                }
+            }
+        }
+
         private void BtnSaveSettings_OnClick(object sender, RoutedEventArgs e)
         {
             if (null != DefaultDbType.SelectedItem && _settings.DefaultDbType != DefaultDbType.SelectedItem.ToString())
@@ -163,50 +316,6 @@ namespace DbTool
                 _settings.DefaultConnectionString = TxtDefaultConnStr.Text.Trim();
             }
             MessageBox.Show(_localizer["Success"], _localizer["Tip"]);
-        }
-
-        private void BtnChooseModel_OnClick(object sender, RoutedEventArgs e)
-        {
-            var ofg = new OpenFileDialog
-            {
-                CheckFileExists = true,
-                Multiselect = true,
-                Filter = "C# File(*.cs)|*.cs"
-            };
-            if (ofg.ShowDialog() == true)
-            {
-                if (ofg.FileNames.Any(f => !f.EndsWith(".cs")))
-                {
-                    MessageBox.Show(_localizer["UnsupportedFileType", ofg.FileNames.First(f => !f.EndsWith(".cs"))]);
-                    return;
-                }
-
-                try
-                {
-                    var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
-                    var tables = dbProvider.GetTableEntityFromSourceCode(ofg.FileNames);
-                    if (tables.Count == 0)
-                    {
-                        MessageBox.Show(_localizer["NoModelFound"]);
-                    }
-                    else
-                    {
-                        TxtCodeGenSql.Clear();
-                        foreach (var table in tables)
-                        {
-                            var tableSql = dbProvider.GenerateSqlStatement(table, CodeGenDbDescCheckBox.IsChecked == true);
-                            TxtCodeGenSql.AppendText(tableSql);
-                            TxtCodeGenSql.AppendText(Environment.NewLine);
-                        }
-
-                        CodeGenTableTreeView.ItemsSource = tables;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error");
-                }
-            }
         }
 
         private void BtnGenerateSql_OnClick(object sender, RoutedEventArgs e)
@@ -236,123 +345,6 @@ namespace DbTool
                 Clipboard.SetText(sql);
                 MessageBox.Show(_localizer["SqlCopiedToClipboard"], _localizer["Tip"]);
             }
-        }
-
-        private void BtnImportModelExcel_OnClick(object sender, RoutedEventArgs e)
-        {
-            var ofg = new OpenFileDialog
-            {
-                Multiselect = false,
-                CheckFileExists = true,
-                Filter = "Excel file(*.xls)|*.xls|Excel file(*.xlsx)|*.xlsx"
-            };
-            if (ofg.ShowDialog() == true)
-            {
-                try
-                {
-                    var workbook = ExcelHelper.LoadExcel(ofg.FileName);
-                    if (0 == workbook.NumberOfSheets)
-                    {
-                        return;
-                    }
-                    var tableCount = workbook.NumberOfSheets;
-                    var sql = string.Empty;
-                    var dbProvider = _dbProviderFactory.GetDbProvider(_settings.DefaultDbType);
-                    if (tableCount == 1)
-                    {
-                        var sheet = workbook.GetSheetAt(0);
-                        var table = ExactTableFromExcel(sheet, dbProvider);
-                        if (table is not null)
-                        {
-                            TxtModelFirstTableName.Text = table.TableName;
-                            TxtModelFirstTableDesc.Text = table.TableDescription;
-                            ModelDataGrid.ItemsSource = table.Columns;
-
-                            sql = dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true);
-                        }
-                    }
-                    else
-                    {
-                        var sbSqlText = new StringBuilder();
-                        for (var i = 0; i < tableCount; i++)
-                        {
-                            var sheet = workbook.GetSheetAt(i);
-                            var table = ExactTableFromExcel(sheet, dbProvider);
-                            if (table is not null)
-                            {
-                                if (i > 0)
-                                {
-                                    sbSqlText.AppendLine();
-                                }
-                                else
-                                {
-                                    TxtModelFirstTableName.Text = table.TableName;
-                                    TxtModelFirstTableDesc.Text = table.TableDescription;
-                                    ModelDataGrid.ItemsSource = table.Columns;
-                                }
-                                sbSqlText.AppendLine(dbProvider.GenerateSqlStatement(table, ModelFirstGenDesc.IsChecked == true));
-                            }
-                        }
-                        sql = sbSqlText.ToString();
-                    }
-                    TxtModelFirstGeneratedSql.Text = sql;
-                    Clipboard.SetText(sql);
-                    MessageBox.Show(_localizer["SqlCopiedToClipboard"], _localizer["Tip"]);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString(), "Error");
-                }
-            }
-        }
-
-        private TableEntity? ExactTableFromExcel(ISheet? sheet, IDbProvider dbProvider)
-        {
-            if (sheet is null)
-                return null;
-
-            var table = new TableEntity
-            {
-                TableName = sheet.SheetName
-            };
-
-            foreach (var row in sheet.GetRowCollection())
-            {
-                if (row is null)
-                {
-                    continue;
-                }
-                if (row.RowNum == 0)
-                {
-                    table.TableDescription = row.Cells[0].StringCellValue;
-                    continue;
-                }
-                if (row.RowNum > 1)
-                {
-                    var column = new ColumnEntity
-                    {
-                        ColumnName = row.GetCell(0).StringCellValue,
-                        DataType = row.GetCell(4).StringCellValue,
-                    };
-                    if (string.IsNullOrWhiteSpace(column.ColumnName))
-                    {
-                        continue;
-                    }
-                    column.ColumnDescription = row.GetCell(1).StringCellValue;
-                    column.IsPrimaryKey = row.GetCell(2).StringCellValue.Equals("Y");
-                    column.IsNullable = row.GetCell(3).StringCellValue.Equals("Y");
-
-                    column.Size = string.IsNullOrEmpty(row.GetCell(5).ToString()) ? dbProvider.GetDefaultSizeForDbType(column.DataType) : Convert.ToUInt32(row.GetCell(5).ToString());
-
-                    if (!string.IsNullOrWhiteSpace(row.GetCell(6)?.ToString()))
-                    {
-                        column.DefaultValue = row.GetCell(6).ToString();
-                    }
-                    table.Columns.Add(column);
-                }
-            }
-
-            return table;
         }
 
         private void DownloadExcelTemplateLink_OnClick(object sender, RoutedEventArgs e)
@@ -391,40 +383,6 @@ namespace DbTool
             {
                 MessageBox.Show(exception.ToString(), "Error");
             }
-        }
-
-        private void BtnExportModel_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (CheckedTables.SelectedItems.Count == 0)
-            {
-                MessageBox.Show(_localizer["ChooseTables"]);
-                return;
-            }
-            var options = new ModelCodeGenerateOptions()
-            {
-                Namespace = TxtNamespace.Text.GetValueOrDefault("Models"),
-                Prefix = TxtPrefix.Text,
-                Suffix = TxtSuffix.Text,
-                GenerateDataAnnotation = CbGenDataAnnotation.IsChecked == true,
-                GeneratePrivateFields = CbGenPrivateFields.IsChecked == true,
-                ApplyNameConverter = CbApplyNameConverter.IsChecked == true,
-            };
-            var dir = ChooseFolder();
-            if (string.IsNullOrEmpty(dir))
-            {
-                return;
-            }
-            foreach (var item in CheckedTables.SelectedItems)
-            {
-                if (item is TableEntity table)
-                {
-                    var modelCode = _modelCodeGenerator.GenerateModelCode(table, options, _dbHelper?.DbType ?? _settings.DefaultDbType);
-                    var path = Path.Combine(dir, $"{(_settings.ApplyNameConverter ? _modelNameConverter.ConvertTableToModel(table.TableName ?? "") : table.TableName)}.cs");
-                    File.WriteAllText(path, modelCode, Encoding.UTF8);
-                }
-            }
-            // open dir
-            Process.Start("Explorer.exe", dir);
         }
 
         private string? ChooseFolder()

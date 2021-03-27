@@ -9,6 +9,7 @@
   "Success": "Success",
   "TableName": "TableName",
   "TableDescription": "TableDescription",
+  "ChooseFiles": "Choose File",
   "ChooseModelFiles": "ChooseModelFiles",
   "GenerateDbDesc": "GenerateDatabaseDescription",
   "GenerateDataAnnotation": "GenerateDataAnnotation",

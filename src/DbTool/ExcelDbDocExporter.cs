@@ -1,10 +1,42 @@
-﻿using DbTool.Core;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DbTool.Core;
 using DbTool.Core.Entity;
 using NPOI.SS.UserModel;
 using WeihanLi.Npoi;
 
 namespace DbTool
 {
+    public class ExcelDbDocImporter : IDbDocImporter
+    {
+        public string ImportType => "Excel";
+
+        public Dictionary<string, string> SupportedFileExtensions => new()
+        {
+            { ".xls", "Excel file(*.xls)" },
+            { ".xlsx", "Excel file(*.xlsx)" }
+        };
+
+        public TableEntity[] Import(string filePath, IDbProvider dbProvider)
+        {
+            var workbook = ExcelHelper.LoadExcel(filePath);
+            var tables = new TableEntity[workbook.NumberOfSheets];
+            for (var i = 0; i < workbook.NumberOfSheets; i++)
+            {
+                var sheet = workbook.GetSheetAt(i);
+                tables[i] = new TableEntity
+                {
+                    TableName = sheet.SheetName,
+                    TableDescription = sheet.GetRow(0).GetCell(0).StringCellValue
+                };
+                tables[i].Columns.AddRange(sheet.ToEntityList<ColumnEntity>()
+                    .Where(x => !string.IsNullOrEmpty(x?.ColumnName))
+                  );
+            }
+            return tables;
+        }
+    }
+
     public class ExcelDbDocExporter : IDbDocExporter
     {
         static ExcelDbDocExporter()
@@ -95,9 +127,9 @@ namespace DbTool
 
         public string ExportType => "Excel";
 
-        public string FileExtension => ".xls";
+        public string FileExtension => ".xlsx";
 
-        public byte[] Export(TableEntity[] tableInfo, string dbType)
+        public byte[] Export(TableEntity[] tableInfo, IDbProvider dbProvider)
         {
             var workbook = ExcelHelper.PrepareWorkbook(FileExtension.EndsWith(".xls") ? ExcelFormat.Xls : ExcelFormat.Xlsx);
             foreach (var tableEntity in tableInfo)
