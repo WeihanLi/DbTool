@@ -7,21 +7,20 @@ namespace DbTool.Localization
 {
     public class LocalizerExtension : MarkupExtension
     {
-        private readonly IStringLocalizerFactory _localizerFactory;
+        private readonly IStringLocalizer _localizer;
         public string Key { get; }
 
         public LocalizerExtension(string key)
         {
             Key = key;
-            _localizerFactory = DependencyResolver.
-                ResolveService<IStringLocalizerFactory>();
+            _localizer = DependencyResolver.
+                ResolveService<IStringLocalizerFactory>()
+                .Create(typeof(MainWindow));
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            var targetRootType = typeof(MainWindow);
-            var localizer = _localizerFactory.Create(targetRootType);
-            var value = localizer[Key];
+            var value = _localizer[Key];
             return (string)value;
         }
     }
