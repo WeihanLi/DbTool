@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions.Localization.Json;
+using WeihanLi.Npoi;
 
 namespace DbTool
 {
@@ -53,6 +54,7 @@ namespace DbTool
         private void Init()
         {
             #region Init Settings
+            FluentSettings.LoadMappingProfiles(typeof(ColumnEntityMappingProfile));
 
             var settings = new SettingsViewModel();
             settings.ConnectionString = settings.DefaultConnectionString;

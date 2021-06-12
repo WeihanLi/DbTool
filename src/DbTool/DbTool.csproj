@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.3" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.46" />
-    <PackageReference Include="WeihanLi.Npoi" Version="1.16.0" />
+    <PackageReference Include="WeihanLi.Npoi" Version="1.18.0" />
     <PackageReference Include="DbTool.Core" Version="$(DbToolPackageVersion)" />
     <PackageReference Include="DbTool.DbProvider.MySql" Version="$(DbToolPackageVersion)" />
     <PackageReference Include="DbTool.DbProvider.PostgreSql" Version="$(DbToolPackageVersion)" />

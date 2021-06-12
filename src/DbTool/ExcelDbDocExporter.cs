@@ -3,7 +3,9 @@ using System.Linq;
 using DbTool.Core;
 using DbTool.Core.Entity;
 using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using WeihanLi.Npoi;
+using WeihanLi.Npoi.Configurations;
 
 namespace DbTool
 {
@@ -31,21 +33,43 @@ namespace DbTool
                 };
                 tables[i].Columns.AddRange(sheet.ToEntityList<ColumnEntity>()
                     .Where(x => !string.IsNullOrEmpty(x?.ColumnName))
-                  );
+                );
             }
+
             return tables;
         }
     }
 
     public class ExcelDbDocExporter : IDbDocExporter
     {
-        static ExcelDbDocExporter()
+        public string ExportType => "Excel";
+
+        public string FileExtension => ".xlsx";
+
+        public byte[] Export(TableEntity[] tableInfo, IDbProvider dbProvider)
         {
-            var settings = FluentSettings.For<ColumnEntity>();
-            settings.HasExcelSetting(x =>
-                {
-                    x.Author = "DbTool";
-                })
+            var workbook =
+                ExcelHelper.PrepareWorkbook(FileExtension.EndsWith(".xls") ? ExcelFormat.Xls : ExcelFormat.Xlsx);
+            foreach (var tableEntity in tableInfo)
+            {
+                var sheet = workbook.CreateSheet(tableEntity.TableName);
+
+                var titleRow = sheet.CreateRow(0);
+                var titleCell = titleRow.CreateCell(0);
+                titleCell.SetCellValue(tableEntity.NotEmptyDescription);
+
+                sheet.ImportData(tableEntity.Columns);
+            }
+
+            return workbook.ToExcelBytes();
+        }
+    }
+
+    public class ColumnEntityMappingProfile : IMappingProfile<ColumnEntity>
+    {
+        public void Configure(IExcelConfiguration<ColumnEntity> settings)
+        {
+            settings.HasExcelSetting(x => { x.Author = "DbTool"; })
                 .HasSheetSetting(x =>
                 {
                     x.StartRowIndex = 2;
@@ -68,7 +92,7 @@ namespace DbTool
                     x.SheetAction = sheet =>
                     {
                         // set merged region
-                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 0, 6));
+                        sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, 6));
                         // apply title style
                         var titleStyle = sheet.Workbook.CreateCellStyle();
                         titleStyle.Alignment = HorizontalAlignment.Left;
@@ -112,37 +136,11 @@ namespace DbTool
                 .HasColumnTitle("默认值")
                 .HasOutputFormatter((x, _) =>
                 {
-                    if (x?.DefaultValue != null)
-                    {
-                        return x.DefaultValue.ToString();
-                    }
-                    if (x?.IsPrimaryKey == true && x.DataType.ToUpper().Contains("INT"))
-                    {
-                        return "IDENTITY(1,1)";
-                    }
+                    if (x?.DefaultValue != null) return x.DefaultValue.ToString();
+                    if (x?.IsPrimaryKey == true && x.DataType.ToUpper().Contains("INT")) return "IDENTITY(1,1)";
                     return null;
                 });
             settings.Property(x => x.NotEmptyDescription).Ignored();
-        }
-
-        public string ExportType => "Excel";
-
-        public string FileExtension => ".xlsx";
-
-        public byte[] Export(TableEntity[] tableInfo, IDbProvider dbProvider)
-        {
-            var workbook = ExcelHelper.PrepareWorkbook(FileExtension.EndsWith(".xls") ? ExcelFormat.Xls : ExcelFormat.Xlsx);
-            foreach (var tableEntity in tableInfo)
-            {
-                var sheet = workbook.CreateSheet(tableEntity.TableName);
-
-                var titleRow = sheet.CreateRow(0);
-                var titleCell = titleRow.CreateCell(0);
-                titleCell.SetCellValue(tableEntity.NotEmptyDescription);
-
-                sheet.ImportData(tableEntity.Columns);
-            }
-            return workbook.ToExcelBytes();
         }
     }
 }
