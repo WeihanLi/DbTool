@@ -73,6 +73,7 @@ ORDER BY attnum
                 InternalDbType.Serial => isNullable ? "int?" : "int",
                 InternalDbType.Serial4 => isNullable ? "int?" : "int",
                 InternalDbType.BigInt => isNullable ? "long?" : "long",
+                InternalDbType.Int8 => isNullable ? "long?" : "long",
                 InternalDbType.BigSerial => isNullable ? "long?" : "long",
                 InternalDbType.Serial8 => isNullable ? "long?" : "long",
                 InternalDbType.Char => "string",
