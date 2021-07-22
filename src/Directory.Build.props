@@ -7,7 +7,7 @@
   <PropertyGroup>
     <VersionMajor>1</VersionMajor>
     <VersionMinor>5</VersionMinor>
-    <VersionPatch>1</VersionPatch>
+    <VersionPatch>2</VersionPatch>
     <VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
     <VersionSuffix Condition="'$(Configuration)'=='DEBUG'">preview</VersionSuffix>
   </PropertyGroup>
