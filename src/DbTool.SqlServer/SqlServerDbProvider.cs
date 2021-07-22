@@ -100,7 +100,7 @@ SELECT t.[name] AS TableName,
        c.[name] AS ColumnName,
        p.[value] AS ColumnDescription,
        c.[is_nullable] AS IsNullable,
-       IIF(k.COLUMN_NAME IS NULL, 0, 1) AS IsPrimaryKey,
+       IIF(m.columnName IS NULL, 0, 1) AS IsPrimaryKey,
        ty.[name] AS DataType,
        IIF([col].[CHARACTER_MAXIMUM_LENGTH] IS NULL, [c].[max_length], [col].[CHARACTER_MAXIMUM_LENGTH]) AS Size,
        SUBSTRING(dc.[definition], 2, LEN([dc].[definition]) - 2) AS DefaultValue
@@ -110,10 +110,9 @@ FROM sys.columns c
     JOIN sys.[types] ty
         ON ty.[system_type_id] = c.[system_type_id]
            AND ty.[name] != 'sysname'
-	join INFORMATION_SCHEMA.COLUMNS col on c.name=col.COLUMN_NAME AND t.[name]=col.TABLE_NAME
-    LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS k
-        ON k.TABLE_NAME = @tableName
-           AND k.COLUMN_NAME = c.[name]
+    JOIN INFORMATION_SCHEMA.COLUMNS col
+        ON c.name = col.COLUMN_NAME
+           AND t.[name] = col.TABLE_NAME
     LEFT JOIN sys.extended_properties p
         ON p.minor_id = c.column_id
            AND p.major_id = c.object_id
@@ -121,6 +120,28 @@ FROM sys.columns c
         ON dc.[parent_object_id] = c.[object_id]
            AND dc.[parent_column_id] = c.[column_id]
            AND dc.[type] = 'D'
+    LEFT JOIN
+    (
+        SELECT o.name AS tableName,
+               c.name AS columnName
+        FROM sysindexes i
+            JOIN sysindexkeys k
+                ON i.id = k.id
+                   AND i.indid = k.indid
+            JOIN sysobjects o
+                ON i.id = o.id
+            JOIN syscolumns c
+                ON i.id = c.id
+                   AND k.colid = c.colid
+        WHERE o.xtype = 'U'
+              AND o.name = @tableName
+              AND EXISTS
+        (
+            SELECT 1 FROM sysobjects WHERE xtype = 'PK' AND name = i.name
+        )
+    ) m
+        ON m.tableName = @tableName
+           AND m.columnName = c.name
 WHERE t.name = @tableName
 ORDER BY c.[column_id];
 ";
