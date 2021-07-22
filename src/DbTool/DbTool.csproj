@@ -9,7 +9,7 @@
     <AssemblyName>DbTool</AssemblyName>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ApplicationIcon>DbTool.ico</ApplicationIcon>
-    <DbToolPackageVersion>1.5.1</DbToolPackageVersion>
+    <DbToolPackageVersion>1.5.2</DbToolPackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
