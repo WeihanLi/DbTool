@@ -368,8 +368,8 @@ namespace DbTool
             try
             {
                 var connStr = TxtConnectionString.Text;
-                var currentDbProvider = _dbProviderFactory.GetDbProvider(DbFirst_DbType.SelectedItem?.ToString() ?? _settings.DefaultDbType);
-                _dbHelper = _dbHelperFactory.GetDbHelper(currentDbProvider, connStr);
+                var dbProvider = _dbProviderFactory.GetDbProvider(DbFirst_DbType.SelectedItem?.ToString() ?? _settings.DefaultDbType);
+                _dbHelper = _dbHelperFactory.GetDbHelper(dbProvider, connStr);
 
                 var tables = await _dbHelper.GetTablesInfoAsync();
                 CheckedTables.Dispatcher.Invoke(() =>

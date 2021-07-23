@@ -7,9 +7,10 @@ namespace DbTool
     {
         public static string GetFullTableName(this TableEntity tableEntity)
         {
-            return string.IsNullOrEmpty(tableEntity.TableSchema)
+            var fullName = string.IsNullOrEmpty(tableEntity.TableSchema)
                 ? tableEntity.TableName
                 : $"{tableEntity.TableSchema}.{tableEntity.TableName}";
+            return fullName;
         }
     }
 }

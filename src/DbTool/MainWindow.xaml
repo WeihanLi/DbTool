@@ -3,9 +3,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converter="clr-namespace:DbTool.Converters"
         xmlns:loc="clr-namespace:DbTool.Localization"
         mc:Ignorable="d"
         Title="DbTool" Height="450" Width="800" FontSize="14">
+    <Window.Resources>
+        <converter:FullTableNameConverter x:Key="fullTableNameConverter" />
+    </Window.Resources>
     <Grid>
         <TabControl Background="#EEE">
             <TabItem Header="DbFirst">
@@ -62,7 +66,8 @@
                         <ListBox Name="CheckedTables" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectionMode="Multiple" Margin="4" Grid.Row="1" Grid.Column="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox DataContext="{Binding}" Checked="CheckTableToggled" Unchecked="CheckTableToggled" Content="{Binding TableName}" ToolTip="{Binding NotEmptyDescription}" />
+                                    <CheckBox DataContext="{Binding}" Content="{Binding Converter={StaticResource fullTableNameConverter}}" Checked="CheckTableToggled" Unchecked="CheckTableToggled" ToolTip="{Binding NotEmptyDescription}">
+                                    </CheckBox>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
