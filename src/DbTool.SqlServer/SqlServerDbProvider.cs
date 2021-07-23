@@ -86,7 +86,7 @@ END";
 SELECT IT.TABLE_NAME AS TableName,
        IT.TABLE_CATALOG AS DatabaseName,
        IT.TABLE_TYPE AS TableType,
-       IT.TABLE_SCHEMA AS TableScheme,
+       IT.TABLE_SCHEMA AS TableSchema,
        [EP].[value] AS TableDescription
 FROM INFORMATION_SCHEMA.TABLES AS IT
     LEFT JOIN sys.extended_properties AS EP
