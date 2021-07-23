@@ -375,7 +375,7 @@ namespace DbTool
                 CheckedTables.Dispatcher.Invoke(() =>
                 {
                     CheckedTables.ItemsSource = tables
-                        .OrderBy(x => x.TableName)
+                        .OrderBy(x => x.GetFullTableName())
                         .ToArray();
                 });
             }
