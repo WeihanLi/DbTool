@@ -107,7 +107,7 @@ namespace DbTool
 
             #endregion Init Services and plugins
 
-            DependencyResolver.ResolveService<MainWindow>().Show();
+            DependencyResolver.ResolveRequiredService<MainWindow>().Show();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DbTool.Localization
         {
             Key = key;
             _localizer = DependencyResolver.
-                ResolveService<IStringLocalizerFactory>()
+                ResolveRequiredService<IStringLocalizerFactory>()
                 .Create(typeof(MainWindow));
         }
 
