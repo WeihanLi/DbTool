@@ -375,6 +375,13 @@ namespace DbTool
                 CheckedTables.Dispatcher.Invoke(() =>
                 {
                     CheckedTables.ItemsSource = tables
+                        .Select(t => new CheckableTableEntity
+                        {
+                            TableName = t.TableName,
+                            TableDescription = t.TableDescription,
+                            TableSchema = t.TableSchema,
+                            Columns = t.Columns
+                        })
                         .OrderBy(x => x.GetFullTableName())
                         .ToArray();
                 });
@@ -415,6 +422,8 @@ namespace DbTool
                 MessageBox.Show(_localizer["DbNotConnected"]);
                 return;
             }
+            if (_selectAllHandling)
+                return;
             if (sender is CheckBox { DataContext: TableEntity table } checkBox)
             {
                 if (checkBox.IsChecked == true)
@@ -447,6 +456,49 @@ namespace DbTool
                     {
                         CheckedTables.SelectedItems.Remove(table);
                     }
+                }
+            }
+        }
+
+        private volatile bool _selectAllHandling = false;
+
+        private void btnSelectAllTables_Click(object sender, RoutedEventArgs e)
+        {
+            if (_dbHelper is null)
+            {
+                MessageBox.Show(_localizer["DbNotConnected"]);
+                return;
+            }
+
+            if (CheckedTables.ItemsSource is IList<CheckableTableEntity> tables && tables.Count > 0)
+            {
+                _selectAllHandling = true;
+
+                try
+                {
+                    if (CheckedTables.SelectedItems.Count == tables.Count)
+                    {
+                        // uncheck
+                        CheckedTables.SelectedItems.Clear();
+                        foreach (var item in tables)
+                        {
+                            item.Checked = false;
+                        }
+                    }
+                    else
+                    {
+                        // check
+                        CheckedTables.SelectedItems.Clear();
+                        foreach (var item in tables)
+                        {
+                            CheckedTables.SelectedItems.Add(item);
+                            item.Checked = true;
+                        }
+                    }
+                }
+                finally
+                {
+                    _selectAllHandling = false;
                 }
             }
         }

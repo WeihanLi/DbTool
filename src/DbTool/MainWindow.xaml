@@ -58,6 +58,9 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
                             <TextBlock Margin="8,4,4,4" Text="{loc:Localizer ChooseTables}"></TextBlock>
+                            <Button Name="btnSelectAllTables" Click="btnSelectAllTables_Click">
+                                <TextBlock Text="{loc:Localizer SelectAll}"></TextBlock>
+                            </Button>
                             <StackPanel Name="ModelCodeGeneratorsPanel" HorizontalAlignment="Left" Orientation="Horizontal">
                             </StackPanel>
                             <StackPanel Name="DbDocExportersPanel" HorizontalAlignment="Left" Orientation="Horizontal">
@@ -66,7 +69,7 @@
                         <ListBox Name="CheckedTables" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectionMode="Multiple" Margin="4" Grid.Row="1" Grid.Column="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox DataContext="{Binding}" Content="{Binding Converter={StaticResource fullTableNameConverter}}" Checked="CheckTableToggled" Unchecked="CheckTableToggled" ToolTip="{Binding NotEmptyDescription}">
+                                    <CheckBox DataContext="{Binding}" IsChecked="{Binding Checked}" Content="{Binding Converter={StaticResource fullTableNameConverter}}" Checked="CheckTableToggled" Unchecked="CheckTableToggled" ToolTip="{Binding NotEmptyDescription}">
                                     </CheckBox>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -76,7 +79,6 @@
                                 <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-
                             <TextBlock LineHeight="20" FontSize="16" MinHeight="30" VerticalAlignment="Center" Name="CurrentCheckedTableName" Text="{loc:Localizer CurrentCheckedTable}"></TextBlock>
                             <ListView Grid.Row="1" MinHeight="100" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="ColumnListView">
                                 <ListView.ItemTemplate>
