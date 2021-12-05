@@ -115,5 +115,9 @@ namespace DbTool.ViewModels
         }
 
         public string[] SupportedCultures { get; set; }
+
+        public bool NullableReferenceTypesEnabled { get; set; }
+
+        public bool PreferRecordTypes { get; set; }
     }
 }

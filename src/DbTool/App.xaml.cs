@@ -30,7 +30,7 @@ namespace DbTool
             base.OnStartup(e);
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services)
         {
             services.TryAddTransient<MainWindow>();
             services.AddJsonLocalization(options => options.ResourcesPathType = ResourcesPathType.CultureBased);
@@ -51,9 +51,10 @@ namespace DbTool
             services.AddDbDocImporter<ExcelDbDocImporter>();
         }
 
-        private void Init()
+        private static void Init()
         {
             #region Init Settings
+
             FluentSettings.LoadMappingProfiles(typeof(ColumnEntityMappingProfile));
 
             var settings = new SettingsViewModel();
