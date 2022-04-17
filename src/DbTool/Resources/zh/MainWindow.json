@@ -41,5 +41,7 @@
   "SqlCopiedToClipboard": "sql语句已复制至粘贴板",
   "CurrentCheckedTable": "当前选择的表",
   "ApplyNameConverter": "使用名称转换（TableName => ModelName）",
-  "SelectAll": "全选"
+  "SelectAll": "全选",
+  "NullableReferenceTypes": "可空引用类型",
+  "GlobalUsing": "全局引用"
 }

@@ -22,7 +22,7 @@ namespace DbTool
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -37,7 +37,7 @@ namespace DbTool
 
             services.TryAddSingleton<IModelNameConverter, ModelNameConverter>();
             services.TryAddSingleton<IModelCodeGenerator, DefaultCSharpModelCodeGenerator>();
-            services.TryAddSingleton<IModelCodeExtractor, DefaultCSharpModelCodeExactor>();
+            services.TryAddSingleton<IModelCodeExtractor, DefaultCSharpModelCodeExtractor>();
             services.TryAddSingleton<IDbHelperFactory, DbHelperFactory>();
             services.TryAddSingleton<DbProviderFactory>();
 
@@ -47,15 +47,19 @@ namespace DbTool
                 .AddDbProvider<PostgreSqlDbProvider>()
                 ;
 
-            services.AddDbDocExporter<ExcelDbDocExporter>();
-            services.AddDbDocImporter<ExcelDbDocImporter>();
+            services.AddDbDocExporter<ExcelDbDocExporter>()
+                .AddDbDocExporter<CsvDbDocExporter>()
+                ;
+            services.AddDbDocImporter<ExcelDbDocImporter>()
+                .AddDbDocImporter<CsvDbDocImporter>()
+                ;
         }
 
         private static void Init()
         {
             #region Init Settings
 
-            FluentSettings.LoadMappingProfiles(typeof(ColumnEntityMappingProfile));
+            FluentSettings.LoadMappingProfiles(typeof(ColumnEntityMappingProfile).Assembly);
 
             var settings = new SettingsViewModel();
             settings.ConnectionString = settings.DefaultConnectionString;

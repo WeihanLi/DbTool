@@ -45,7 +45,8 @@
                     <StackPanel Margin="4" Grid.Row="2" Orientation="Horizontal">
                         <CheckBox Name="CbGenPrivateFields" Margin="8,0,4,0"  Content="{loc:Localizer GeneratePrivateFields}"></CheckBox>
                         <CheckBox Name="CbGenDataAnnotation" Margin="4,0,4,0" Content="{loc:Localizer GenerateDataAnnotation}"></CheckBox>
-                        <CheckBox Name="CbApplyNameConverter" Margin="4,0,4,0" Content="{loc:Localizer ApplyNameConverter}"></CheckBox>
+                        <CheckBox Name="CbNullableReferenceTypes" Margin="4,0,4,0" Content="{loc:Localizer NullableReferenceTypes}"></CheckBox>
+                        <CheckBox Name="CbGlobalUsing" Margin="4,0,4,0" Content="{loc:Localizer GlobalUsing}"></CheckBox>
                     </StackPanel>
                     <Grid Grid.Row="3">
                         <Grid.RowDefinitions>
@@ -178,6 +179,14 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,0,0" Orientation="Horizontal">
+                        <TextBlock Text="{loc:Localizer GlobalUsing}"></TextBlock>
+                        <CheckBox Name="cbGlobalUsingSetting"></CheckBox>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,0,0" Orientation="Horizontal">
+                        <TextBlock Text="{loc:Localizer NullableReferenceTypes}"></TextBlock>
+                        <CheckBox Name="cbNullableReferenceTypesSetting"></CheckBox>
                     </StackPanel>
                     <Button Margin="10,10,0,0" MinWidth="80" MaxWidth="300" Content="{loc:Localizer UpdateDefaultSettings}" HorizontalAlignment="Left" Name="BtnSaveSettings" Click="BtnSaveSettings_OnClick">
                     </Button>

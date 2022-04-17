@@ -11,7 +11,8 @@ namespace DbTool.ViewModels
         private string _excelTemplateDownloadLink;
         private string _defaultCulture;
         private bool _generateDbDescription;
-        private bool _applyNameConverter;
+        private bool _globalUsingEnabled;
+        private bool _nullableReferenceTypesEnabled;
 
         public SettingsViewModel()
         {
@@ -23,8 +24,8 @@ namespace DbTool.ViewModels
                 ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDataAnnotation);
             _generatePrivateField = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GeneratePrivateField);
             _generateDbDescription = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDbDescription);
-            _applyNameConverter = ConfigurationHelper.AppSetting<bool>(nameof(ApplyNameConverter));
-
+            _globalUsingEnabled = ConfigurationHelper.AppSetting<bool>(nameof(GlobalUsingEnabled));
+            _nullableReferenceTypesEnabled = ConfigurationHelper.AppSetting<bool>(nameof(NullableReferenceTypesEnabled));
             _defaultCulture = ConfigurationHelper.AppSetting(nameof(DefaultCulture));
             SupportedCultures = ConfigurationHelper.AppSetting(nameof(SupportedCultures))
                 .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -84,13 +85,23 @@ namespace DbTool.ViewModels
             }
         }
 
-        public bool ApplyNameConverter
+        public bool GlobalUsingEnabled
         {
-            get => _applyNameConverter;
+            get => _globalUsingEnabled;
             set
             {
-                _applyNameConverter = value;
-                ConfigurationHelper.UpdateAppSetting(nameof(ApplyNameConverter), value);
+                _globalUsingEnabled = value;
+                ConfigurationHelper.UpdateAppSetting(nameof(GlobalUsingEnabled), value);
+            }
+        }
+
+        public bool NullableReferenceTypesEnabled
+        {
+            get => _nullableReferenceTypesEnabled;
+            set
+            {
+                _nullableReferenceTypesEnabled = value;
+                ConfigurationHelper.UpdateAppSetting(nameof(NullableReferenceTypesEnabled), value);
             }
         }
 
@@ -115,9 +126,5 @@ namespace DbTool.ViewModels
         }
 
         public string[] SupportedCultures { get; set; }
-
-        public bool NullableReferenceTypesEnabled { get; set; }
-
-        public bool PreferRecordTypes { get; set; }
     }
 }

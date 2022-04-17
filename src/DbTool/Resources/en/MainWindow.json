@@ -41,5 +41,7 @@
   "SqlCopiedToClipboard": "sql script had copied to the clipboard",
   "CurrentCheckedTable": "CurrentCheckedTable",
   "ApplyNameConverter": "ApplyNameConverter(TableName => ModelName)",
-  "SelectAll": "Select All"
+  "SelectAll": "Select All",
+  "NullableReferenceTypes": "Nullable Reference Types",
+  "GlobalUsing": "GlobalUsing"
 }

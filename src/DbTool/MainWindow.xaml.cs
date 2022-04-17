@@ -66,7 +66,8 @@ namespace DbTool
 
             CbGenPrivateFields.IsChecked = _settings.GeneratePrivateField;
             CbGenDataAnnotation.IsChecked = _settings.GenerateDataAnnotation;
-            CbApplyNameConverter.IsChecked = _settings.ApplyNameConverter;
+            CbGlobalUsing.IsChecked = cbGlobalUsingSetting.IsChecked = _settings.GlobalUsingEnabled;
+            CbNullableReferenceTypes.IsChecked = cbNullableReferenceTypesSetting.IsChecked = _settings.NullableReferenceTypesEnabled;
             CodeGenDbDescCheckBox.IsChecked = _settings.GenerateDbDescription;
             ModelFirstGenDesc.IsChecked = _settings.GenerateDbDescription;
 
@@ -140,7 +141,8 @@ namespace DbTool
                     Suffix = TxtSuffix.Text,
                     GenerateDataAnnotation = CbGenDataAnnotation.IsChecked == true,
                     GeneratePrivateFields = CbGenPrivateFields.IsChecked == true,
-                    ApplyNameConverter = CbApplyNameConverter.IsChecked == true,
+                    GlobalUsingEnabled = CbGlobalUsing.IsChecked == true,
+                    NullableReferenceTypesEnabled = CbNullableReferenceTypes.IsChecked == true,
                 };
                 var dir = ChooseFolder();
                 if (string.IsNullOrEmpty(dir))
@@ -152,7 +154,7 @@ namespace DbTool
                     if (item is TableEntity table)
                     {
                         var modelCode = codeGenerator.GenerateModelCode(table, options, _dbProviderFactory.GetDbProvider(_dbHelper?.DbType ?? _settings.DefaultDbType));
-                        var path = Path.Combine(dir, $"{(_settings.ApplyNameConverter ? _modelNameConverter.ConvertTableToModel(table.TableName ?? "") : table.TableName)}{codeGenerator.FileExtension}");
+                        var path = Path.Combine(dir, $"{ _modelNameConverter.ConvertTableToModel(table.TableName ?? "")}{codeGenerator.FileExtension}");
                         File.WriteAllText(path, modelCode, Encoding.UTF8);
                     }
                 }
@@ -199,7 +201,7 @@ namespace DbTool
                         var fileName = tables.Count > 1
                             ? _dbHelper.DatabaseName
                             :
-                                _settings.ApplyNameConverter
+                                _settings.GlobalUsingEnabled
                                     ? _modelNameConverter.ConvertTableToModel(tables[0].TableName)
                                     : tables[0].TableName
                             ;
@@ -315,6 +317,9 @@ namespace DbTool
             {
                 _settings.DefaultConnectionString = TxtDefaultConnStr.Text.Trim();
             }
+
+            _settings.GlobalUsingEnabled = cbGlobalUsingSetting.IsChecked != false;
+            _settings.NullableReferenceTypesEnabled = cbNullableReferenceTypesSetting.IsChecked != false;
             MessageBox.Show(_localizer["Success"], _localizer["Tip"]);
         }
 
@@ -460,7 +465,7 @@ namespace DbTool
             }
         }
 
-        private volatile bool _selectAllHandling = false;
+        private volatile bool _selectAllHandling;
 
         private void btnSelectAllTables_Click(object sender, RoutedEventArgs e)
         {

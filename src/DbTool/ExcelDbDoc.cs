@@ -9,7 +9,7 @@ using WeihanLi.Npoi.Configurations;
 
 namespace DbTool
 {
-    public class ExcelDbDocImporter : IDbDocImporter
+    public sealed class ExcelDbDocImporter : IDbDocImporter
     {
         public string ImportType => "Excel";
 
@@ -40,7 +40,7 @@ namespace DbTool
         }
     }
 
-    public class ExcelDbDocExporter : IDbDocExporter
+    public sealed class ExcelDbDocExporter : IDbDocExporter
     {
         public string ExportType => "Excel";
 
@@ -65,7 +65,7 @@ namespace DbTool
         }
     }
 
-    public class ColumnEntityMappingProfile : IMappingProfile<ColumnEntity>
+    public sealed class ColumnEntityMappingProfile : IMappingProfile<ColumnEntity>
     {
         public void Configure(IExcelConfiguration<ColumnEntity> settings)
         {
