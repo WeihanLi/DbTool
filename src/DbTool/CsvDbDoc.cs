@@ -55,14 +55,14 @@ public sealed class CsvDbDocImporter : IDbDocImporter
     };
 }
 
-internal sealed record TableInfoForCsv : ColumnEntity
+public sealed record TableInfoForCsv : ColumnEntity
 {
     public string TableName { get; set; } = string.Empty;
     public string? TableDescription { get; set; }
     public string? TableSchema { get; set; }
 }
 
-internal sealed class CsvTableInfoMappingProfile : IMappingProfile<TableInfoForCsv>
+public sealed class CsvTableInfoMappingProfile : IMappingProfile<TableInfoForCsv>
 {
     public void Configure(IExcelConfiguration<TableInfoForCsv> configuration)
     {
