@@ -5,21 +5,14 @@
 		<VersionPatch>0</VersionPatch>
 		<VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
 		<VersionSuffix Condition="'$(Configuration)'=='DEBUG'">preview</VersionSuffix>
-    <InformationalVersion>$(PackageVersion)</InformationalVersion>
 	</PropertyGroup>
   
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/WeihanLi/DbTool</RepositoryUrl>
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2017-2021 (c) WeihanLi</Copyright>
+    <Copyright>Copyright 2017-2022 (c) WeihanLi</Copyright>
   </PropertyGroup>
 </Project>
