@@ -43,5 +43,6 @@
   "ApplyNameConverter": "使用名称转换（TableName => ModelName）",
   "SelectAll": "全选",
   "NullableReferenceTypes": "可空引用类型",
-  "GlobalUsing": "全局引用"
+  "GlobalUsing": "全局引用",
+  "FileScopedNamespace": "文件范围命名空间"
 }

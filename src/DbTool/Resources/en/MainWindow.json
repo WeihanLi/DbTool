@@ -43,5 +43,6 @@
   "ApplyNameConverter": "ApplyNameConverter(TableName => ModelName)",
   "SelectAll": "Select All",
   "NullableReferenceTypes": "Nullable Reference Types",
-  "GlobalUsing": "GlobalUsing"
+  "GlobalUsing": "Global Using",
+  "FileScopedNamespace": "File-Scoped Namespace"
 }

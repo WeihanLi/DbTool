@@ -68,6 +68,7 @@ namespace DbTool
             CbGenDataAnnotation.IsChecked = _settings.GenerateDataAnnotation;
             CbGlobalUsing.IsChecked = cbGlobalUsingSetting.IsChecked = _settings.GlobalUsingEnabled;
             CbNullableReferenceTypes.IsChecked = cbNullableReferenceTypesSetting.IsChecked = _settings.NullableReferenceTypesEnabled;
+            CbFileScopedNamespace.IsChecked = cbFileScopedNamespaceSetting.IsChecked = _settings.FileScopedNamespaceEnabled;
             CodeGenDbDescCheckBox.IsChecked = _settings.GenerateDbDescription;
             ModelFirstGenDesc.IsChecked = _settings.GenerateDbDescription;
 
@@ -108,7 +109,7 @@ namespace DbTool
                     Margin = new Thickness(4, 0, 4, 0)
                 };
                 importButton.Click += ImportButton_Click;
-                DbDocImportersPannel.Children.Add(importButton);
+                DbDocImportersPanel.Children.Add(importButton);
             }
             var codeExtractors = DependencyResolver.ResolveServices<IModelCodeExtractor>();
             foreach (var extractor in codeExtractors)
@@ -143,6 +144,7 @@ namespace DbTool
                     GeneratePrivateFields = CbGenPrivateFields.IsChecked == true,
                     GlobalUsingEnabled = CbGlobalUsing.IsChecked == true,
                     NullableReferenceTypesEnabled = CbNullableReferenceTypes.IsChecked == true,
+                    FileScopedNamespaceEnabled = CbFileScopedNamespace.IsChecked == true
                 };
                 var dir = ChooseFolder();
                 if (string.IsNullOrEmpty(dir))
@@ -320,6 +322,7 @@ namespace DbTool
 
             _settings.GlobalUsingEnabled = cbGlobalUsingSetting.IsChecked != false;
             _settings.NullableReferenceTypesEnabled = cbNullableReferenceTypesSetting.IsChecked != false;
+            _settings.FileScopedNamespaceEnabled = cbFileScopedNamespaceSetting.IsChecked != false;
             MessageBox.Show(_localizer["Success"], _localizer["Tip"]);
         }
 

@@ -13,6 +13,7 @@ namespace DbTool.ViewModels
         private bool _generateDbDescription;
         private bool _globalUsingEnabled;
         private bool _nullableReferenceTypesEnabled;
+        private bool _fileScopedNamespaceEnabled;
 
         public SettingsViewModel()
         {
@@ -26,6 +27,7 @@ namespace DbTool.ViewModels
             _generateDbDescription = ConfigurationHelper.AppSetting<bool>(ConfigurationConstants.GenerateDbDescription);
             _globalUsingEnabled = ConfigurationHelper.AppSetting<bool>(nameof(GlobalUsingEnabled));
             _nullableReferenceTypesEnabled = ConfigurationHelper.AppSetting<bool>(nameof(NullableReferenceTypesEnabled));
+            _fileScopedNamespaceEnabled = ConfigurationHelper.AppSetting<bool>(nameof(FileScopedNamespaceEnabled));
             _defaultCulture = ConfigurationHelper.AppSetting(nameof(DefaultCulture));
             SupportedCultures = ConfigurationHelper.AppSetting(nameof(SupportedCultures))
                 .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -102,6 +104,16 @@ namespace DbTool.ViewModels
             {
                 _nullableReferenceTypesEnabled = value;
                 ConfigurationHelper.UpdateAppSetting(nameof(NullableReferenceTypesEnabled), value);
+            }
+        }
+
+        public bool FileScopedNamespaceEnabled
+        {
+            get => _fileScopedNamespaceEnabled;
+            set
+            {
+                _fileScopedNamespaceEnabled = value;
+                ConfigurationHelper.UpdateAppSetting(nameof(FileScopedNamespaceEnabled), value);
             }
         }
 

@@ -45,8 +45,9 @@
                     <StackPanel Margin="4" Grid.Row="2" Orientation="Horizontal">
                         <CheckBox Name="CbGenPrivateFields" Margin="8,0,4,0"  Content="{loc:Localizer GeneratePrivateFields}"></CheckBox>
                         <CheckBox Name="CbGenDataAnnotation" Margin="4,0,4,0" Content="{loc:Localizer GenerateDataAnnotation}"></CheckBox>
-                        <CheckBox Name="CbNullableReferenceTypes" Margin="4,0,4,0" Content="{loc:Localizer NullableReferenceTypes}"></CheckBox>
                         <CheckBox Name="CbGlobalUsing" Margin="4,0,4,0" Content="{loc:Localizer GlobalUsing}"></CheckBox>
+                        <CheckBox Name="CbNullableReferenceTypes" Margin="4,0,4,0" Content="{loc:Localizer NullableReferenceTypes}"></CheckBox>                        
+                        <CheckBox Name="CbFileScopedNamespace" Margin="4,0,4,0" Content="{loc:Localizer FileScopedNamespace}"></CheckBox>
                     </StackPanel>
                     <Grid Grid.Row="3">
                         <Grid.RowDefinitions>
@@ -112,7 +113,7 @@
                             </Hyperlink>
                             <TextBlock Text="{loc:Localizer ExcelTemplate}"></TextBlock>
                         </TextBlock>
-                        <StackPanel Name="DbDocImportersPannel" Orientation="Horizontal"></StackPanel>
+                        <StackPanel Name="DbDocImportersPanel" Orientation="Horizontal"></StackPanel>
                     </StackPanel>
                     <DataGrid Name="ModelDataGrid" Margin="0,4,0,4" Grid.Row="1" AutoGenerateColumns="False">
                         <DataGrid.Columns>
@@ -187,6 +188,10 @@
                     <StackPanel Margin="10,10,0,0" Orientation="Horizontal">
                         <TextBlock Text="{loc:Localizer NullableReferenceTypes}"></TextBlock>
                         <CheckBox Name="cbNullableReferenceTypesSetting"></CheckBox>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,0,0" Orientation="Horizontal">
+                        <TextBlock Text="{loc:Localizer FileScopedNamespace}"></TextBlock>
+                        <CheckBox Name="cbFileScopedNamespaceSetting"></CheckBox>
                     </StackPanel>
                     <Button Margin="10,10,0,0" MinWidth="80" MaxWidth="300" Content="{loc:Localizer UpdateDefaultSettings}" HorizontalAlignment="Left" Name="BtnSaveSettings" Click="BtnSaveSettings_OnClick">
                     </Button>
