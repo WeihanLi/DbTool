@@ -144,7 +144,8 @@ namespace DbTool
                     GeneratePrivateFields = CbGenPrivateFields.IsChecked == true,
                     GlobalUsingEnabled = CbGlobalUsing.IsChecked == true,
                     NullableReferenceTypesEnabled = CbNullableReferenceTypes.IsChecked == true,
-                    FileScopedNamespaceEnabled = CbFileScopedNamespace.IsChecked == true
+                    FileScopedNamespaceEnabled = CbFileScopedNamespace.IsChecked == true,
+                    Indentation = "    "
                 };
                 var dir = ChooseFolder();
                 if (string.IsNullOrEmpty(dir))
