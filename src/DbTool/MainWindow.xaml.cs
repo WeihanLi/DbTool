@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WeihanLi.Common;
@@ -155,15 +156,13 @@ public partial class MainWindow
             {
                 return;
             }
-            foreach (var item in CheckedTables.SelectedItems)
+
+            Parallel.ForEach(CheckedTables.SelectedItems.Cast<CheckableTableEntity>(), table =>
             {
-                if (item is TableEntity table)
-                {
-                    var modelCode = codeGenerator.GenerateModelCode(table, options, _dbProviderFactory.GetDbProvider(_dbHelper?.DbType ?? _settings.DefaultDbType));
-                    var path = Path.Combine(dir, $"{ _modelNameConverter.ConvertTableToModel(table.TableName ?? "")}{codeGenerator.FileExtension}");
-                    File.WriteAllText(path, modelCode, Encoding.UTF8);
-                }
-            }
+                var modelCode = codeGenerator.GenerateModelCode(table, options, _dbProviderFactory.GetDbProvider(_dbHelper?.DbType ?? _settings.DefaultDbType));
+                var path = Path.Combine(dir, $"{ _modelNameConverter.ConvertTableToModel(table.TableName ?? "")}{codeGenerator.FileExtension}");
+                File.WriteAllText(path, modelCode, Encoding.UTF8);
+            });
             // open dir
             Process.Start("Explorer.exe", dir);
         }
@@ -474,7 +473,7 @@ public partial class MainWindow
 
     private volatile bool _selectAllHandling;
 
-    private void btnSelectAllTables_Click(object sender, RoutedEventArgs e)
+    private async void btnSelectAllTables_Click(object sender, RoutedEventArgs e)
     {
         if (_dbHelper is null)
         {
@@ -501,10 +500,14 @@ public partial class MainWindow
                 {
                     // check
                     CheckedTables.SelectedItems.Clear();
-                    foreach (var item in tables)
+                    foreach (var table in tables)
                     {
-                        CheckedTables.SelectedItems.Add(item);
-                        item.Checked = true;
+                        if (table.Columns.Count == 0)
+                        {
+                            table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName);
+                        }
+                        CheckedTables.SelectedItems.Add(table);
+                        table.Checked = true;
                     }
                 }
             }
