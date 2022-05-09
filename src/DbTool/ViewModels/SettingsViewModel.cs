@@ -17,6 +17,7 @@ public class SettingsViewModel
     private bool _globalUsingEnabled;
     private bool _nullableReferenceTypesEnabled;
     private bool _fileScopedNamespaceEnabled;
+    private bool _isLoad;
 
     public SettingsViewModel()
     {
@@ -34,7 +35,7 @@ public class SettingsViewModel
         _defaultCulture = ConfigurationHelper.AppSetting(nameof(DefaultCulture));
         SupportedCultures = ConfigurationHelper.AppSetting(nameof(SupportedCultures))
             .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-
+        IsLoad = false;//TODO: 合适的时机开启
         ConnectionString = _defaultConnectionString;
     }
 
@@ -141,4 +142,13 @@ public class SettingsViewModel
     }
 
     public string[] SupportedCultures { get; set; }
+    public bool IsLoad
+    { 
+        get => _isLoad;
+        set 
+        {
+            _isLoad = value;
+            ConfigurationHelper.UpdateAppSetting(nameof(IsLoad), value);
+        }
+    }
 }

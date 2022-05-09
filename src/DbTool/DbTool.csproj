@@ -28,6 +28,9 @@
     <PackageReference Include="DbTool.DbProvider.SqlServer" Version="$(DbToolPackageVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DbTool.ControlLib\DbTool.ControlLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="Resources\**\*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
