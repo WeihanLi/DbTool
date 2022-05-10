@@ -7,15 +7,15 @@
                 <ControlTemplate TargetType="controls:LoadControl">
                     <Grid Background="Gray" Opacity="0.3" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" IsEnabled="False" >
                         <Canvas RenderTransformOrigin="0.5,0.5"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="120"   Height="120">
-                            <Ellipse Name="PART_ELLIPSE1" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="1.0"/>
-                            <Ellipse Name="PART_ELLIPSE2" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.9"/>
-                            <Ellipse Name="PART_ELLIPSE3" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.8"/>
-                            <Ellipse Name="PART_ELLIPSE4" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.7"/>
-                            <Ellipse Name="PART_ELLIPSE5" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.6"/>
-                            <Ellipse Name="PART_ELLIPSE6" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.5"/>
-                            <Ellipse Name="PART_ELLIPSE7" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.4"/>
-                            <Ellipse Name="PART_ELLIPSE8" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.3"/>
-                            <Ellipse Name="PART_ELLIPSE9" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="Yellow" Opacity="0.2"/>
+                            <Ellipse Name="PART_ELLIPSE1" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="1.0"/>
+                            <Ellipse Name="PART_ELLIPSE2" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.9"/>
+                            <Ellipse Name="PART_ELLIPSE3" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.8"/>
+                            <Ellipse Name="PART_ELLIPSE4" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.7"/>
+                            <Ellipse Name="PART_ELLIPSE5" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.6"/>
+                            <Ellipse Name="PART_ELLIPSE6" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.5"/>
+                            <Ellipse Name="PART_ELLIPSE7" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.4"/>
+                            <Ellipse Name="PART_ELLIPSE8" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.3"/>
+                            <Ellipse Name="PART_ELLIPSE9" Width="20" Height="20" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#661C79" Opacity="0.2"/>
                             <Canvas.RenderTransform>
                                 <RotateTransform x:Name="PART_ROTATE" Angle="0" />
                             </Canvas.RenderTransform>

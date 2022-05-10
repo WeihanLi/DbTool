@@ -2,10 +2,12 @@
 // Licensed under the MIT license.
 
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace DbTool.ViewModels;
 
-public class SettingsViewModel
+public sealed class SettingsViewModel : INotifyPropertyChanged
 {
     private string _defaultDbType;
     private string _defaultConnectionString;
@@ -35,7 +37,6 @@ public class SettingsViewModel
         _defaultCulture = ConfigurationHelper.AppSetting(nameof(DefaultCulture));
         SupportedCultures = ConfigurationHelper.AppSetting(nameof(SupportedCultures))
             .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-        IsLoad = false;//TODO: 合适的时机开启
         ConnectionString = _defaultConnectionString;
     }
 
@@ -46,6 +47,7 @@ public class SettingsViewModel
         {
             _defaultDbType = value;
             ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.DbType, value);
+            NotifyPropertyChanged();
         }
     }
 
@@ -56,6 +58,7 @@ public class SettingsViewModel
         {
             _defaultConnectionString = value;
             ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.DefaultConnectionString, value);
+            NotifyPropertyChanged();
         }
     }
 
@@ -128,6 +131,7 @@ public class SettingsViewModel
         {
             _excelTemplateDownloadLink = value;
             ConfigurationHelper.UpdateAppSetting(ConfigurationConstants.ExcelTemplateDownloadLink, value);
+            NotifyPropertyChanged();
         }
     }
 
@@ -138,17 +142,25 @@ public class SettingsViewModel
         {
             _defaultCulture = value;
             ConfigurationHelper.UpdateAppSetting(nameof(DefaultCulture), value);
+            NotifyPropertyChanged();
         }
     }
 
     public string[] SupportedCultures { get; set; }
     public bool IsLoad
-    { 
-        get => _isLoad;
-        set 
+    {
+        get => _isLoad; 
+        set
         {
             _isLoad = value;
-            ConfigurationHelper.UpdateAppSetting(nameof(IsLoad), value);
+            NotifyPropertyChanged();
         }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

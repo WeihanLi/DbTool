@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -23,37 +22,26 @@ namespace DbTool.ControlLib.Controls;
 [TemplatePart(Name = "PART_ROTATE", Type = typeof(RotateTransform))]
 public class LoadControl : Control
 {
-    private Ellipse PART_ELLIPSE1;
-    private Ellipse PART_ELLIPSE2;
-    private Ellipse PART_ELLIPSE3;
-    private Ellipse PART_ELLIPSE4;
-    private Ellipse PART_ELLIPSE5;
-    private Ellipse PART_ELLIPSE6;
-    private Ellipse PART_ELLIPSE7;
-    private Ellipse PART_ELLIPSE8;
-    private Ellipse PART_ELLIPSE9;
-    private static RotateTransform PART_ROTATE;
-    private static DispatcherTimer animationTimer;
-
-    public static readonly DependencyProperty IsLoadProperty =
-        DependencyProperty.Register("IsLoad", typeof(bool), typeof(LoadControl), new PropertyMetadata(false, new PropertyChangedCallback(OnIsEnableChanged)));
-
-    private static void OnIsEnableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-        if (e.NewValue == null) return;
-        bool.TryParse(e.NewValue.ToString(), out bool isEnadble);
-        if (isEnadble)
-            Start();
-        else
-            Stop();
-    }
-
+    private Ellipse? PART_ELLIPSE1;
+    private Ellipse? PART_ELLIPSE2;
+    private Ellipse? PART_ELLIPSE3;
+    private Ellipse? PART_ELLIPSE4;
+    private Ellipse? PART_ELLIPSE5;
+    private Ellipse? PART_ELLIPSE6;
+    private Ellipse? PART_ELLIPSE7;
+    private Ellipse? PART_ELLIPSE8;
+    private Ellipse? PART_ELLIPSE9;
+    private static RotateTransform? PART_ROTATE;
+    
+    private static DispatcherTimer? AnimationTimer;
+    private static DependencyProperty IsLoadProperty = DependencyProperty.Register("IsLoad", typeof(bool), typeof(LoadControl), new PropertyMetadata(false, new PropertyChangedCallback(OnIsEnableChanged)));
+  
     public LoadControl()
     {
         DefaultStyleKey = typeof(LoadControl);
         Unloaded += OnUnLoadControl;
-        animationTimer = new DispatcherTimer(DispatcherPriority.ContextIdle, Dispatcher);
-        animationTimer.Interval = new TimeSpan(0, 0, 0, 0, 75);
+        AnimationTimer ??= new DispatcherTimer(DispatcherPriority.ContextIdle, Dispatcher);
+        AnimationTimer.Interval = new TimeSpan(0, 0, 0, 0, 75);        
     }
 
     public bool IsLoad
@@ -64,16 +52,16 @@ public class LoadControl : Control
 
     public override void OnApplyTemplate()
     {
-        PART_ELLIPSE1 = Enforcelnstance<Ellipse>("PART_ELLIPSE1");
-        PART_ELLIPSE2 = Enforcelnstance<Ellipse>("PART_ELLIPSE2");
-        PART_ELLIPSE3 = Enforcelnstance<Ellipse>("PART_ELLIPSE3");
-        PART_ELLIPSE4 = Enforcelnstance<Ellipse>("PART_ELLIPSE4");
-        PART_ELLIPSE5 = Enforcelnstance<Ellipse>("PART_ELLIPSE5");
-        PART_ELLIPSE6 = Enforcelnstance<Ellipse>("PART_ELLIPSE6");
-        PART_ELLIPSE7 = Enforcelnstance<Ellipse>("PART_ELLIPSE7");
-        PART_ELLIPSE8 = Enforcelnstance<Ellipse>("PART_ELLIPSE8");
-        PART_ELLIPSE9 = Enforcelnstance<Ellipse>("PART_ELLIPSE9");
-        PART_ROTATE = EnforcelnstanceAnimatable<RotateTransform>("PART_ROTATE");
+        PART_ELLIPSE1 = EnforceInstance<Ellipse>("PART_ELLIPSE1");
+        PART_ELLIPSE2 = EnforceInstance<Ellipse>("PART_ELLIPSE2");
+        PART_ELLIPSE3 = EnforceInstance<Ellipse>("PART_ELLIPSE3");
+        PART_ELLIPSE4 = EnforceInstance<Ellipse>("PART_ELLIPSE4");
+        PART_ELLIPSE5 = EnforceInstance<Ellipse>("PART_ELLIPSE5");
+        PART_ELLIPSE6 = EnforceInstance<Ellipse>("PART_ELLIPSE6");
+        PART_ELLIPSE7 = EnforceInstance<Ellipse>("PART_ELLIPSE7");
+        PART_ELLIPSE8 = EnforceInstance<Ellipse>("PART_ELLIPSE8");
+        PART_ELLIPSE9 = EnforceInstance<Ellipse>("PART_ELLIPSE9");
+        PART_ROTATE = EnforceInstance<RotateTransform>("PART_ROTATE");
         const double offset = Math.PI;
         const double step = Math.PI * 2 / 10.0;
         SetPosition(PART_ELLIPSE1, offset, 0.0, step);
@@ -90,22 +78,35 @@ public class LoadControl : Control
     #region Private Methods
 
     private void OnUnLoadControl(object sender, RoutedEventArgs e) => Stop();
+      
+    private static void OnIsEnableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (e.NewValue == null) return;
+        bool.TryParse(e.NewValue.ToString(), out var isEnable);
+
+        if (isEnable)
+            Start();
+        else
+            Stop();
+    }
 
     private static void Start()
     {
-        Mouse.OverrideCursor = Cursors.Wait;
-        animationTimer.Tick += HandleAnimationTick;
-        animationTimer.Start();
+        if (AnimationTimer is null) return;
+        Mouse.OverrideCursor = Cursors.Wait;        
+        AnimationTimer.Tick += HandleAnimationTick;
+        AnimationTimer.Start();
     }
 
     private static void Stop()
     {
-        animationTimer.Stop();
+        if (AnimationTimer is null) return;
+        AnimationTimer.Stop();
         Mouse.OverrideCursor = Cursors.Arrow;
-        animationTimer.Tick -= HandleAnimationTick;
+        AnimationTimer.Tick -= HandleAnimationTick;
     }
 
-    private static void HandleAnimationTick(object sender, EventArgs e)
+    private static void HandleAnimationTick(object? sender, EventArgs e)
     {
         if (PART_ROTATE == null) return;
         PART_ROTATE.Angle = (PART_ROTATE.Angle + 36) % 360;
@@ -119,16 +120,13 @@ public class LoadControl : Control
         ellipse.SetValue(Canvas.TopProperty, 50 + Math.Cos(offset + posOffSet * step) * 50.0);
     }
 
-    T Enforcelnstance<T>(string partName) where T : FrameworkElement, new()
+    private T EnforceInstance<T>(string partName) where T : class, new()
     {
-        T element = GetTemplateChild(partName) as T;
-        return element;
-    }
-
-    T EnforcelnstanceAnimatable<T>(string partName) where T : Animatable, new()
-    {
-        T element = GetTemplateChild(partName) as T;
-        return element;
+        if(GetTemplateChild(partName) is T t)
+        {
+            return t;
+        }
+        throw new ArgumentException("Unexpected type", nameof(partName));
     }
 
     #endregion

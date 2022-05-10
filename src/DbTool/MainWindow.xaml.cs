@@ -156,15 +156,24 @@ public partial class MainWindow
             {
                 return;
             }
-
-            Parallel.ForEach(CheckedTables.SelectedItems.Cast<CheckableTableEntity>(), table =>
+            try
             {
-                var modelCode = codeGenerator.GenerateModelCode(table, options, _dbProviderFactory.GetDbProvider(_dbHelper?.DbType ?? _settings.DefaultDbType));
-                var path = Path.Combine(dir, $"{ _modelNameConverter.ConvertTableToModel(table.TableName ?? "")}{codeGenerator.FileExtension}");
-                File.WriteAllText(path, modelCode, Encoding.UTF8);
-            });
-            // open dir
-            Process.Start("Explorer.exe", dir);
+                _settings.IsLoad = true;
+
+                Parallel.ForEach(CheckedTables.SelectedItems.Cast<CheckableTableEntity>(), table =>
+                {
+                    var modelCode = codeGenerator.GenerateModelCode(table, options, _dbProviderFactory.GetDbProvider(_dbHelper?.DbType ?? _settings.DefaultDbType));
+                    var path = Path.Combine(dir, $"{ _modelNameConverter.ConvertTableToModel(table.TableName ?? "")}{codeGenerator.FileExtension}");
+                    File.WriteAllText(path, modelCode, Encoding.UTF8);
+                });
+                // open dir
+                Process.Start("Explorer.exe", dir);
+            }
+            finally
+            {
+                _settings.IsLoad = false;
+            }
+            
         }
     }
 
@@ -376,6 +385,7 @@ public partial class MainWindow
             MessageBox.Show(_localizer["ConnectionStringCannotBeEmpty"]);
             return;
         }
+        _settings.IsLoad = true;
         try
         {
             var connStr = TxtConnectionString.Text;
@@ -400,6 +410,10 @@ public partial class MainWindow
         catch (Exception exception)
         {
             MessageBox.Show(exception.ToString(), "Error");
+        }
+        finally
+        {
+            _settings.IsLoad = false;
         }
     }
 
@@ -449,11 +463,20 @@ public partial class MainWindow
                     CurrentCheckedTableName.Text = table.TableName;
                     if (table.Columns.Count == 0)
                     {
-                        table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName);
-                        ColumnListView.Dispatcher.Invoke(() =>
+                        try
                         {
-                            ColumnListView.ItemsSource = table.Columns;
-                        });
+                            _settings.IsLoad = true;
+
+                            table.Columns = await _dbHelper.GetColumnsInfoAsync(table.TableName);
+                            ColumnListView.Dispatcher.Invoke(() =>
+                            {
+                                ColumnListView.ItemsSource = table.Columns;
+                            });
+                        }
+                        finally
+                        {
+                            _settings.IsLoad = false;
+                        }                        
                     }
                     else
                     {
@@ -480,11 +503,13 @@ public partial class MainWindow
             MessageBox.Show(_localizer["DbNotConnected"]);
             return;
         }
+        if (_selectAllHandling)
+            return;
 
         if (CheckedTables.ItemsSource is IList<CheckableTableEntity> tables && tables.Count > 0)
         {
             _selectAllHandling = true;
-
+            _settings.IsLoad = true;
             try
             {
                 if (CheckedTables.SelectedItems.Count == tables.Count)
@@ -514,6 +539,7 @@ public partial class MainWindow
             finally
             {
                 _selectAllHandling = false;
+                _settings.IsLoad = false;
             }
         }
     }
