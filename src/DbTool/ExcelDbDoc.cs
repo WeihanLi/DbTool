@@ -1,4 +1,4 @@
-﻿// Copyright (c) Weihan Li. All rights reserved.
+﻿// Copyright (c) DbTool. All rights reserved.
 // Licensed under the MIT license.
 
 using DbTool.Core;
@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WeihanLi.Npoi;
 using WeihanLi.Npoi.Configurations;
+using HorizontalAlignment = NPOI.SS.UserModel.HorizontalAlignment;
 
 namespace DbTool;
 
