@@ -419,14 +419,13 @@ public partial class MainWindow
 
     private string? ChooseFolder()
     {
-        var dialog = new System.Windows.Forms.FolderBrowserDialog
+        var dialog = new OpenFolderDialog()
         {
-            Description = _localizer["ChooseDirTip"],
-            ShowNewFolderButton = true
+            Title = _localizer["ChooseDirTip"]
         };
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dialog.ShowDialog() == true)
         {
-            return dialog.SelectedPath;
+            return dialog.FolderName;
         }
         return null;
     }

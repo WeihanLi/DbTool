@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-		<VersionMajor>2</VersionMajor>
-		<VersionMinor>3</VersionMinor>
+		<VersionMajor>3</VersionMajor>
+		<VersionMinor>0</VersionMinor>
 		<VersionPatch>0</VersionPatch>
 		<VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
 		<VersionSuffix Condition="'$(Configuration)'=='DEBUG'">preview</VersionSuffix>
@@ -13,6 +13,6 @@
     <RepositoryUrl>https://github.com/WeihanLi/DbTool</RepositoryUrl>
 
     <Authors>DbTool Contributors</Authors>
-    <Copyright>Copyright 2017-2022 (c) WeihanLi</Copyright>
+    <Copyright>Copyright 2017-2023 (c) WeihanLi</Copyright>
   </PropertyGroup>
 </Project>

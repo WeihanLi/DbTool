@@ -3,8 +3,7 @@ schedules:
   displayName: Build every day at 10:00 UTC
   branches:
     include:
-    - master
-  always: true
+    - '*'
 
 trigger:
   branches:
@@ -16,11 +15,11 @@ pool:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET Core sdk'
+  displayName: 'Use .NET SDK'
   inputs:
     packageType: sdk
-    version: 6.0.x
-    includePreviewVersions: true
+    version: 8.0.x
+    # includePreviewVersions: true
 
 - script: dotnet --info
   displayName: "dotnet info"
